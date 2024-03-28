@@ -1,0 +1,8 @@
+si (a > b)
+{
+    escribir("a es mas grande que b")
+}
+sino
+{
+    escribir("a es mas chico o igual a b")
+}
