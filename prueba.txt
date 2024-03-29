@@ -1,2 +1,7 @@
-c:=d*(e-21)/4
+si (a > b)
+{
+    b:=c
+}
 
+c:=d*(e-21)/4
+*- Esto es un comentario -*
