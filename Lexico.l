@@ -40,12 +40,13 @@ LC          "}"
 
 %%
 
-si              {printf("\nSi: %s\n", yytext);return SI;}
+escribir        {printf("\nEscribir : %s\n", yytext);return ESCRIBIR;}
+"si"|"if"       {printf("\nSi: %s\n", yytext);return SI;}
 sino            {printf("\nSino: %s\n", yytext);return SINO;}
 {CTE}			{printf("\nConstante: %s\n", yytext);return CTE;}
 {FLOT}			{printf("\nFlotante: %s\n", yytext);return FLOT;}
 {ID}			{printf("\nIdentificador: %s\n", yytext);return ID;}
-{CADENA}			{printf("\nCADENA: %s\n", yytext);return CADENA;}
+{CADENA}		{printf("\nCADENA: %s\n", yytext);return CADENA;}
 {OP_SUM}		{printf("\nSuma: %s\n", yytext);return OP_SUM;}
 {OP_AS}			{printf("\nAsignacion: %s\n", yytext);return OP_AS;}
 {OP_MUL}		{printf("\nMultiplicacion: %s\n", yytext);return OP_MUL;}

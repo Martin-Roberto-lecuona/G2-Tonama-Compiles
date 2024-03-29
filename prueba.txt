@@ -1,4 +1,3 @@
-
 c:=d*(e-21)/4
 *- Esto es un comentario -*
 si (a > b)
@@ -17,3 +16,11 @@ a := .9999
 b := "@sdADaSjfla%dfg"
 b := "asldk  fh sjf"
 
+a := 1
+b := 1
+c := 2
+
+if ( c > b)
+{
+    escribir("a es mas grande que b y c es mas grande que b")
+}

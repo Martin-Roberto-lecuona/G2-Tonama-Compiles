@@ -30,15 +30,17 @@ FILE  *yyin;
 %token OP_MENOR
 %token LA
 %token LC
+%token ESCRIBIR
 
 %%
 programa:
   sentencia {printf(" FIN\n");}
   | sentencia programa
   ;
-sentencia:  	   
+sentencia:
 	asignacion
   | comparacion LA sentencia LC sino {printf(" FIN SI\n");}
+  | ESCRIBIR PA CADENA PC
   ;
 
 sino:
