@@ -24,3 +24,16 @@ if ( c > b)
 {
     escribir("a es mas grande que b y c es mas grande que b")
 }
+
+escribir(“ewr”)  *- “ewr” es una cte string -*
+escribir(var1)  *- var1 es una variable numérica definida previamente -*
+leer(base) *- base es una variable -*
+
+a := 1
+b := 3
+
+mientras (a > b)
+{
+    escribir("a es mas grande que b")
+    a := a + 1
+}

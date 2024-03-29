@@ -18,13 +18,16 @@ int yyerror(void);
 DIGITO			[0-9]
 LETRA			[a-zA-Z]
 COMILLA         ["]
-ASCI            [0-9a-zA-Z_!"#$%&/()=@ ]
+COMILLAI        [“]
+COMILLAD        [”]
+ASCI            [áéíóú0-9a-zA-Z_!"#$%&/()=@“” ]
 BLANCO          [ \t\n\r]
 
 CTE		        {DIGITO}+
 FLOT            ({DIGITO}*"."{DIGITO}+|{DIGITO}+"."{DIGITO}*)
 ID			    {LETRA}({LETRA}|{DIGITO})*
 CADENA          {COMILLA}{ASCI}*{COMILLA}
+CADENAID        {COMILLAI}{ASCI}*{COMILLAD}
 COMENT          "*-"{ASCI}*"-*"
 OP_AS   		":""="
 OP_SUM		        "+"
@@ -41,12 +44,15 @@ LC          "}"
 %%
 
 escribir        {printf("\nEscribir : %s\n", yytext);return ESCRIBIR;}
+leer            {printf("\nEscribir : %s\n", yytext);return LEER;}
 "si"|"if"       {printf("\nSi: %s\n", yytext);return SI;}
+mientras        {printf("\nMientras: %s\n", yytext);return MIENTRAS;}
 sino            {printf("\nSino: %s\n", yytext);return SINO;}
 {CTE}			{printf("\nConstante: %s\n", yytext);return CTE;}
 {FLOT}			{printf("\nFlotante: %s\n", yytext);return FLOT;}
 {ID}			{printf("\nIdentificador: %s\n", yytext);return ID;}
 {CADENA}		{printf("\nCADENA: %s\n", yytext);return CADENA;}
+{CADENAID}		{printf("\nCADENA: %s\n", yytext);return CADENA;}
 {OP_SUM}		{printf("\nSuma: %s\n", yytext);return OP_SUM;}
 {OP_AS}			{printf("\nAsignacion: %s\n", yytext);return OP_AS;}
 {OP_MUL}		{printf("\nMultiplicacion: %s\n", yytext);return OP_MUL;}

@@ -25,12 +25,14 @@ FILE  *yyin;
 %token PC
 %token CADENA
 %token SI
+%token MIENTRAS
 %token SINO
 %token OP_MAYOR
 %token OP_MENOR
 %token LA
 %token LC
 %token ESCRIBIR
+%token LEER
 
 %%
 programa:
@@ -41,6 +43,8 @@ sentencia:
 	asignacion
   | comparacion LA sentencia LC sino {printf(" FIN SI\n");}
   | ESCRIBIR PA CADENA PC
+  | ESCRIBIR PA ID PC
+  | LEER PA ID PC
   ;
 
 sino:
@@ -54,6 +58,8 @@ asignacion:
 
 pr_con_comparacion:
   SI
+  | MIENTRAS
+  ;
 
 comparacion:
   pr_con_comparacion PA expresion_comparacion PC {printf("comparacion");}
