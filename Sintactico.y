@@ -25,6 +25,7 @@ FILE  *yyin;
 %token PC
 %token CADENA
 %token SI
+%token SINO
 %token OP_MAYOR
 %token OP_MENOR
 %token LA
@@ -32,12 +33,17 @@ FILE  *yyin;
 
 %%
 programa:
-  sentencia {printf(" FIN\n");};
+  sentencia {printf(" FIN\n");}
+  | sentencia programa
+  ;
 sentencia:  	   
 	asignacion
-  | sentencia asignacion
-  | comparacion LA sentencia LC {printf(" FIN SI\n");};
+  | comparacion LA sentencia LC sino {printf(" FIN SI\n");}
   ;
+
+sino:
+    | SINO LA sentencia LC {printf(" FIN SINO\n");}
+    ;
 
 asignacion: 
           ID OP_AS expresion {printf("    ID = Expresion es ASIGNACION\n");}
@@ -51,16 +57,10 @@ comparacion:
   pr_con_comparacion PA expresion_comparacion PC {printf("comparacion");}
  
 expresion_comparacion:
-  |expresion_comparacion operacion_comparacion factor_comparacion {printf("exprecion operacion factor");}
-  |factor_comparacion {printf("exprecion es factor");}
+  |expresion_comparacion operacion_comparacion factor {printf("exprecion operacion factor");}
+  |factor {printf("exprecion es factor");}
   ;
 
-factor_comparacion:
-  ID {printf("    ID es Factor \n");}
-      | CTE {printf("    CTE es Factor\n");}
-      | FLOT {printf("    FLOT es Factor\n");}
-      | expresion_comparacion {printf("factor_comparacion es Factor\n");}
-      ;
 
 operacion_comparacion:
     OP_MAYOR 

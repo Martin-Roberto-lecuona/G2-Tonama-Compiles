@@ -40,8 +40,8 @@ LC          "}"
 
 %%
 
-si {printf("\nSi: %s\n", yytext);return SI;}
-
+si              {printf("\nSi: %s\n", yytext);return SI;}
+sino            {printf("\nSino: %s\n", yytext);return SINO;}
 {CTE}			{printf("\nConstante: %s\n", yytext);return CTE;}
 {FLOT}			{printf("\nFlotante: %s\n", yytext);return FLOT;}
 {ID}			{printf("\nIdentificador: %s\n", yytext);return ID;}

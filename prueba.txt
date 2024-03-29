@@ -1,7 +1,19 @@
+
+c:=d*(e-21)/4
+*- Esto es un comentario -*
 si (a > b)
 {
     b:=c
 }
+sino
+{
+    b:=c
+}
 
-c:=d*(e-21)/4
-*- Esto es un comentario -*
+a := 99999.99
+a := 99.
+a := .9999
+
+b := "@sdADaSjfla%dfg"
+b := "asldk  fh sjf"
+
