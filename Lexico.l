@@ -22,6 +22,7 @@ COMILLAI        [“]
 COMILLAD        [”]
 ASCI            [,.áéíóú0-9a-zA-Z_!"#$%&/()=@“” ]
 BLANCO          [ \t\n\r]
+COMA            [,]
 
 CTE		        {DIGITO}+
 FLOT            ({DIGITO}*"."{DIGITO}+|{DIGITO}+"."{DIGITO}*)
@@ -40,14 +41,22 @@ PA			"("
 PC			")"
 LA          "{"
 LC          "}"
+DP          ":"
 
 %%
 
+"Float"|"Int"|"String"        {printf("\nTipo de dato : %s\n", yytext);return TDD;}
+AND             {printf("\nComparacion AND : %s\n", yytext);return AND;}
+OR              {printf("\nComparacion OR : %s\n", yytext);return OR;}
+NOT             {printf("\nNegacion NOT : %s\n", yytext);return NOT;}
 escribir        {printf("\nEscribir : %s\n", yytext);return ESCRIBIR;}
 leer            {printf("\nEscribir : %s\n", yytext);return LEER;}
+init            {printf("\nInit : %s\n", yytext);return INIT;}
 "si"|"if"       {printf("\nSi: %s\n", yytext);return SI;}
 mientras        {printf("\nMientras: %s\n", yytext);return MIENTRAS;}
 sino            {printf("\nSino: %s\n", yytext);return SINO;}
+
+{COMA}          {printf("\nComa: %s\n", yytext);return COMA;}
 {CTE}			{printf("\nConstante: %s\n", yytext);return CTE;}
 {FLOT}			{printf("\nFlotante: %s\n", yytext);return FLOT;}
 {ID}			{printf("\nIdentificador: %s\n", yytext);return ID;}
@@ -64,6 +73,7 @@ sino            {printf("\nSino: %s\n", yytext);return SINO;}
 {PC}			{printf("\nParCierra: %s\n", yytext);return PC;}
 {LA}			{printf("\nLLaveAbre: %s\n", yytext);return LA;}
 {LC}			{printf("\nLLaveCierra: %s\n", yytext);return LC;}
+{DP}            {printf("\nDos puntos: %s\n", yytext);return DP;}
 {BLANCO}
 {COMENT}        {printf("\nComentario: %s\n", yytext);}
 .			 { printf( "ERROR LEXICO : Caracter no reconocido: %s\n", yytext ); exit (0);}

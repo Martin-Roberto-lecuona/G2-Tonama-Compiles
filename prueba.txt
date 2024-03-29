@@ -1,3 +1,13 @@
+*- and.txt -*
+a := 1
+b := 1
+c := 2
+
+if (a > b AND c > b)
+{
+    escribir("a es mas grande que b y c es mas grande que b")
+}
+
 *- assignments.txt -*
 a := 99999.99
 a := 99.
@@ -15,6 +25,34 @@ sino
 {
     escribir("a es mas chico o igual a b")
 }
+
+*- init.txt -*
+init {
+    a1, b1 : Float
+    variable1 : Int
+    p1, p2, p3 : String
+}
+
+*- not.txt -*
+a := 1
+b := 1
+c := 2
+
+if (NOT a > b)
+{
+    escribir("a no es mas grande que b")
+}
+
+*- or.txt -*
+a := 1
+b := 1
+c := 2
+
+if (a > b OR c > b)
+{
+    escribir("a es mas grande que b o c es mas grande que b")
+}
+
 
 *- read.txt -*
 leer(base) *- base es una variable -*
