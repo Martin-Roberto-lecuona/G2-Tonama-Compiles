@@ -1,14 +1,4 @@
-c:=d*(e-21)/4
-*- Esto es un comentario -*
-si (a > b)
-{
-    b:=c
-}
-sino
-{
-    b:=c
-}
-
+*- assignments.txt -*
 a := 99999.99
 a := 99.
 a := .9999
@@ -16,19 +6,20 @@ a := .9999
 b := "@sdADaSjfla%dfg"
 b := "asldk  fh sjf"
 
-a := 1
-b := 1
-c := 2
-
-if ( c > b)
+*- if.txt -*
+si (a > b)
 {
-    escribir("a es mas grande que b y c es mas grande que b")
+    escribir("a es mas grande que b")
+}
+sino
+{
+    escribir("a es mas chico o igual a b")
 }
 
-escribir(“ewr”)  *- “ewr” es una cte string -*
-escribir(var1)  *- var1 es una variable numérica definida previamente -*
+*- read.txt -*
 leer(base) *- base es una variable -*
 
+*- while.txt -*
 a := 1
 b := 3
 
@@ -37,3 +28,7 @@ mientras (a > b)
     escribir("a es mas grande que b")
     a := a + 1
 }
+
+*- write.txt -*
+escribir(“ewr”)  *- “ewr” es una cte string -*
+escribir(var1)  *- var1 es una variable numérica definida previamente -*

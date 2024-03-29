@@ -41,7 +41,7 @@ programa:
   ;
 sentencia:
 	asignacion
-  | comparacion LA sentencia LC sino {printf(" FIN SI\n");}
+  | comparacion LA programa LC sino {printf(" FIN SI\n");}
   | ESCRIBIR PA CADENA PC
   | ESCRIBIR PA ID PC
   | LEER PA ID PC

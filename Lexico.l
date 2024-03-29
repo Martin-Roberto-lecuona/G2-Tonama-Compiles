@@ -20,7 +20,7 @@ LETRA			[a-zA-Z]
 COMILLA         ["]
 COMILLAI        [“]
 COMILLAD        [”]
-ASCI            [áéíóú0-9a-zA-Z_!"#$%&/()=@“” ]
+ASCI            [,.áéíóú0-9a-zA-Z_!"#$%&/()=@“” ]
 BLANCO          [ \t\n\r]
 
 CTE		        {DIGITO}+
