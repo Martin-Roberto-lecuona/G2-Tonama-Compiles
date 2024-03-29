@@ -14,6 +14,7 @@ FILE  *yyin;
 %}
 
 %token CTE
+%token FLOT
 %token ID
 %token OP_AS
 %token OP_SUM
@@ -22,13 +23,19 @@ FILE  *yyin;
 %token OP_DIV
 %token PA
 %token PC
+%token CADENA
 
 %%
+programa:
+  sentencia {printf(" FIN\n");};
 sentencia:  	   
-	asignacion {printf(" FIN\n");} ;
+	asignacion
+  | sentencia asignacion 
+  ;
 
 asignacion: 
           ID OP_AS expresion {printf("    ID = Expresion es ASIGNACION\n");}
+          |ID OP_AS CADENA {printf("    ID = CADENA es ASIGNACION\n");}
 	  ;
 
 expresion:
@@ -46,6 +53,7 @@ termino:
 factor: 
       ID {printf("    ID es Factor \n");}
       | CTE {printf("    CTE es Factor\n");}
+      | FLOT {printf("    FLOT es Factor\n");}
 	| PA expresion PC {printf("    Expresion entre parentesis es Factor\n");}
      	;
 %%
