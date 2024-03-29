@@ -23,17 +23,24 @@ BLANCO          [ \t\n\r]
 
 CTE		        {DIGITO}+
 FLOT            ({DIGITO}*"."{DIGITO}+|{DIGITO}+"."{DIGITO}*)
-ID			{LETRA}({LETRA}|{DIGITO})*
+ID			    {LETRA}({LETRA}|{DIGITO})*
 CADENA          {COMILLA}{ASCI}*{COMILLA}
+COMENT          "*-"{ASCI}*"-*"
 OP_AS   		":""="
 OP_SUM		        "+"
 OP_MUL                  "*"
 OP_RES		        "-"
 OP_DIV                  "/"
+OP_MENOR         "<"
+OP_MAYOR         ">"
 PA			"("
 PC			")"
+LA          "{"
+LC          "}"
 
 %%
+
+si {printf("\nSi: %s\n", yytext);return SI;}
 
 {CTE}			{printf("\nConstante: %s\n", yytext);return CTE;}
 {FLOT}			{printf("\nFlotante: %s\n", yytext);return FLOT;}
@@ -44,9 +51,14 @@ PC			")"
 {OP_MUL}		{printf("\nMultiplicacion: %s\n", yytext);return OP_MUL;}
 {OP_RES}		{printf("\nResta: %s\n", yytext);return OP_RES;}
 {OP_DIV}		{printf("\nDivision: %s\n", yytext);return OP_DIV;}
+{OP_MAYOR}		{printf("\nMayor: %s\n", yytext);return OP_MENOR;}
+{OP_MENOR}		{printf("\nMenor: %s\n", yytext);return OP_MAYOR;}
 {PA}			{printf("\nParAbre: %s\n", yytext);return PA;}
 {PC}			{printf("\nParCierra: %s\n", yytext);return PC;}
+{LA}			{printf("\nLLaveAbre: %s\n", yytext);return LA;}
+{LC}			{printf("\nLLaveCierra: %s\n", yytext);return LC;}
 {BLANCO}
+{COMENT}        {printf("\nComentario: %s\n", yytext);}
 .			 { printf( "ERROR LEXICO : Caracter no reconocido: %s\n", yytext ); exit (0);}
 
 

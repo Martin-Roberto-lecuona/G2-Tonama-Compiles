@@ -2,7 +2,7 @@
 flex Lexico.l
 bison -dyv Sintactico.y
 gcc lex.yy.c y.tab.c -o compilador
-./compilador ./ejemplos/assignments.txt
+./compilador ./ejemplos/if.txt
 rm lex.yy.c
 rm y.tab.c
 rm y.output
