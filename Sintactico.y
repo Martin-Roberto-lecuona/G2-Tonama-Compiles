@@ -66,7 +66,7 @@ adicional:
 	;
 
 condicion_sino:
-	| SINO LA sentencia LC {printf(" FIN SINO\n");}
+	| SINO LA programa LC {printf(" FIN SINO\n");}
 	;
 
 asignacion:
