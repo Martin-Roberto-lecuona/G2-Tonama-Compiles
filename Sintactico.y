@@ -6,11 +6,8 @@
 #include "y.tab.h"
 int yystopparser=0;
 FILE  *yyin;
-
   int yyerror();
   int yylex();
-
-
 %}
 
 %token CTE
@@ -25,66 +22,100 @@ FILE  *yyin;
 %token PC
 %token CADENA
 %token SI
+%token MIENTRAS
+%token SINO
 %token OP_MAYOR
 %token OP_MENOR
 %token LA
 %token LC
+%token ESCRIBIR
+%token LEER
+%token OR
+%token AND
+%token NOT
+%token INIT
+%token DP
+%token TDD
+%token COMA
 
 %%
 programa:
-  sentencia {printf(" FIN\n");};
-sentencia:  	   
-	asignacion
-  | sentencia asignacion
-  | comparacion LA sentencia LC {printf(" FIN SI\n");};
-  ;
+	sentencia {printf(" FIN\n");}
+	| sentencia programa
+	;
 
-asignacion: 
-          ID OP_AS expresion {printf("    ID = Expresion es ASIGNACION\n");}
-          |ID OP_AS CADENA {printf("    ID = CADENA es ASIGNACION\n");}
-	  ;
+sentencia:
+	asignacion
+	| comparacion LA programa LC condicion_sino {printf(" FIN SI\n");}
+	| ESCRIBIR PA CADENA PC
+	| ESCRIBIR PA ID PC
+	| LEER PA ID PC
+	| INIT LA declaraciones LC
+	;
+
+declaraciones:
+	| variables DP TDD declaraciones
+	;
+
+variables:
+	| ID adicional
+	;
+
+adicional:
+	| COMA ID adicional
+	;
+
+condicion_sino:
+	| SINO LA programa LC {printf(" FIN SINO\n");}
+	;
+
+asignacion:
+	ID OP_AS expresion {printf("    ID = Expresion es ASIGNACION\n");}
+	|ID OP_AS CADENA {printf("    ID = CADENA es ASIGNACION\n");}
+	;
 
 pr_con_comparacion:
-  SI
+	SI
+	| MIENTRAS
+	;
 
 comparacion:
-  pr_con_comparacion PA expresion_comparacion PC {printf("comparacion");}
- 
+	pr_con_comparacion PA operacion_negacion expresion_comparacion PC {printf("comparacion");}
+	;
+operacion_negacion:
+	| NOT
+	;
 expresion_comparacion:
-  |expresion_comparacion operacion_comparacion factor_comparacion {printf("exprecion operacion factor");}
-  |factor_comparacion {printf("exprecion es factor");}
-  ;
-
-factor_comparacion:
-  ID {printf("    ID es Factor \n");}
-      | CTE {printf("    CTE es Factor\n");}
-      | FLOT {printf("    FLOT es Factor\n");}
-      | expresion_comparacion {printf("factor_comparacion es Factor\n");}
-      ;
+	|expresion_comparacion operacion_comparacion factor {printf("exprecion operacion factor");}
+	|factor {printf("factor es expresion_comparacion");}
+	;
 
 operacion_comparacion:
-    OP_MAYOR 
-    | OP_MENOR
-    ;
+	OP_MAYOR
+	| OP_MENOR
+	| AND
+	| OR
+	;
 
 expresion:
-         termino {printf("    Termino es Expresion\n");}
-	 |expresion OP_SUM termino {printf("    Expresion+Termino es Expresion\n");}
-	 |expresion OP_RES termino {printf("    Expresion-Termino es Expresion\n");}
-	 ;
+	termino {printf("Termino es Expresion\n");}
+	|expresion OP_SUM termino {printf("Expresion+Termino es Expresion\n");}
+	|expresion OP_RES termino {printf("Expresion-Termino es Expresion\n");}
+	;
 
-termino: 
-       factor {printf("    Factor es Termino\n");}
-       |termino OP_MUL factor {printf("     Termino*Factor es Termino\n");}
-       |termino OP_DIV factor {printf("     Termino/Factor es Termino\n");}
-       ;
+termino:
+	factor {printf("Factor es Termino\n");}
+	|termino OP_MUL factor {printf("Termino*Factor es Termino\n");}
+	|termino OP_DIV factor {printf("Termino/Factor es Termino\n");}
+	;
 
-factor: 
-      ID {printf("    ID es Factor \n");}
-      | CTE {printf("    CTE es Factor\n");}
-      | FLOT {printf("    FLOT es Factor\n");}
-	| PA expresion PC {printf("    Expresion entre parentesis es Factor\n");}
-     	;
+factor:
+	ID {printf("    ID es Factor \n");}
+	| CTE {printf("    CTE es Factor\n");}
+	| FLOT {printf("    FLOT es Factor\n");}
+	| PA expresion PC {printf("Expresion entre parentesis es Factor\n");}
+	;
+
 %%
 
 
