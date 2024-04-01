@@ -21,16 +21,20 @@ COMILLA_I    [“]
 COMILLA_D    [”]
 COMENT_I    "*-"
 COMENT_D    "-*"
-ASCII        [,.áéíóú0-9a-zA-Z_!"#$%&/()=@“” \t\n\r]
+
+ASCII        [,.áéíóú0-9a-zA-Z_!"#$%&/(){}=@“”:+/><? \t]
+ASCII_PM     [,.áéíóú0-9a-zA-Z_!"#$%&/(){}=@“”:+/><*\- \t]
 BLANCO      [ \t\n\r]
+CRLF        [\n\r]
 COMA        [,]
 
 CTE		    {DIGITO}+
 FLOT        ({DIGITO}*"."{DIGITO}+|{DIGITO}+"."{DIGITO}*)
 ID			{LETRA}({LETRA}|{DIGITO})*
-CADENA      {COMILLA}{ASCII}*{COMILLA}
-CADENAID    {COMILLA_I}{ASCII}*{COMILLA_D}
-COMENT      {COMENT_I}({ASCII}|{COMENT_I}|{COMENT_D})*{COMENT_D}
+CADENA      {COMILLA}{ASCII_PM}*{COMILLA}
+CADENAID    {COMILLA_I}{ASCII_PM}*{COMILLA_D}
+
+COMENT      ({COMENT_I}({ASCII}|{BLANCO}|{COMILLA})*{COMENT_D})
 
 OP_ASIG   	":""="
 OP_SUMA		"+"

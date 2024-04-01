@@ -70,9 +70,3 @@ mientras (a > b)
 *- write.txt -*
 escribir(“ewr”)  *- “ewr” es una cte string -*
 escribir(var1)  *- var1 es una variable numérica definida previamente -*
-
-*- commAnidado.txt -*
-a:=1
-*- padre
-    *- hijo -*
--*

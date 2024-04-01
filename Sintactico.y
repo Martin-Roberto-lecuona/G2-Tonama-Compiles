@@ -41,13 +41,14 @@ FILE  *yyin;
 
 %%
 programa:
-	sentencia {printf(" FIN\n");}
+	sentencia {printf(" FIN sentencia\n");}
 	| sentencia programa
 	;
 
 sentencia:
 	asignacion
 	| comparacion LLAVE_I programa LLAVE_D condicion_sino {printf(" FIN SI\n");}
+	| ciclo LLAVE_I programa LLAVE_D {printf(" FIN MIENTRAS\n");}
 	| ESCRIBIR PARENTE_I CADENA PARENTE_D
 	| ESCRIBIR PARENTE_I ID PARENTE_D
 	| LEER PARENTE_I ID PARENTE_D
@@ -75,29 +76,33 @@ asignacion:
 	|ID OP_ASIG CADENA {printf("    ID = CADENA es ASIGNACION\n");}
 	;
 
-pr_con_comparacion:
-	SI
-	| MIENTRAS
+comparacion:
+	SI PARENTE_I operacion_negacion expresion_comparacion PARENTE_D {printf("comparacion");}
 	;
 
-comparacion:
-	pr_con_comparacion PARENTE_I operacion_negacion expresion_comparacion PARENTE_D {printf("comparacion");}
-	;
+ciclo:
+	MIENTRAS PARENTE_I operacion_negacion expresion_comparacion PARENTE_D {printf("mientras ciclo");}
+
 operacion_negacion:
 	| NOT
 	;
+
+	
 expresion_comparacion:
 	|expresion_comparacion operacion_comparacion factor {printf("exprecion operacion factor");}
+	|expresion_comparacion condicion_comparacion expresion_comparacion{printf("exprecion operacion factor");}
 	|factor {printf("factor es expresion_comparacion");}
 	;
 
 operacion_comparacion:
 	OP_MAYOR
 	| OP_MENOR
-	| AND
+	;
+	
+condicion_comparacion:
+	AND
 	| OR
 	;
-
 expresion:
 	termino {printf("Termino es Expresion\n");}
 	|expresion OP_SUMA termino {printf("Expresion+Termino es Expresion\n");}

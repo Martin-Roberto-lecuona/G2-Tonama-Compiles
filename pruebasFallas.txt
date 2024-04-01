@@ -1,0 +1,34 @@
+*- FALLAS -*
+*- 
+    a := 
+    si (a > b)
+    {
+        escribir("a es mas grande que b")
+    }
+    sino
+    {
+        escribir("a es mas chico o igual a b}")
+    sino
+    {
+        escribir("a ")
+    }
+    mientras (escribir("a "))
+    {
+        escribir("a ")
+    }
+-*
+
+*- deberia funcionar ?
+    comentarios anidados dudas
+    a AND b
+    NOT a>b AND NOT b>a
+    a>b AND NOT b>a
+    a AND b > a AND b 
+    (a>b) AND (b>a)
+-*
+
+mientras ((a>b) AND (b>a))
+{
+    escribir("a ")
+}
+
