@@ -38,6 +38,7 @@ FILE  *yyin;
 %token TIPO_DATO
 %token COMA
 
+
 %%
 programa:
 	sentencia {printf(" FIN\n");}
