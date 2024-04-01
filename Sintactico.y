@@ -13,29 +13,29 @@ FILE  *yyin;
 %token CTE
 %token FLOT
 %token ID
-%token OP_AS
-%token OP_SUM
-%token OP_MUL
-%token OP_RES
-%token OP_DIV
-%token PA
-%token PC
+%token OP_ASIG
+%token OP_SUMA
+%token OP_MULT
+%token OP_REST
+%token OP_DIVI
+%token PARENTE_I
+%token PARENTE_D
 %token CADENA
 %token SI
 %token MIENTRAS
 %token SINO
 %token OP_MAYOR
 %token OP_MENOR
-%token LA
-%token LC
+%token LLAVE_I
+%token LLAVE_D
 %token ESCRIBIR
 %token LEER
 %token OR
 %token AND
 %token NOT
 %token INIT
-%token DP
-%token TDD
+%token DOS_PUNT
+%token TIPO_DATO
 %token COMA
 
 %%
@@ -46,15 +46,15 @@ programa:
 
 sentencia:
 	asignacion
-	| comparacion LA programa LC condicion_sino {printf(" FIN SI\n");}
-	| ESCRIBIR PA CADENA PC
-	| ESCRIBIR PA ID PC
-	| LEER PA ID PC
-	| INIT LA declaraciones LC
+	| comparacion LLAVE_I programa LLAVE_D condicion_sino {printf(" FIN SI\n");}
+	| ESCRIBIR PARENTE_I CADENA PARENTE_D
+	| ESCRIBIR PARENTE_I ID PARENTE_D
+	| LEER PARENTE_I ID PARENTE_D
+	| INIT LLAVE_I declaraciones LLAVE_D
 	;
 
 declaraciones:
-	| variables DP TDD declaraciones
+	| variables DOS_PUNT TIPO_DATO declaraciones
 	;
 
 variables:
@@ -66,12 +66,12 @@ adicional:
 	;
 
 condicion_sino:
-	| SINO LA programa LC {printf(" FIN SINO\n");}
+	| SINO LLAVE_I programa LLAVE_D {printf(" FIN SINO\n");}
 	;
 
 asignacion:
-	ID OP_AS expresion {printf("    ID = Expresion es ASIGNACION\n");}
-	|ID OP_AS CADENA {printf("    ID = CADENA es ASIGNACION\n");}
+	ID OP_ASIG expresion {printf("    ID = Expresion es ASIGNACION\n");}
+	|ID OP_ASIG CADENA {printf("    ID = CADENA es ASIGNACION\n");}
 	;
 
 pr_con_comparacion:
@@ -80,7 +80,7 @@ pr_con_comparacion:
 	;
 
 comparacion:
-	pr_con_comparacion PA operacion_negacion expresion_comparacion PC {printf("comparacion");}
+	pr_con_comparacion PARENTE_I operacion_negacion expresion_comparacion PARENTE_D {printf("comparacion");}
 	;
 operacion_negacion:
 	| NOT
@@ -99,21 +99,21 @@ operacion_comparacion:
 
 expresion:
 	termino {printf("Termino es Expresion\n");}
-	|expresion OP_SUM termino {printf("Expresion+Termino es Expresion\n");}
-	|expresion OP_RES termino {printf("Expresion-Termino es Expresion\n");}
+	|expresion OP_SUMA termino {printf("Expresion+Termino es Expresion\n");}
+	|expresion OP_REST termino {printf("Expresion-Termino es Expresion\n");}
 	;
 
 termino:
 	factor {printf("Factor es Termino\n");}
-	|termino OP_MUL factor {printf("Termino*Factor es Termino\n");}
-	|termino OP_DIV factor {printf("Termino/Factor es Termino\n");}
+	|termino OP_MULT factor {printf("Termino*Factor es Termino\n");}
+	|termino OP_DIVI factor {printf("Termino/Factor es Termino\n");}
 	;
 
 factor:
 	ID {printf("    ID es Factor \n");}
 	| CTE {printf("    CTE es Factor\n");}
 	| FLOT {printf("    FLOT es Factor\n");}
-	| PA expresion PC {printf("Expresion entre parentesis es Factor\n");}
+	| PARENTE_I expresion PARENTE_D {printf("Expresion entre parentesis es Factor\n");}
 	;
 
 %%
