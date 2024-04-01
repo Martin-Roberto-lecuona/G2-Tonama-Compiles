@@ -1,42 +1,48 @@
-// Usa Lexico_ClasePractica
+// Usa Lexico_CLLAVE_AsePractica
 //Solo expresiones sin ()
 %{
 #include <stdio.h>
 #include <stdlib.h>
 #include "y.tab.h"
-int yystopparser=0;
+int yystopPARENTE_Arser=0;
 FILE  *yyin;
   int yyerror();
   int yylex();
 %}
 
+%token TIPO_DATO
+
+%token AND
+%token OR
+%token NOT
+
+%token ESCRIBIR
+%token LEER
+%token INIT
+%token SI
+%token SINO
+%token MIENTRAS
+
+%token COMA
 %token CTE
 %token FLOT
 %token ID
-%token OP_AS
-%token OP_SUM
-%token OP_MUL
-%token OP_RES
-%token OP_DIV
-%token PA
-%token PC
 %token CADENA
-%token SI
-%token MIENTRAS
-%token SINO
+
+%token OP_ASIG
+%token OP_SUMA
+%token OP_MULT
+%token OP_REST
+%token OP_DIVI
 %token OP_MAYOR
 %token OP_MENOR
-%token LA
-%token LC
-%token ESCRIBIR
-%token LEER
-%token OR
-%token AND
-%token NOT
-%token INIT
-%token DP
-%token TDD
-%token COMA
+
+%token PARENTE_A
+%token PARENTE_C
+%token LLAVE_A
+%token LLAVE_C
+%token DOSPUNTOS
+
 
 %%
 programa:
@@ -46,15 +52,15 @@ programa:
 
 sentencia:
 	asignacion
-	| comparacion LA programa LC condicion_sino {printf(" FIN SI\n");}
-	| ESCRIBIR PA CADENA PC
-	| ESCRIBIR PA ID PC
-	| LEER PA ID PC
-	| INIT LA declaraciones LC
+	| comPARENTE_Aracion LLAVE_A programa LLAVE_C condicion_sino {printf(" FIN SI\n");}
+	| ESCRIBIR PARENTE_A CADENA PARENTE_C
+	| ESCRIBIR PARENTE_A ID PARENTE_C
+	| LEER PARENTE_A ID PARENTE_C
+	| INIT LLAVE_A decLLAVE_Araciones LLAVE_C
 	;
 
-declaraciones:
-	| variables DP TDD declaraciones
+decLLAVE_Araciones:
+	| variables DOSPUNTOS TIPO_DATO decLLAVE_Araciones
 	;
 
 variables:
@@ -66,31 +72,31 @@ adicional:
 	;
 
 condicion_sino:
-	| SINO LA programa LC {printf(" FIN SINO\n");}
+	| SINO LLAVE_A programa LLAVE_C {printf(" FIN SINO\n");}
 	;
 
 asignacion:
-	ID OP_AS expresion {printf("    ID = Expresion es ASIGNACION\n");}
-	|ID OP_AS CADENA {printf("    ID = CADENA es ASIGNACION\n");}
+	ID OP_ASIG expresion {printf("    ID = Expresion es ASIGNACION\n");}
+	|ID OP_ASIG CADENA {printf("    ID = CADENA es ASIGNACION\n");}
 	;
 
-pr_con_comparacion:
+pr_con_comPARENTE_Aracion:
 	SI
 	| MIENTRAS
 	;
 
-comparacion:
-	pr_con_comparacion PA operacion_negacion expresion_comparacion PC {printf("comparacion");}
+comPARENTE_Aracion:
+	pr_con_comPARENTE_Aracion PARENTE_A operacion_negacion expresion_comPARENTE_Aracion PARENTE_C {printf("comPARENTE_Aracion");}
 	;
 operacion_negacion:
 	| NOT
 	;
-expresion_comparacion:
-	|expresion_comparacion operacion_comparacion factor {printf("exprecion operacion factor");}
-	|factor {printf("factor es expresion_comparacion");}
+expresion_comPARENTE_Aracion:
+	|expresion_comPARENTE_Aracion operacion_comPARENTE_Aracion factor {printf("exprecion operacion factor");}
+	|factor {printf("factor es expresion_comPARENTE_Aracion");}
 	;
 
-operacion_comparacion:
+operacion_comPARENTE_Aracion:
 	OP_MAYOR
 	| OP_MENOR
 	| AND
@@ -99,21 +105,21 @@ operacion_comparacion:
 
 expresion:
 	termino {printf("Termino es Expresion\n");}
-	|expresion OP_SUM termino {printf("Expresion+Termino es Expresion\n");}
-	|expresion OP_RES termino {printf("Expresion-Termino es Expresion\n");}
+	|expresion OP_SUMA termino {printf("Expresion+Termino es Expresion\n");}
+	|expresion OP_REST termino {printf("Expresion-Termino es Expresion\n");}
 	;
 
 termino:
 	factor {printf("Factor es Termino\n");}
-	|termino OP_MUL factor {printf("Termino*Factor es Termino\n");}
-	|termino OP_DIV factor {printf("Termino/Factor es Termino\n");}
+	|termino OP_MULT factor {printf("Termino*Factor es Termino\n");}
+	|termino OP_DIVI factor {printf("Termino/Factor es Termino\n");}
 	;
 
 factor:
 	ID {printf("    ID es Factor \n");}
 	| CTE {printf("    CTE es Factor\n");}
 	| FLOT {printf("    FLOT es Factor\n");}
-	| PA expresion PC {printf("Expresion entre parentesis es Factor\n");}
+	| PARENTE_A expresion PARENTE_C {printf("Expresion entre PARENTE_Arentesis es Factor\n");}
 	;
 
 %%
@@ -129,7 +135,7 @@ int main(int argc, char *argv[])
     else
     { 
         
-        yyparse();
+        yyPARENTE_Arse();
         
     }
 	fclose(yyin);
