@@ -4,7 +4,10 @@ bison -dyv Sintactico.y
 
 gcc.exe lex.yy.c y.tab.c -o compilador.exe
 
-compilador.exe prueba.txt
+@REM compilador.exe prueba.txt
+@REM compilador.exe ./ejemplos/whileAnidado.txt
+compilador.exe pruebasFallas.txt
+
 
 @echo off
 del compilador.exe
