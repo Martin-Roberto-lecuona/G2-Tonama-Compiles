@@ -22,8 +22,8 @@ COMILLA_D    [”]
 COMENT_I    "*-"
 COMENT_D    "-*"
 
-ASCII        [,.áéíóú0-9a-zA-Z_!"#$%&/(){}=@“”:+/><? \t]
-ASCII_PM     [,.áéíóú0-9a-zA-Z_!"#$%&/(){}=@“”:+/><*\- \t]
+ASCII_COMENT     [,.áéíóú0-9a-zA-Z_!"#$%&/(){}=@“”:+/><? \t]
+ASCII_CADENA     [,.áéíóú0-9a-zA-Z_!#$%&/(){}=@:+/><*\- \t]
 BLANCO      [ \t\n\r]
 CRLF        [\n\r]
 COMA        [,]
@@ -31,10 +31,10 @@ COMA        [,]
 CTE		    {DIGITO}+
 FLOT        ({DIGITO}*"."{DIGITO}+|{DIGITO}+"."{DIGITO}*)
 ID			{LETRA}({LETRA}|{DIGITO})*
-CADENA      {COMILLA}{ASCII_PM}*{COMILLA}
-CADENAID    {COMILLA_I}{ASCII_PM}*{COMILLA_D}
+CADENA      {COMILLA}{ASCII_CADENA}*{COMILLA}
+CADENAID    {COMILLA_I}{ASCII_CADENA}*{COMILLA_D}
 
-COMENT      ({COMENT_I}({ASCII}|{BLANCO}|{COMILLA})*{COMENT_D})
+COMENT      ({COMENT_I}({ASCII_COMENT})*{COMENT_D})
 
 OP_ASIG   	":""="
 OP_SUMA		"+"
@@ -66,8 +66,7 @@ sino                    {printf("\nSino: %s\n", yytext);return SINO;}
 {CTE}			        {printf("\nConstante: %s\n", yytext);return CTE;}
 {FLOT}			        {printf("\nFlotante: %s\n", yytext);return FLOT;}
 {ID}			        {printf("\nIdentificador: %s\n", yytext);return ID;}
-{CADENA}		        {printf("\nCADENA: %s\n", yytext);return CADENA;}
-{CADENAID}		        {printf("\nCADENA: %s\n", yytext);return CADENA;}
+{CADENA}|{CADENAID}		{printf("\nCADENA: %s\n", yytext);return CADENA;}
 {OP_SUMA}		        {printf("\nSuma: %s\n", yytext);return OP_SUMA;}
 {OP_ASIG}			        {printf("\nAsignacion: %s\n", yytext);return OP_ASIG;}
 {OP_MULT}		        {printf("\nMultiplicacion: %s\n", yytext);return OP_MULT;}
