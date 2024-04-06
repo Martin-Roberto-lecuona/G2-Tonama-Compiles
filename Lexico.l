@@ -59,7 +59,7 @@ escribir                {printf("\nEscribir : %s\n", yytext);return ESCRIBIR;}
 leer                    {printf("\nEscribir : %s\n", yytext);return LEER;}
 init                    {printf("\nInit : %s\n", yytext);return INIT;}
 "si"|"if"               {printf("\nSi: %s\n", yytext);return SI;}
-mientras                {printf("\nMientras: %s\n", yytext);return MIENTRAS;}
+"mientras"|"while"      {printf("\nMientras: %s\n", yytext);return MIENTRAS;}
 sino                    {printf("\nSino: %s\n", yytext);return SINO;}
 
 {COMA}                  {printf("\nComa: %s\n", yytext);return COMA;}

@@ -42,7 +42,7 @@ FILE  *yyin;
 %%
 programa:
 	sentencia {printf(" FIN programa\n");}
-	| programa sentencia {printf(" FIN programa\n");}
+	| programa sentencia {printf(" programa sentencia es PROGRAMA\n");}
 	;
 
 sentencia:
@@ -61,11 +61,11 @@ asignacion:
 	;
 
 seleccion:
-	SI PARENTE_I condicion PARENTE_D LLAVE_I programa LLAVE_D SINO LLAVE_I programa LLAVE_D {printf("SI condicion programa sino programa = seleccion\n");}
-	| SI PARENTE_I condicion PARENTE_D LLAVE_I programa LLAVE_D {printf("SI condicion programa = seleccion\n");}
+	SI PARENTE_I condicion PARENTE_D LLAVE_I programa LLAVE_D SINO LLAVE_I programa LLAVE_D {printf("SI (condicion) programa sino programa = seleccion\n");}
+	| SI PARENTE_I condicion PARENTE_D LLAVE_I programa LLAVE_D {printf("SI (condicion) programa = seleccion\n");}
 	;
 iteracion:
-	MIENTRAS PARENTE_I condicion PARENTE_D LLAVE_I programa LLAVE_D {printf("mientras condicion programa = iteracion\n");}
+	MIENTRAS PARENTE_I condicion PARENTE_D LLAVE_I programa LLAVE_D {printf("mientras (condicion) programa = iteracion\n");}
 	;
 compuertas:
 	AND
@@ -79,7 +79,6 @@ comparador:
 condicion:
 	comparacion {printf("comparacion = condicion\n");}
 	|PARENTE_I condicion PARENTE_D {printf("(condicion) = condicion\n");}
-	|condicion compuertas comparacion {printf("condicion compuerta comparacion = condicion\n");}
 	|condicion compuertas comparacion {printf("condicion compuerta comparacion = condicion\n");}
 	;
 comparacion:
@@ -105,7 +104,7 @@ factor:
 	ID {printf("    ID es Factor \n");}
 	| CTE {printf("    CTE es Factor\n");}
 	| FLOT {printf("    FLOT es Factor\n");}
-	| PARENTE_I expresion PARENTE_D {printf("Expresion entre parentesis es Factor\n");}
+	| PARENTE_I expresion PARENTE_D {printf("(Expresion) es Factor\n");}
 	;
 declaraciones:
 	| variables DOS_PUNT TIPO_DATO declaraciones
