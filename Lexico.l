@@ -43,6 +43,9 @@ OP_REST		"-"
 OP_DIVI      "/"
 OP_MENOR    "<"
 OP_MAYOR    ">"
+OP_MENOR_IGUAL ">="
+OP_MAYOR_IGUAL "<="
+OP_IGUAL      "=="
 PARENTE_I			"("
 PARENTE_D			")"
 LLAVE_I          "{"
@@ -74,6 +77,9 @@ sino                    {printf("\nSino: %s\n", yytext);return SINO;}
 {OP_DIVI}		        {printf("\nDivision: %s\n", yytext);return OP_DIVI;}
 {OP_MAYOR}		        {printf("\nMayor: %s\n", yytext);return OP_MENOR;}
 {OP_MENOR}		        {printf("\nMenor: %s\n", yytext);return OP_MAYOR;}
+{OP_MAYOR_IGUAL}		        {printf("\nMayor igual: %s\n", yytext);return OP_MAYOR_IGUAL;}
+{OP_MENOR_IGUAL}		        {printf("\nMenor igual: %s\n", yytext);return OP_MENOR_IGUAL;}
+{OP_IGUAL}		        {printf("\nIgual: %s\n", yytext);return OP_IGUAL;}
 {PARENTE_I}			        {printf("\nParAbre: %s\n", yytext);return PARENTE_I;}
 {PARENTE_D}			        {printf("\nParCierra: %s\n", yytext);return PARENTE_D;}
 {LLAVE_I}			        {printf("\nLLaveAbre: %s\n", yytext);return LLAVE_I;}

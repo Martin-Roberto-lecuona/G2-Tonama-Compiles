@@ -26,6 +26,9 @@ FILE  *yyin;
 %token SINO
 %token OP_MAYOR
 %token OP_MENOR
+%token OP_MAYOR_IGUAL
+%token OP_MENOR_IGUAL
+%token OP_IGUAL
 %token LLAVE_I
 %token LLAVE_D
 %token ESCRIBIR
@@ -74,6 +77,9 @@ compuertas:
 comparador:
 	OP_MAYOR
 	| OP_MENOR
+	| OP_MAYOR_IGUAL
+	| OP_MENOR_IGUAL
+	| OP_IGUAL
 	;
 
 condicion:
