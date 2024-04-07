@@ -84,7 +84,6 @@ comparador:
 
 condicion:
 	comparacion {printf("comparacion = condicion\n");}
-	|PARENTE_I condicion PARENTE_D {printf("(condicion) = condicion\n");}
 	|condicion compuertas comparacion {printf("condicion compuerta comparacion = condicion\n");}
 	;
 comparacion:
@@ -110,7 +109,6 @@ factor:
 	ID {printf("    ID es Factor \n");}
 	| CTE {printf("    CTE es Factor\n");}
 	| FLOT {printf("    FLOT es Factor\n");}
-	| PARENTE_I expresion PARENTE_D {printf("(Expresion) es Factor\n");}
 	;
 declaraciones:
 	| variables DOS_PUNT TIPO_DATO declaraciones
