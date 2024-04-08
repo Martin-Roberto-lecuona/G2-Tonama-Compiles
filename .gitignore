@@ -66,3 +66,6 @@ compilador
 
 ### vscode
 .vscode/
+
+### Resultado
+./resultado.txt
