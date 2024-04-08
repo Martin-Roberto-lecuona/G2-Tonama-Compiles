@@ -128,3 +128,7 @@ sino
     a := a + 1
 }
 
+*- Comentario
+    hijo
+    2 * 3 - 1  
+-*

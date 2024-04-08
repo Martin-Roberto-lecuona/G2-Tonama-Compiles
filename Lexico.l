@@ -22,7 +22,7 @@ COMILLA_D    [”]
 COMENT_I    "*-"
 COMENT_D    "-*"
 
-ASCII_COMENT     [,.áéíóú0-9a-zA-Z_!"#$%&/(){}=@“”:+/><? \t]
+ASCII_COMENT     [,.áéíóú0-9a-zA-Z_!"#$%&/(){}=@“”:+/><? \t\n\r]
 ASCII_CADENA     [,.áéíóú0-9a-zA-Z_!#$%&/(){}=@:+/><*\- \t]
 BLANCO      [ \t\n\r]
 CRLF        [\n\r]
@@ -31,9 +31,6 @@ COMA        [,]
 CTE		    {DIGITO}+
 FLOT        ({DIGITO}*"."{DIGITO}+|{DIGITO}+"."{DIGITO}*)
 ID			{LETRA}({LETRA}|{DIGITO})*
-CADENA      {COMILLA}{ASCII_CADENA}*{COMILLA}
-CADENAID    {COMILLA_I}{ASCII_CADENA}*{COMILLA_D}
-
 COMENT      ({COMENT_I}({ASCII_COMENT})*{COMENT_D})
 
 OP_ASIG   	":""="
@@ -69,7 +66,7 @@ sino                    {printf("\nSino: %s\n", yytext);return SINO;}
 {CTE}			        {printf("\nConstante: %s\n", yytext);return CTE;}
 {FLOT}			        {printf("\nFlotante: %s\n", yytext);return FLOT;}
 {ID}			        {printf("\nIdentificador: %s\n", yytext);return ID;}
-{CADENA}|{CADENAID}		{printf("\nCADENA: %s\n", yytext);return CADENA;}
+{COMILLA}.*{COMILLA}|{COMILLA_I}.*{COMILLA_D}		{printf("\nCADENA: %s\n", yytext);return CADENA;}
 {OP_SUMA}		        {printf("\nSuma: %s\n", yytext);return OP_SUMA;}
 {OP_ASIG}			        {printf("\nAsignacion: %s\n", yytext);return OP_ASIG;}
 {OP_MULT}		        {printf("\nMultiplicacion: %s\n", yytext);return OP_MULT;}
@@ -86,7 +83,7 @@ sino                    {printf("\nSino: %s\n", yytext);return SINO;}
 {LLAVE_D}			        {printf("\nLLaveCierra: %s\n", yytext);return LLAVE_D;}
 {DOS_PUNT}                    {printf("\nDos puntos: %s\n", yytext);return DOS_PUNT;}
 {BLANCO}
-{COMENT}                {printf("\nComentario: %s\n", yytext);}
+{COMENT}             {printf("\nComentario: %s\n", yytext);}
 .			            { printf( "ERROR LEXICO : Caracter no reconocido: %s\n", yytext ); exit (0);}
 
 
