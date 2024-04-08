@@ -1,0 +1,1096 @@
+
+Comentario: *- and.txt -*
+
+Identificador: a
+
+Asignacion: :=
+
+Constante: 1
+    CTE es Factor
+Factor es Termino
+
+Identificador: b
+Termino es Expresion
+    ID = Expresion es ASIGNACION
+ FIN programa
+
+Asignacion: :=
+
+Constante: 1
+    CTE es Factor
+Factor es Termino
+
+Identificador: c
+Termino es Expresion
+    ID = Expresion es ASIGNACION
+ programa sentencia es PROGRAMA
+
+Asignacion: :=
+
+Constante: 2
+    CTE es Factor
+Factor es Termino
+
+Si: if
+Termino es Expresion
+    ID = Expresion es ASIGNACION
+ programa sentencia es PROGRAMA
+
+ParAbre: (
+
+Identificador: a
+    ID es Factor 
+
+Mayor: >
+Factor es Termino
+Termino es Expresion
+
+Identificador: b
+    ID es Factor 
+Factor es Termino
+
+Comparacion AND : AND
+Termino es Expresion
+expresion comparador expresion = comparacion
+comparacion = condicion
+
+Identificador: c
+    ID es Factor 
+
+Mayor: >
+Factor es Termino
+Termino es Expresion
+
+Identificador: b
+    ID es Factor 
+Factor es Termino
+
+ParCierra: )
+Termino es Expresion
+expresion comparador expresion = comparacion
+condicion compuerta comparacion = condicion
+
+LLaveAbre: {
+
+Escribir : escribir
+
+ParAbre: (
+
+CADENA: "a es mas grande que b y c es mas grande que b"
+
+ParCierra: )
+ FIN programa
+
+LLaveCierra: }
+
+Comentario: *- assignments.txt -*
+
+Identificador: a
+SI (condicion) programa = seleccion
+ programa sentencia es PROGRAMA
+
+Asignacion: :=
+
+Flotante: 99999.99
+    FLOT es Factor
+Factor es Termino
+
+Identificador: a
+Termino es Expresion
+    ID = Expresion es ASIGNACION
+ programa sentencia es PROGRAMA
+
+Asignacion: :=
+
+Flotante: 99.
+    FLOT es Factor
+Factor es Termino
+
+Identificador: a
+Termino es Expresion
+    ID = Expresion es ASIGNACION
+ programa sentencia es PROGRAMA
+
+Asignacion: :=
+
+Flotante: .9999
+    FLOT es Factor
+Factor es Termino
+
+Identificador: b
+Termino es Expresion
+    ID = Expresion es ASIGNACION
+ programa sentencia es PROGRAMA
+
+Asignacion: :=
+
+CADENA: "@sdADaSjfla%dfg"
+    ID = CADENA es ASIGNACION
+ programa sentencia es PROGRAMA
+
+Identificador: b
+
+Asignacion: :=
+
+CADENA: "asldk  fh sjf"
+    ID = CADENA es ASIGNACION
+ programa sentencia es PROGRAMA
+
+Comentario: *- if.txt -*
+
+Si: si
+
+ParAbre: (
+
+Identificador: a
+    ID es Factor 
+
+Mayor: >
+Factor es Termino
+Termino es Expresion
+
+Identificador: b
+    ID es Factor 
+Factor es Termino
+
+ParCierra: )
+Termino es Expresion
+expresion comparador expresion = comparacion
+comparacion = condicion
+
+LLaveAbre: {
+
+Escribir : escribir
+
+ParAbre: (
+
+CADENA: "a es mas grande que b"
+
+ParCierra: )
+ FIN programa
+
+LLaveCierra: }
+
+Sino: sino
+
+LLaveAbre: {
+
+Escribir : escribir
+
+ParAbre: (
+
+CADENA: "a es mas chico o igual a b"
+
+ParCierra: )
+ FIN programa
+
+LLaveCierra: }
+SI (condicion) programa sino programa = seleccion
+ programa sentencia es PROGRAMA
+
+Comentario: *- init.txt -*
+
+Init : init
+
+LLaveAbre: {
+
+Identificador: a1
+
+Coma: ,
+
+Identificador: b1
+
+Dos puntos: :
+
+Tipo de dato : Float
+
+Identificador: variable1
+
+Dos puntos: :
+
+Tipo de dato : Int
+
+Identificador: p1
+
+Coma: ,
+
+Identificador: p2
+
+Coma: ,
+
+Identificador: p3
+
+Dos puntos: :
+
+Tipo de dato : String
+
+LLaveCierra: }
+ programa sentencia es PROGRAMA
+
+Comentario: *- not.txt -*
+
+Identificador: a
+
+Asignacion: :=
+
+Constante: 1
+    CTE es Factor
+Factor es Termino
+
+Identificador: b
+Termino es Expresion
+    ID = Expresion es ASIGNACION
+ programa sentencia es PROGRAMA
+
+Asignacion: :=
+
+Constante: 1
+    CTE es Factor
+Factor es Termino
+
+Identificador: c
+Termino es Expresion
+    ID = Expresion es ASIGNACION
+ programa sentencia es PROGRAMA
+
+Asignacion: :=
+
+Constante: 2
+    CTE es Factor
+Factor es Termino
+
+Si: if
+Termino es Expresion
+    ID = Expresion es ASIGNACION
+ programa sentencia es PROGRAMA
+
+ParAbre: (
+
+Negacion NOT : NOT
+
+Identificador: a
+    ID es Factor 
+
+Mayor: >
+Factor es Termino
+Termino es Expresion
+
+Identificador: b
+    ID es Factor 
+Factor es Termino
+
+ParCierra: )
+Termino es Expresion
+expresion comparador expresion = comparacion
+NOT comparacion = comparacion
+comparacion = condicion
+
+LLaveAbre: {
+
+Escribir : escribir
+
+ParAbre: (
+
+CADENA: "a no es mas grande que b"
+
+ParCierra: )
+ FIN programa
+
+LLaveCierra: }
+
+Comentario: *- or.txt -*
+
+Identificador: a
+SI (condicion) programa = seleccion
+ programa sentencia es PROGRAMA
+
+Asignacion: :=
+
+Constante: 1
+    CTE es Factor
+Factor es Termino
+
+Identificador: b
+Termino es Expresion
+    ID = Expresion es ASIGNACION
+ programa sentencia es PROGRAMA
+
+Asignacion: :=
+
+Constante: 1
+    CTE es Factor
+Factor es Termino
+
+Identificador: c
+Termino es Expresion
+    ID = Expresion es ASIGNACION
+ programa sentencia es PROGRAMA
+
+Asignacion: :=
+
+Constante: 2
+    CTE es Factor
+Factor es Termino
+
+Si: if
+Termino es Expresion
+    ID = Expresion es ASIGNACION
+ programa sentencia es PROGRAMA
+
+ParAbre: (
+
+Identificador: a
+    ID es Factor 
+
+Mayor: >
+Factor es Termino
+Termino es Expresion
+
+Identificador: b
+    ID es Factor 
+Factor es Termino
+
+Comparacion OR : OR
+Termino es Expresion
+expresion comparador expresion = comparacion
+comparacion = condicion
+
+Identificador: c
+    ID es Factor 
+
+Mayor: >
+Factor es Termino
+Termino es Expresion
+
+Identificador: b
+    ID es Factor 
+Factor es Termino
+
+ParCierra: )
+Termino es Expresion
+expresion comparador expresion = comparacion
+condicion compuerta comparacion = condicion
+
+LLaveAbre: {
+
+Escribir : escribir
+
+ParAbre: (
+
+CADENA: "a es mas grande que b o c es mas grande que b"
+
+ParCierra: )
+ FIN programa
+
+LLaveCierra: }
+
+Comentario: *- read.txt -*
+
+Escribir : leer
+SI (condicion) programa = seleccion
+ programa sentencia es PROGRAMA
+
+ParAbre: (
+
+Identificador: base
+
+ParCierra: )
+ programa sentencia es PROGRAMA
+
+Comentario: *- base es una variable -*
+
+Comentario: *- while.txt -*
+
+Identificador: a
+
+Asignacion: :=
+
+Constante: 1
+    CTE es Factor
+Factor es Termino
+
+Identificador: b
+Termino es Expresion
+    ID = Expresion es ASIGNACION
+ programa sentencia es PROGRAMA
+
+Asignacion: :=
+
+Constante: 3
+    CTE es Factor
+Factor es Termino
+
+Mientras: mientras
+Termino es Expresion
+    ID = Expresion es ASIGNACION
+ programa sentencia es PROGRAMA
+
+ParAbre: (
+
+Identificador: a
+    ID es Factor 
+
+Mayor: >
+Factor es Termino
+Termino es Expresion
+
+Identificador: b
+    ID es Factor 
+Factor es Termino
+
+ParCierra: )
+Termino es Expresion
+expresion comparador expresion = comparacion
+comparacion = condicion
+
+LLaveAbre: {
+
+Escribir : escribir
+
+ParAbre: (
+
+CADENA: "a es mas grande que b"
+
+ParCierra: )
+ FIN programa
+
+Identificador: a
+
+Asignacion: :=
+
+Identificador: a
+    ID es Factor 
+Factor es Termino
+
+Suma: +
+Termino es Expresion
+
+Constante: 1
+    CTE es Factor
+Factor es Termino
+
+LLaveCierra: }
+Expresion+Termino es Expresion
+    ID = Expresion es ASIGNACION
+ programa sentencia es PROGRAMA
+mientras (condicion) programa = iteracion
+ programa sentencia es PROGRAMA
+
+Comentario: *- write.txt -*
+
+Escribir : escribir
+
+ParAbre: (
+
+CADENA: "ewr"
+
+ParCierra: )
+ programa sentencia es PROGRAMA
+
+Comentario: *- “ewr” es una cte string -*
+
+Escribir : escribir
+
+ParAbre: (
+
+Identificador: var1
+
+ParCierra: )
+ programa sentencia es PROGRAMA
+
+Comentario: *- var1 es una variable numérica definida previamente -*
+
+Comentario: *- Casos mas extremos -*
+
+Comentario: *- Condiciones -*
+
+Comentario: *- caso 1 -*
+
+Mientras: mientras
+
+ParAbre: (
+
+Identificador: a
+    ID es Factor 
+
+Comparacion AND : AND
+factor = comparacion
+comparacion = condicion
+
+Identificador: b
+    ID es Factor 
+
+ParCierra: )
+factor = comparacion
+condicion compuerta comparacion = condicion
+
+LLaveAbre: {
+
+Escribir : escribir
+
+ParAbre: (
+
+CADENA: "a "
+
+ParCierra: )
+ FIN programa
+
+LLaveCierra: }
+mientras (condicion) programa = iteracion
+ programa sentencia es PROGRAMA
+
+Mientras: mientras
+
+ParAbre: (
+
+Constante: 1
+    CTE es Factor
+
+Comparacion OR : OR
+factor = comparacion
+comparacion = condicion
+
+Constante: 0
+    CTE es Factor
+
+ParCierra: )
+factor = comparacion
+condicion compuerta comparacion = condicion
+
+LLaveAbre: {
+
+Escribir : escribir
+
+ParAbre: (
+
+CADENA: "a "
+
+ParCierra: )
+ FIN programa
+
+LLaveCierra: }
+mientras (condicion) programa = iteracion
+ programa sentencia es PROGRAMA
+
+Comentario: *- caso 2 -*
+
+Mientras: mientras
+
+ParAbre: (
+
+Negacion NOT : NOT
+
+Identificador: a
+    ID es Factor 
+
+Mayor: >
+Factor es Termino
+Termino es Expresion
+
+Identificador: b
+    ID es Factor 
+Factor es Termino
+
+Comparacion AND : AND
+Termino es Expresion
+expresion comparador expresion = comparacion
+NOT comparacion = comparacion
+comparacion = condicion
+
+Negacion NOT : NOT
+
+Identificador: b
+    ID es Factor 
+
+Mayor: >
+Factor es Termino
+Termino es Expresion
+
+Identificador: a
+    ID es Factor 
+Factor es Termino
+
+ParCierra: )
+Termino es Expresion
+expresion comparador expresion = comparacion
+NOT comparacion = comparacion
+condicion compuerta comparacion = condicion
+
+LLaveAbre: {
+
+Escribir : escribir
+
+ParAbre: (
+
+CADENA: "a "
+
+ParCierra: )
+ FIN programa
+
+LLaveCierra: }
+mientras (condicion) programa = iteracion
+ programa sentencia es PROGRAMA
+
+Comentario: *- caso 3 -*
+
+Si: si
+
+ParAbre: (
+
+Identificador: a
+    ID es Factor 
+
+Mayor: >
+Factor es Termino
+Termino es Expresion
+
+Identificador: b
+    ID es Factor 
+Factor es Termino
+
+Comparacion AND : AND
+Termino es Expresion
+expresion comparador expresion = comparacion
+comparacion = condicion
+
+Negacion NOT : NOT
+
+Identificador: b
+    ID es Factor 
+
+Mayor: >
+Factor es Termino
+Termino es Expresion
+
+Identificador: a
+    ID es Factor 
+Factor es Termino
+
+ParCierra: )
+Termino es Expresion
+expresion comparador expresion = comparacion
+NOT comparacion = comparacion
+condicion compuerta comparacion = condicion
+
+LLaveAbre: {
+
+Identificador: a
+
+Asignacion: :=
+
+Identificador: a
+    ID es Factor 
+Factor es Termino
+
+Suma: +
+Termino es Expresion
+
+Constante: 1
+    CTE es Factor
+Factor es Termino
+
+LLaveCierra: }
+Expresion+Termino es Expresion
+    ID = Expresion es ASIGNACION
+ FIN programa
+
+Comentario: *- caso 4 -*
+
+Si: si
+SI (condicion) programa = seleccion
+ programa sentencia es PROGRAMA
+
+ParAbre: (
+
+Identificador: a
+    ID es Factor 
+
+Comparacion AND : AND
+factor = comparacion
+comparacion = condicion
+
+Identificador: b
+    ID es Factor 
+
+Mayor: >
+Factor es Termino
+Termino es Expresion
+
+Identificador: a
+    ID es Factor 
+Factor es Termino
+
+Comparacion AND : AND
+Termino es Expresion
+expresion comparador expresion = comparacion
+condicion compuerta comparacion = condicion
+
+Identificador: b
+    ID es Factor 
+
+ParCierra: )
+factor = comparacion
+condicion compuerta comparacion = condicion
+
+LLaveAbre: {
+
+Identificador: a
+
+Asignacion: :=
+
+Identificador: a
+    ID es Factor 
+Factor es Termino
+
+Suma: +
+Termino es Expresion
+
+Constante: 1
+    CTE es Factor
+Factor es Termino
+
+LLaveCierra: }
+Expresion+Termino es Expresion
+    ID = Expresion es ASIGNACION
+ FIN programa
+
+Comentario: *- caso 5 -*
+
+Si: si
+SI (condicion) programa = seleccion
+ programa sentencia es PROGRAMA
+
+ParAbre: (
+
+ParAbre: (
+
+Identificador: a
+    ID es Factor 
+
+Mayor: >
+Factor es Termino
+Termino es Expresion
+
+Identificador: b
+    ID es Factor 
+Factor es Termino
+
+ParCierra: )
+Termino es Expresion
+expresion comparador expresion = comparacion
+(comparacion) = comparacion
+comparacion = condicion
+
+Comparacion AND : AND
+
+ParAbre: (
+
+Identificador: b
+    ID es Factor 
+
+Mayor: >
+Factor es Termino
+Termino es Expresion
+
+Identificador: a
+    ID es Factor 
+Factor es Termino
+
+ParCierra: )
+Termino es Expresion
+expresion comparador expresion = comparacion
+(comparacion) = comparacion
+condicion compuerta comparacion = condicion
+
+ParCierra: )
+
+LLaveAbre: {
+
+Identificador: a
+
+Asignacion: :=
+
+Identificador: a
+    ID es Factor 
+Factor es Termino
+
+Suma: +
+Termino es Expresion
+
+Constante: 1
+    CTE es Factor
+Factor es Termino
+
+LLaveCierra: }
+Expresion+Termino es Expresion
+    ID = Expresion es ASIGNACION
+ FIN programa
+
+Comentario: *- Anidados -*
+
+Si: si
+SI (condicion) programa = seleccion
+ programa sentencia es PROGRAMA
+
+ParAbre: (
+
+Identificador: a
+    ID es Factor 
+
+Mayor: >
+Factor es Termino
+Termino es Expresion
+
+Identificador: b
+    ID es Factor 
+Factor es Termino
+
+ParCierra: )
+Termino es Expresion
+expresion comparador expresion = comparacion
+comparacion = condicion
+
+LLaveAbre: {
+
+Mientras: mientras
+
+ParAbre: (
+
+Identificador: a
+    ID es Factor 
+
+Mayor: >
+Factor es Termino
+Termino es Expresion
+
+Identificador: b
+    ID es Factor 
+Factor es Termino
+
+ParCierra: )
+Termino es Expresion
+expresion comparador expresion = comparacion
+comparacion = condicion
+
+LLaveAbre: {
+
+Identificador: a
+
+Asignacion: :=
+
+Identificador: a
+    ID es Factor 
+Factor es Termino
+
+Resta: -
+Termino es Expresion
+
+Constante: 1
+    CTE es Factor
+Factor es Termino
+
+Mientras: mientras
+Expresion-Termino es Expresion
+    ID = Expresion es ASIGNACION
+ FIN programa
+
+ParAbre: (
+
+Identificador: b
+    ID es Factor 
+
+Mayor: >
+Factor es Termino
+Termino es Expresion
+
+Identificador: c
+    ID es Factor 
+Factor es Termino
+
+ParCierra: )
+Termino es Expresion
+expresion comparador expresion = comparacion
+comparacion = condicion
+
+LLaveAbre: {
+
+Identificador: b
+
+Asignacion: :=
+
+Identificador: b
+    ID es Factor 
+Factor es Termino
+
+Resta: -
+Termino es Expresion
+
+Constante: 1
+    CTE es Factor
+Factor es Termino
+
+LLaveCierra: }
+Expresion-Termino es Expresion
+    ID = Expresion es ASIGNACION
+ FIN programa
+mientras (condicion) programa = iteracion
+ programa sentencia es PROGRAMA
+
+Escribir : escribir
+
+ParAbre: (
+
+CADENA: "cadena"
+
+ParCierra: )
+ programa sentencia es PROGRAMA
+
+LLaveCierra: }
+mientras (condicion) programa = iteracion
+ FIN programa
+
+Identificador: a
+
+Asignacion: :=
+
+Identificador: a
+    ID es Factor 
+Factor es Termino
+
+Suma: +
+Termino es Expresion
+
+Constante: 1
+    CTE es Factor
+Factor es Termino
+
+LLaveCierra: }
+Expresion+Termino es Expresion
+    ID = Expresion es ASIGNACION
+ programa sentencia es PROGRAMA
+
+Sino: sino
+
+LLaveAbre: {
+
+Mientras: mientras
+
+ParAbre: (
+
+Identificador: a
+    ID es Factor 
+
+Mayor: >
+Factor es Termino
+Termino es Expresion
+
+Identificador: b
+    ID es Factor 
+Factor es Termino
+
+ParCierra: )
+Termino es Expresion
+expresion comparador expresion = comparacion
+comparacion = condicion
+
+LLaveAbre: {
+
+Identificador: a
+
+Asignacion: :=
+
+Identificador: a
+    ID es Factor 
+Factor es Termino
+
+Resta: -
+Termino es Expresion
+
+Constante: 1
+    CTE es Factor
+Factor es Termino
+
+Mientras: mientras
+Expresion-Termino es Expresion
+    ID = Expresion es ASIGNACION
+ FIN programa
+
+ParAbre: (
+
+Identificador: b
+    ID es Factor 
+
+Mayor: >
+Factor es Termino
+Termino es Expresion
+
+Identificador: c
+    ID es Factor 
+Factor es Termino
+
+ParCierra: )
+Termino es Expresion
+expresion comparador expresion = comparacion
+comparacion = condicion
+
+LLaveAbre: {
+
+Identificador: b
+
+Asignacion: :=
+
+Identificador: b
+    ID es Factor 
+Factor es Termino
+
+Resta: -
+Termino es Expresion
+
+Constante: 1
+    CTE es Factor
+Factor es Termino
+
+LLaveCierra: }
+Expresion-Termino es Expresion
+    ID = Expresion es ASIGNACION
+ FIN programa
+mientras (condicion) programa = iteracion
+ programa sentencia es PROGRAMA
+
+Escribir : escribir
+
+ParAbre: (
+
+CADENA: "cadena else"
+
+ParCierra: )
+ programa sentencia es PROGRAMA
+
+LLaveCierra: }
+mientras (condicion) programa = iteracion
+ FIN programa
+
+Identificador: a
+
+Asignacion: :=
+
+Identificador: a
+    ID es Factor 
+Factor es Termino
+
+Suma: +
+Termino es Expresion
+
+Constante: 1
+    CTE es Factor
+Factor es Termino
+
+LLaveCierra: }
+Expresion+Termino es Expresion
+    ID = Expresion es ASIGNACION
+ programa sentencia es PROGRAMA
+SI (condicion) programa sino programa = seleccion
+ programa sentencia es PROGRAMA
+
+Multiplicacion: *
+Error Sintactico

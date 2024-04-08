@@ -26,6 +26,9 @@ FILE  *yyin;
 %token SINO
 %token OP_MAYOR
 %token OP_MENOR
+%token OP_MAYOR_IGUAL
+%token OP_MENOR_IGUAL
+%token OP_IGUAL
 %token LLAVE_I
 %token LLAVE_D
 %token ESCRIBIR
@@ -41,34 +44,18 @@ FILE  *yyin;
 
 %%
 programa:
-	sentencia {printf(" FIN sentencia\n");}
-	| sentencia programa
+	sentencia {printf(" FIN programa\n");}
+	| programa sentencia {printf(" programa sentencia es PROGRAMA\n");}
 	;
 
 sentencia:
 	asignacion
-	| comparacion LLAVE_I programa LLAVE_D condicion_sino {printf(" FIN SI\n");}
-	| ciclo LLAVE_I programa LLAVE_D {printf(" FIN MIENTRAS\n");}
+	| iteracion 
+	| seleccion
 	| ESCRIBIR PARENTE_I CADENA PARENTE_D
 	| ESCRIBIR PARENTE_I ID PARENTE_D
 	| LEER PARENTE_I ID PARENTE_D
 	| INIT LLAVE_I declaraciones LLAVE_D
-	;
-
-declaraciones:
-	| variables DOS_PUNT TIPO_DATO declaraciones
-	;
-
-variables:
-	| ID adicional
-	;
-
-adicional:
-	| COMA ID adicional
-	;
-
-condicion_sino:
-	| SINO LLAVE_I programa LLAVE_D {printf(" FIN SINO\n");}
 	;
 
 asignacion:
@@ -76,33 +63,36 @@ asignacion:
 	|ID OP_ASIG CADENA {printf("    ID = CADENA es ASIGNACION\n");}
 	;
 
-comparacion:
-	SI PARENTE_I operacion_negacion expresion_comparacion PARENTE_D {printf("comparacion");}
+seleccion:
+	SI PARENTE_I condicion PARENTE_D LLAVE_I programa LLAVE_D SINO LLAVE_I programa LLAVE_D {printf("SI (condicion) programa sino programa = seleccion\n");}
+	| SI PARENTE_I condicion PARENTE_D LLAVE_I programa LLAVE_D {printf("SI (condicion) programa = seleccion\n");}
 	;
-
-ciclo:
-	MIENTRAS PARENTE_I operacion_negacion expresion_comparacion PARENTE_D {printf("mientras ciclo");}
-
-operacion_negacion:
-	| NOT
+iteracion:
+	MIENTRAS PARENTE_I condicion PARENTE_D LLAVE_I programa LLAVE_D {printf("mientras (condicion) programa = iteracion\n");}
 	;
-
-	
-expresion_comparacion:
-	|expresion_comparacion operacion_comparacion factor {printf("exprecion operacion factor");}
-	|expresion_comparacion condicion_comparacion expresion_comparacion{printf("exprecion operacion factor");}
-	|factor {printf("factor es expresion_comparacion");}
+compuertas:
+	AND
+	|OR
 	;
-
-operacion_comparacion:
+comparador:
 	OP_MAYOR
 	| OP_MENOR
+	| OP_MAYOR_IGUAL
+	| OP_MENOR_IGUAL
+	| OP_IGUAL
 	;
-	
-condicion_comparacion:
-	AND
-	| OR
+
+condicion:
+	comparacion {printf("comparacion = condicion\n");}
+	|condicion compuertas comparacion {printf("condicion compuerta comparacion = condicion\n");}
 	;
+comparacion:
+	expresion comparador expresion {printf("expresion comparador expresion = comparacion\n");}
+	|NOT comparacion {printf("NOT comparacion = comparacion\n");}
+	| PARENTE_I comparacion PARENTE_D {printf("(comparacion) = comparacion\n");}
+	| factor {printf("factor = comparacion\n");}
+	;
+
 expresion:
 	termino {printf("Termino es Expresion\n");}
 	|expresion OP_SUMA termino {printf("Expresion+Termino es Expresion\n");}
@@ -119,9 +109,18 @@ factor:
 	ID {printf("    ID es Factor \n");}
 	| CTE {printf("    CTE es Factor\n");}
 	| FLOT {printf("    FLOT es Factor\n");}
-	| PARENTE_I expresion PARENTE_D {printf("Expresion entre parentesis es Factor\n");}
+	;
+declaraciones:
+	| variables DOS_PUNT TIPO_DATO declaraciones
 	;
 
+variables:
+	| ID adicional
+	;
+
+adicional:
+	| COMA ID adicional
+	;
 %%
 
 

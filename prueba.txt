@@ -68,5 +68,67 @@ mientras (a > b)
 }
 
 *- write.txt -*
-escribir(“ewr”)  *- “ewr” es una cte string -*
+escribir("ewr")  *- “ewr” es una cte string -*
 escribir(var1)  *- var1 es una variable numérica definida previamente -*
+
+*- Casos mas extremos -*
+
+*- Condiciones -*
+*- caso 1 -*
+mientras (a AND b)
+{
+    escribir("a ")
+}
+mientras (1 OR 0)
+{
+    escribir("a ")
+}
+*- caso 2 -*
+mientras (NOT a>b AND NOT b>a)
+{
+    escribir("a ")
+}
+*- caso 3 -*
+si(a>b AND NOT b>a)
+{
+    a := a + 1
+}
+*- caso 4 -*
+si(a AND b > a AND b )
+{
+    a := a + 1
+}
+*- caso 5 -*
+si((a>b) AND (b>a))
+{
+    a := a + 1
+}
+
+*- Anidados -*
+si(a>b)
+{
+    mientras(a > b){
+        a := a - 1
+        mientras (b>c){
+          b := b - 1  
+        }
+        escribir("cadena")
+    }
+    a := a + 1
+}
+sino
+{
+    mientras(a > b){
+        a := a - 1
+        mientras (b>c){
+          b := b - 1  
+        }
+        escribir("cadena else")
+    }
+    a := a + 1
+}
+
+*- Comentario
+    hijo
+    2 * 3 - 1  
+-*
