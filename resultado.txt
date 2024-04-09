@@ -194,6 +194,12 @@ Init : init
 
 LLaveAbre: {
 
+Identificador: variable1
+
+Dos puntos: :
+
+Tipo de dato : Int
+
 Identificador: a1
 
 Coma: ,
@@ -203,12 +209,6 @@ Identificador: b1
 Dos puntos: :
 
 Tipo de dato : Float
-
-Identificador: variable1
-
-Dos puntos: :
-
-Tipo de dato : Int
 
 Identificador: p1
 
@@ -223,6 +223,13 @@ Identificador: p3
 Dos puntos: :
 
 Tipo de dato : String
+
+LLaveCierra: }
+ programa sentencia es PROGRAMA
+
+Init : init
+
+LLaveAbre: {
 
 LLaveCierra: }
  programa sentencia es PROGRAMA
