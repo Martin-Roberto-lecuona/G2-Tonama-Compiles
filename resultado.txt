@@ -12,7 +12,7 @@ Factor es Termino
 Identificador: b
 Termino es Expresion
     ID = Expresion es ASIGNACION
- FIN programa
+ sentencia es PROGRAMA
 
 Asignacion: :=
 
@@ -76,10 +76,10 @@ Escribir : escribir
 
 ParAbre: (
 
-CADENA: "a es mas grande que b y c es mas grande que b"
+Cadena: "a es mas grande que b y c es mas grande que b"
 
 ParCierra: )
- FIN programa
+ sentencia es PROGRAMA
 
 LLaveCierra: }
 
@@ -124,7 +124,7 @@ Termino es Expresion
 
 Asignacion: :=
 
-CADENA: "@sdADaSjfla%dfg"
+Cadena: "@sdADaSjfla%dfg"
     ID = CADENA es ASIGNACION
  programa sentencia es PROGRAMA
 
@@ -132,7 +132,7 @@ Identificador: b
 
 Asignacion: :=
 
-CADENA: "asldk  fh sjf"
+Cadena: "asldk  fh sjf"
     ID = CADENA es ASIGNACION
  programa sentencia es PROGRAMA
 
@@ -164,10 +164,10 @@ Escribir : escribir
 
 ParAbre: (
 
-CADENA: "a es mas grande que b"
+Cadena: "a es mas grande que b"
 
 ParCierra: )
- FIN programa
+ sentencia es PROGRAMA
 
 LLaveCierra: }
 
@@ -179,10 +179,10 @@ Escribir : escribir
 
 ParAbre: (
 
-CADENA: "a es mas chico o igual a b"
+Cadena: "a es mas chico o igual a b"
 
 ParCierra: )
- FIN programa
+ sentencia es PROGRAMA
 
 LLaveCierra: }
 SI (condicion) programa sino programa = seleccion
@@ -298,10 +298,10 @@ Escribir : escribir
 
 ParAbre: (
 
-CADENA: "a no es mas grande que b"
+Cadena: "a no es mas grande que b"
 
 ParCierra: )
- FIN programa
+ sentencia es PROGRAMA
 
 LLaveCierra: }
 
@@ -384,10 +384,10 @@ Escribir : escribir
 
 ParAbre: (
 
-CADENA: "a es mas grande que b o c es mas grande que b"
+Cadena: "a es mas grande que b o c es mas grande que b"
 
 ParCierra: )
- FIN programa
+ sentencia es PROGRAMA
 
 LLaveCierra: }
 
@@ -456,10 +456,10 @@ Escribir : escribir
 
 ParAbre: (
 
-CADENA: "a es mas grande que b"
+Cadena: "a es mas grande que b"
 
 ParCierra: )
- FIN programa
+ sentencia es PROGRAMA
 
 Identificador: a
 
@@ -489,7 +489,7 @@ Escribir : escribir
 
 ParAbre: (
 
-CADENA: "ewr"
+Cadena: "ewr"
 
 ParCierra: )
  programa sentencia es PROGRAMA
@@ -537,10 +537,10 @@ Escribir : escribir
 
 ParAbre: (
 
-CADENA: "a "
+Cadena: "a "
 
 ParCierra: )
- FIN programa
+ sentencia es PROGRAMA
 
 LLaveCierra: }
 mientras (condicion) programa = iteracion
@@ -570,10 +570,10 @@ Escribir : escribir
 
 ParAbre: (
 
-CADENA: "a "
+Cadena: "a "
 
 ParCierra: )
- FIN programa
+ sentencia es PROGRAMA
 
 LLaveCierra: }
 mientras (condicion) programa = iteracion
@@ -629,10 +629,10 @@ Escribir : escribir
 
 ParAbre: (
 
-CADENA: "a "
+Cadena: "a "
 
 ParCierra: )
- FIN programa
+ sentencia es PROGRAMA
 
 LLaveCierra: }
 mientras (condicion) programa = iteracion
@@ -699,7 +699,7 @@ Factor es Termino
 LLaveCierra: }
 Expresion+Termino es Expresion
     ID = Expresion es ASIGNACION
- FIN programa
+ sentencia es PROGRAMA
 
 Comentario: *- caso 4 -*
 
@@ -759,7 +759,7 @@ Factor es Termino
 LLaveCierra: }
 Expresion+Termino es Expresion
     ID = Expresion es ASIGNACION
- FIN programa
+ sentencia es PROGRAMA
 
 Comentario: *- caso 5 -*
 
@@ -831,7 +831,7 @@ Factor es Termino
 LLaveCierra: }
 Expresion+Termino es Expresion
     ID = Expresion es ASIGNACION
- FIN programa
+ sentencia es PROGRAMA
 
 Comentario: *- Anidados -*
 
@@ -899,7 +899,7 @@ Factor es Termino
 Mientras: mientras
 Expresion-Termino es Expresion
     ID = Expresion es ASIGNACION
- FIN programa
+ sentencia es PROGRAMA
 
 ParAbre: (
 
@@ -939,7 +939,7 @@ Factor es Termino
 LLaveCierra: }
 Expresion-Termino es Expresion
     ID = Expresion es ASIGNACION
- FIN programa
+ sentencia es PROGRAMA
 mientras (condicion) programa = iteracion
  programa sentencia es PROGRAMA
 
@@ -947,14 +947,14 @@ Escribir : escribir
 
 ParAbre: (
 
-CADENA: "cadena"
+Cadena: "cadena"
 
 ParCierra: )
  programa sentencia es PROGRAMA
 
 LLaveCierra: }
 mientras (condicion) programa = iteracion
- FIN programa
+ sentencia es PROGRAMA
 
 Identificador: a
 
@@ -1020,7 +1020,7 @@ Factor es Termino
 Mientras: mientras
 Expresion-Termino es Expresion
     ID = Expresion es ASIGNACION
- FIN programa
+ sentencia es PROGRAMA
 
 ParAbre: (
 
@@ -1060,7 +1060,7 @@ Factor es Termino
 LLaveCierra: }
 Expresion-Termino es Expresion
     ID = Expresion es ASIGNACION
- FIN programa
+ sentencia es PROGRAMA
 mientras (condicion) programa = iteracion
  programa sentencia es PROGRAMA
 
@@ -1068,14 +1068,14 @@ Escribir : escribir
 
 ParAbre: (
 
-CADENA: "cadena else"
+Cadena: "cadena else"
 
 ParCierra: )
  programa sentencia es PROGRAMA
 
 LLaveCierra: }
 mientras (condicion) programa = iteracion
- FIN programa
+ sentencia es PROGRAMA
 
 Identificador: a
 
@@ -1099,5 +1099,8 @@ Expresion+Termino es Expresion
 SI (condicion) programa sino programa = seleccion
  programa sentencia es PROGRAMA
 
-Multiplicacion: *
-Error Sintactico
+Comentario: *- Comentario
+    *-hijo
+    2 * 3 - 1  
+-*
+ FIN
