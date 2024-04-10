@@ -43,12 +43,12 @@ FILE  *yyin;
 
 
 %%
-programa : 
+proyecto : 
 	bloque {printf(" FIN\n");}
 	;
 bloque:
-	sentencia {printf(" sentencia es PROGRAMA\n");}
-	| bloque sentencia {printf(" programa sentencia es PROGRAMA\n");}
+	sentencia {printf(" sentencia es bloque\n");}
+	| bloque sentencia {printf(" bloque sentencia es bloque\n");}
 	;
 
 sentencia:
@@ -68,11 +68,11 @@ asignacion:
 	;
 
 seleccion:
-	SI PARENTE_I condicion PARENTE_D LLAVE_I programa LLAVE_D SINO LLAVE_I programa LLAVE_D {printf("SI (condicion) programa sino programa = seleccion\n");}
-	| SI PARENTE_I condicion PARENTE_D LLAVE_I programa LLAVE_D {printf("SI (condicion) programa = seleccion\n");}
+	SI PARENTE_I condicion PARENTE_D LLAVE_I bloque LLAVE_D SINO LLAVE_I bloque LLAVE_D {printf("SI (condicion) bloque sino bloque = seleccion\n");}
+	| SI PARENTE_I condicion PARENTE_D LLAVE_I bloque LLAVE_D {printf("SI (condicion) bloque = seleccion\n");}
 	;
 iteracion:
-	MIENTRAS PARENTE_I condicion PARENTE_D LLAVE_I programa LLAVE_D {printf("mientras (condicion) programa = iteracion\n");}
+	MIENTRAS PARENTE_I condicion PARENTE_D LLAVE_I bloque LLAVE_D {printf("mientras (condicion) bloque = iteracion\n");}
 	;
 compuertas:
 	AND

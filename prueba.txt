@@ -134,3 +134,27 @@ sino
     *-hijo
     2 * 3 - 1  
 -*
+
+*- pruebas que fallan -*
+*-
+ a := 
+    si (a > b)
+    {
+        escribir("a es mas grande que b")
+    }
+    sino
+    {
+        escribir("a es mas chico o igual a b}")
+    sino
+    {
+        escribir("a ")
+    }
+    mientras (escribir("a "))
+    {
+        escribir("a ")
+    }
+    $a:=1
+    "a":=1
+    
+
+-*

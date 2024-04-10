@@ -12,7 +12,7 @@ Factor es Termino
 Identificador: b
 Termino es Expresion
     ID = Expresion es ASIGNACION
- sentencia es PROGRAMA
+ sentencia es bloque
 
 Asignacion: :=
 
@@ -23,7 +23,7 @@ Factor es Termino
 Identificador: c
 Termino es Expresion
     ID = Expresion es ASIGNACION
- programa sentencia es PROGRAMA
+ bloque sentencia es bloque
 
 Asignacion: :=
 
@@ -34,7 +34,7 @@ Factor es Termino
 Si: if
 Termino es Expresion
     ID = Expresion es ASIGNACION
- programa sentencia es PROGRAMA
+ bloque sentencia es bloque
 
 ParAbre: (
 
@@ -79,15 +79,15 @@ ParAbre: (
 Cadena: "a es mas grande que b y c es mas grande que b"
 
 ParCierra: )
- sentencia es PROGRAMA
+ sentencia es bloque
 
 LLaveCierra: }
 
 Comentario: *- assignments.txt -*
 
 Identificador: a
-SI (condicion) programa = seleccion
- programa sentencia es PROGRAMA
+SI (condicion) bloque = seleccion
+ bloque sentencia es bloque
 
 Asignacion: :=
 
@@ -98,7 +98,7 @@ Factor es Termino
 Identificador: a
 Termino es Expresion
     ID = Expresion es ASIGNACION
- programa sentencia es PROGRAMA
+ bloque sentencia es bloque
 
 Asignacion: :=
 
@@ -109,7 +109,7 @@ Factor es Termino
 Identificador: a
 Termino es Expresion
     ID = Expresion es ASIGNACION
- programa sentencia es PROGRAMA
+ bloque sentencia es bloque
 
 Asignacion: :=
 
@@ -120,13 +120,13 @@ Factor es Termino
 Identificador: b
 Termino es Expresion
     ID = Expresion es ASIGNACION
- programa sentencia es PROGRAMA
+ bloque sentencia es bloque
 
 Asignacion: :=
 
 Cadena: "@sdADaSjfla%dfg"
     ID = CADENA es ASIGNACION
- programa sentencia es PROGRAMA
+ bloque sentencia es bloque
 
 Identificador: b
 
@@ -134,7 +134,7 @@ Asignacion: :=
 
 Cadena: "asldk  fh sjf"
     ID = CADENA es ASIGNACION
- programa sentencia es PROGRAMA
+ bloque sentencia es bloque
 
 Comentario: *- if.txt -*
 
@@ -167,7 +167,7 @@ ParAbre: (
 Cadena: "a es mas grande que b"
 
 ParCierra: )
- sentencia es PROGRAMA
+ sentencia es bloque
 
 LLaveCierra: }
 
@@ -182,11 +182,11 @@ ParAbre: (
 Cadena: "a es mas chico o igual a b"
 
 ParCierra: )
- sentencia es PROGRAMA
+ sentencia es bloque
 
 LLaveCierra: }
-SI (condicion) programa sino programa = seleccion
- programa sentencia es PROGRAMA
+SI (condicion) bloque sino bloque = seleccion
+ bloque sentencia es bloque
 
 Comentario: *- init.txt -*
 
@@ -225,14 +225,14 @@ Dos puntos: :
 Tipo de dato : String
 
 LLaveCierra: }
- programa sentencia es PROGRAMA
+ bloque sentencia es bloque
 
 Init : init
 
 LLaveAbre: {
 
 LLaveCierra: }
- programa sentencia es PROGRAMA
+ bloque sentencia es bloque
 
 Comentario: *- not.txt -*
 
@@ -247,7 +247,7 @@ Factor es Termino
 Identificador: b
 Termino es Expresion
     ID = Expresion es ASIGNACION
- programa sentencia es PROGRAMA
+ bloque sentencia es bloque
 
 Asignacion: :=
 
@@ -258,7 +258,7 @@ Factor es Termino
 Identificador: c
 Termino es Expresion
     ID = Expresion es ASIGNACION
- programa sentencia es PROGRAMA
+ bloque sentencia es bloque
 
 Asignacion: :=
 
@@ -269,7 +269,7 @@ Factor es Termino
 Si: if
 Termino es Expresion
     ID = Expresion es ASIGNACION
- programa sentencia es PROGRAMA
+ bloque sentencia es bloque
 
 ParAbre: (
 
@@ -301,15 +301,15 @@ ParAbre: (
 Cadena: "a no es mas grande que b"
 
 ParCierra: )
- sentencia es PROGRAMA
+ sentencia es bloque
 
 LLaveCierra: }
 
 Comentario: *- or.txt -*
 
 Identificador: a
-SI (condicion) programa = seleccion
- programa sentencia es PROGRAMA
+SI (condicion) bloque = seleccion
+ bloque sentencia es bloque
 
 Asignacion: :=
 
@@ -320,7 +320,7 @@ Factor es Termino
 Identificador: b
 Termino es Expresion
     ID = Expresion es ASIGNACION
- programa sentencia es PROGRAMA
+ bloque sentencia es bloque
 
 Asignacion: :=
 
@@ -331,7 +331,7 @@ Factor es Termino
 Identificador: c
 Termino es Expresion
     ID = Expresion es ASIGNACION
- programa sentencia es PROGRAMA
+ bloque sentencia es bloque
 
 Asignacion: :=
 
@@ -342,7 +342,7 @@ Factor es Termino
 Si: if
 Termino es Expresion
     ID = Expresion es ASIGNACION
- programa sentencia es PROGRAMA
+ bloque sentencia es bloque
 
 ParAbre: (
 
@@ -387,22 +387,22 @@ ParAbre: (
 Cadena: "a es mas grande que b o c es mas grande que b"
 
 ParCierra: )
- sentencia es PROGRAMA
+ sentencia es bloque
 
 LLaveCierra: }
 
 Comentario: *- read.txt -*
 
 Escribir : leer
-SI (condicion) programa = seleccion
- programa sentencia es PROGRAMA
+SI (condicion) bloque = seleccion
+ bloque sentencia es bloque
 
 ParAbre: (
 
 Identificador: base
 
 ParCierra: )
- programa sentencia es PROGRAMA
+ bloque sentencia es bloque
 
 Comentario: *- base es una variable -*
 
@@ -419,7 +419,7 @@ Factor es Termino
 Identificador: b
 Termino es Expresion
     ID = Expresion es ASIGNACION
- programa sentencia es PROGRAMA
+ bloque sentencia es bloque
 
 Asignacion: :=
 
@@ -430,7 +430,7 @@ Factor es Termino
 Mientras: mientras
 Termino es Expresion
     ID = Expresion es ASIGNACION
- programa sentencia es PROGRAMA
+ bloque sentencia es bloque
 
 ParAbre: (
 
@@ -459,7 +459,7 @@ ParAbre: (
 Cadena: "a es mas grande que b"
 
 ParCierra: )
- sentencia es PROGRAMA
+ sentencia es bloque
 
 Identificador: a
 
@@ -479,9 +479,9 @@ Factor es Termino
 LLaveCierra: }
 Expresion+Termino es Expresion
     ID = Expresion es ASIGNACION
- programa sentencia es PROGRAMA
-mientras (condicion) programa = iteracion
- programa sentencia es PROGRAMA
+ bloque sentencia es bloque
+mientras (condicion) bloque = iteracion
+ bloque sentencia es bloque
 
 Comentario: *- write.txt -*
 
@@ -492,7 +492,7 @@ ParAbre: (
 Cadena: "ewr"
 
 ParCierra: )
- programa sentencia es PROGRAMA
+ bloque sentencia es bloque
 
 Comentario: *- “ewr” es una cte string -*
 
@@ -503,7 +503,7 @@ ParAbre: (
 Identificador: var1
 
 ParCierra: )
- programa sentencia es PROGRAMA
+ bloque sentencia es bloque
 
 Comentario: *- var1 es una variable numérica definida previamente -*
 
@@ -540,11 +540,11 @@ ParAbre: (
 Cadena: "a "
 
 ParCierra: )
- sentencia es PROGRAMA
+ sentencia es bloque
 
 LLaveCierra: }
-mientras (condicion) programa = iteracion
- programa sentencia es PROGRAMA
+mientras (condicion) bloque = iteracion
+ bloque sentencia es bloque
 
 Mientras: mientras
 
@@ -573,11 +573,11 @@ ParAbre: (
 Cadena: "a "
 
 ParCierra: )
- sentencia es PROGRAMA
+ sentencia es bloque
 
 LLaveCierra: }
-mientras (condicion) programa = iteracion
- programa sentencia es PROGRAMA
+mientras (condicion) bloque = iteracion
+ bloque sentencia es bloque
 
 Comentario: *- caso 2 -*
 
@@ -632,11 +632,11 @@ ParAbre: (
 Cadena: "a "
 
 ParCierra: )
- sentencia es PROGRAMA
+ sentencia es bloque
 
 LLaveCierra: }
-mientras (condicion) programa = iteracion
- programa sentencia es PROGRAMA
+mientras (condicion) bloque = iteracion
+ bloque sentencia es bloque
 
 Comentario: *- caso 3 -*
 
@@ -699,13 +699,13 @@ Factor es Termino
 LLaveCierra: }
 Expresion+Termino es Expresion
     ID = Expresion es ASIGNACION
- sentencia es PROGRAMA
+ sentencia es bloque
 
 Comentario: *- caso 4 -*
 
 Si: si
-SI (condicion) programa = seleccion
- programa sentencia es PROGRAMA
+SI (condicion) bloque = seleccion
+ bloque sentencia es bloque
 
 ParAbre: (
 
@@ -759,13 +759,13 @@ Factor es Termino
 LLaveCierra: }
 Expresion+Termino es Expresion
     ID = Expresion es ASIGNACION
- sentencia es PROGRAMA
+ sentencia es bloque
 
 Comentario: *- caso 5 -*
 
 Si: si
-SI (condicion) programa = seleccion
- programa sentencia es PROGRAMA
+SI (condicion) bloque = seleccion
+ bloque sentencia es bloque
 
 ParAbre: (
 
@@ -831,13 +831,13 @@ Factor es Termino
 LLaveCierra: }
 Expresion+Termino es Expresion
     ID = Expresion es ASIGNACION
- sentencia es PROGRAMA
+ sentencia es bloque
 
 Comentario: *- Anidados -*
 
 Si: si
-SI (condicion) programa = seleccion
- programa sentencia es PROGRAMA
+SI (condicion) bloque = seleccion
+ bloque sentencia es bloque
 
 ParAbre: (
 
@@ -899,7 +899,7 @@ Factor es Termino
 Mientras: mientras
 Expresion-Termino es Expresion
     ID = Expresion es ASIGNACION
- sentencia es PROGRAMA
+ sentencia es bloque
 
 ParAbre: (
 
@@ -939,9 +939,9 @@ Factor es Termino
 LLaveCierra: }
 Expresion-Termino es Expresion
     ID = Expresion es ASIGNACION
- sentencia es PROGRAMA
-mientras (condicion) programa = iteracion
- programa sentencia es PROGRAMA
+ sentencia es bloque
+mientras (condicion) bloque = iteracion
+ bloque sentencia es bloque
 
 Escribir : escribir
 
@@ -950,11 +950,11 @@ ParAbre: (
 Cadena: "cadena"
 
 ParCierra: )
- programa sentencia es PROGRAMA
+ bloque sentencia es bloque
 
 LLaveCierra: }
-mientras (condicion) programa = iteracion
- sentencia es PROGRAMA
+mientras (condicion) bloque = iteracion
+ sentencia es bloque
 
 Identificador: a
 
@@ -974,7 +974,7 @@ Factor es Termino
 LLaveCierra: }
 Expresion+Termino es Expresion
     ID = Expresion es ASIGNACION
- programa sentencia es PROGRAMA
+ bloque sentencia es bloque
 
 Sino: sino
 
@@ -1020,7 +1020,7 @@ Factor es Termino
 Mientras: mientras
 Expresion-Termino es Expresion
     ID = Expresion es ASIGNACION
- sentencia es PROGRAMA
+ sentencia es bloque
 
 ParAbre: (
 
@@ -1060,9 +1060,9 @@ Factor es Termino
 LLaveCierra: }
 Expresion-Termino es Expresion
     ID = Expresion es ASIGNACION
- sentencia es PROGRAMA
-mientras (condicion) programa = iteracion
- programa sentencia es PROGRAMA
+ sentencia es bloque
+mientras (condicion) bloque = iteracion
+ bloque sentencia es bloque
 
 Escribir : escribir
 
@@ -1071,11 +1071,11 @@ ParAbre: (
 Cadena: "cadena else"
 
 ParCierra: )
- programa sentencia es PROGRAMA
+ bloque sentencia es bloque
 
 LLaveCierra: }
-mientras (condicion) programa = iteracion
- sentencia es PROGRAMA
+mientras (condicion) bloque = iteracion
+ sentencia es bloque
 
 Identificador: a
 
@@ -1095,12 +1095,37 @@ Factor es Termino
 LLaveCierra: }
 Expresion+Termino es Expresion
     ID = Expresion es ASIGNACION
- programa sentencia es PROGRAMA
-SI (condicion) programa sino programa = seleccion
- programa sentencia es PROGRAMA
+ bloque sentencia es bloque
+SI (condicion) bloque sino bloque = seleccion
+ bloque sentencia es bloque
 
 Comentario: *- Comentario
     *-hijo
     2 * 3 - 1  
+-*
+
+Comentario: *- pruebas que fallan -*
+
+Comentario: *-
+ a := 
+    si (a > b)
+    {
+        escribir("a es mas grande que b")
+    }
+    sino
+    {
+        escribir("a es mas chico o igual a b}")
+    sino
+    {
+        escribir("a ")
+    }
+    mientras (escribir("a "))
+    {
+        escribir("a ")
+    }
+    $a:=1
+    "a":=1
+    
+
 -*
  FIN
