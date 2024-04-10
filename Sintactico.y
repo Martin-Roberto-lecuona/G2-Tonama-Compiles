@@ -43,12 +43,12 @@ FILE  *yyin;
 
 
 %%
-estrella : 
-	programa {printf(" FIN\n");}
+programa : 
+	bloque {printf(" FIN\n");}
 	;
-programa:
+bloque:
 	sentencia {printf(" sentencia es PROGRAMA\n");}
-	| programa sentencia {printf(" programa sentencia es PROGRAMA\n");}
+	| bloque sentencia {printf(" programa sentencia es PROGRAMA\n");}
 	;
 
 sentencia:
