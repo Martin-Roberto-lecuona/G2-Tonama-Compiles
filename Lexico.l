@@ -1,6 +1,7 @@
 %{
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "y.tab.h"
 FILE  *yyin;
@@ -19,19 +20,15 @@ LETRA		[a-zA-Z]
 COMILLA     ["]
 COMILLA_I    [“]
 COMILLA_D    [”]
-COMENT_I    "*-"
-COMENT_D    "-*"
 
-ASCII_COMENT     [,.áéíóú0-9a-zA-Z_!"#$%&/(){}=@“”:+/><? \t\n\r]
-ASCII_CADENA     [,.áéíóú0-9a-zA-Z_!#$%&/(){}=@:+/><*\- \t]
 BLANCO      [ \t\n\r]
-CRLF        [\n\r]
 COMA        [,]
 
 CTE		    {DIGITO}+
 FLOT        ({DIGITO}*"."{DIGITO}+|{DIGITO}+"."{DIGITO}*)
 ID			{LETRA}({LETRA}|{DIGITO})*
-COMENT      ({COMENT_I}({ASCII_COMENT})*{COMENT_D})
+COMENT     "*-"((("-"[^*])?)|[^-])*"-*"
+
 
 OP_ASIG   	":""="
 OP_SUMA		"+"
@@ -49,6 +46,8 @@ LLAVE_I          "{"
 LLAVE_D          "}"
 DOS_PUNT          ":"
 
+
+
 %%
 
 "Float"|"Int"|"String"  {printf("\nTipo de dato : %s\n", yytext);return TIPO_DATO;}
@@ -60,13 +59,27 @@ leer                    {printf("\nEscribir : %s\n", yytext);return LEER;}
 init                    {printf("\nInit : %s\n", yytext);return INIT;}
 "si"|"if"               {printf("\nSi: %s\n", yytext);return SI;}
 "mientras"|"while"      {printf("\nMientras: %s\n", yytext);return MIENTRAS;}
-sino                    {printf("\nSino: %s\n", yytext);return SINO;}
+"sino"|"else"           {printf("\nSino: %s\n", yytext);return SINO;}
 
 {COMA}                  {printf("\nComa: %s\n", yytext);return COMA;}
-{CTE}			        {printf("\nConstante: %s\n", yytext);return CTE;}
+{CTE}   {
+            if(strlen(yytext) > 100){
+                printf( "ERROR LEXICO : supera el maximo de caracteres: %s\n", yytext ); 
+                exit (0);
+            }
+            printf("\nConstante: %s\n", yytext);
+            return CTE;
+        }
 {FLOT}			        {printf("\nFlotante: %s\n", yytext);return FLOT;}
 {ID}			        {printf("\nIdentificador: %s\n", yytext);return ID;}
-{COMILLA}.*{COMILLA}|{COMILLA_I}.*{COMILLA_D}		{printf("\nCADENA: %s\n", yytext);return CADENA;}
+{COMILLA}.*{COMILLA}|{COMILLA_I}.*{COMILLA_D} {   
+            if(strlen(yytext) > 100){
+                printf( "ERROR LEXICO : supera el maximo de caracteres: %s\n", yytext ); 
+                exit (0);
+            }
+            printf("\nCadena: %s\n", yytext);
+            return CADENA;
+        }
 {OP_SUMA}		        {printf("\nSuma: %s\n", yytext);return OP_SUMA;}
 {OP_ASIG}			        {printf("\nAsignacion: %s\n", yytext);return OP_ASIG;}
 {OP_MULT}		        {printf("\nMultiplicacion: %s\n", yytext);return OP_MULT;}

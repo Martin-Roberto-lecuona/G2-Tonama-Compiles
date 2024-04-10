@@ -43,9 +43,12 @@ FILE  *yyin;
 
 
 %%
-programa:
-	sentencia {printf(" FIN programa\n");}
-	| programa sentencia {printf(" programa sentencia es PROGRAMA\n");}
+programa : 
+	bloque {printf(" FIN\n");}
+	;
+bloque:
+	sentencia {printf(" sentencia es PROGRAMA\n");}
+	| bloque sentencia {printf(" programa sentencia es PROGRAMA\n");}
 	;
 
 sentencia:
@@ -56,6 +59,7 @@ sentencia:
 	| ESCRIBIR PARENTE_I ID PARENTE_D
 	| LEER PARENTE_I ID PARENTE_D
 	| INIT LLAVE_I declaraciones LLAVE_D
+	| INIT LLAVE_I LLAVE_D
 	;
 
 asignacion:
@@ -111,15 +115,13 @@ factor:
 	| FLOT {printf("    FLOT es Factor\n");}
 	;
 declaraciones:
-	| variables DOS_PUNT TIPO_DATO declaraciones
+	variables DOS_PUNT TIPO_DATO declaraciones
+	| variables DOS_PUNT TIPO_DATO
 	;
 
 variables:
-	| ID adicional
-	;
-
-adicional:
-	| COMA ID adicional
+	ID COMA variables
+	| ID
 	;
 %%
 

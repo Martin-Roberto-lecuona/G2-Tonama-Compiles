@@ -28,9 +28,11 @@ sino
 
 *- init.txt -*
 init {
-    a1, b1 : Float
     variable1 : Int
+    a1, b1 : Float
     p1, p2, p3 : String
+}
+init {
 }
 
 *- not.txt -*
@@ -129,6 +131,6 @@ sino
 }
 
 *- Comentario
-    hijo
+    *-hijo
     2 * 3 - 1  
 -*
