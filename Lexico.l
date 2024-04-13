@@ -9,7 +9,7 @@ int yylval;
 char *yyltext;
 int flag = 0;
 int yyerror(void);
-void saveSymbol(const char* value,const char* token);
+void saveSymbol(const char* nombre,const char* tipoDato,const char* valor,const char* longitud);
 %}
 
 %option noyywrap  
@@ -71,9 +71,9 @@ init                    {printf("\nInit : %s\n", yytext);return INIT;}
             return CTE;
         }
 {FLOT}			        {printf("\nFlotante: %s\n", yytext);return FLOT;}
-{ID}			        {printf("\nIdentificador: %s\n", yytext);return ID;}
+{ID}			        { saveSymbol(yytext,"","_","");
+                    printf("\nIdentificador: %s\n", yytext);return ID;}
 {COMILLA}.*{COMILLA}|{COMILLA_I}.*{COMILLA_D} {
-            saveSymbol(yytext,"CADENA");
             if(strlen(yytext) > 100){
                 printf( "ERROR LEXICO : supera el maximo de caracteres: %s\n", yytext ); 
                 exit (0);
@@ -102,18 +102,20 @@ init                    {printf("\nInit : %s\n", yytext);return INIT;}
 
 %%
 
-void saveSymbol(const char* value,const char* token) {
-   FILE* file = fopen("simbols.txt", "a+");
+void saveSymbol(const char* nombre,const char* tipoDato,const char* valor,const char* longitud) {
+   if(flag == 0){
+      remove("symbol-table.txt");
+   }
+   FILE* file = fopen("symbol-table.txt", "a+");
       if (file == NULL) {
           perror("Error al abrir el archivo");
           exit(1);
       }
-         if(flag == 0 ){
-         fprintf(file, "Tabla de simbolos:\n");
-         fprintf(file, "Simbolo     Token\n");
+      if(flag == 0 ){
+         fprintf(file,"%-30s|%-30s|%-30s|\n","NOMBRE","TIPODATO","VALOR","LONGITUD");
          flag = 1;
        }
 
-      fprintf(file, "%s   %s\n",value,token);
+      fprintf(file,"_%-29s|%-30s|%-30s|%-30s\n", nombre, tipoDato, valor, longitud);
       fclose(file);
 }

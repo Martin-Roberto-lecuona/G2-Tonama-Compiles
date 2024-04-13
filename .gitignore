@@ -70,3 +70,4 @@ compilador
 ### Resultado
 ./resultado.txt
 compilador.exe
+symbol-table.txt

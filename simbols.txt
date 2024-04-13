@@ -1,5 +1,0 @@
-Tabla de simbolos:
-Simbolo     Token
-"cadena prueba"   CADENA
-"cadena prueba2"   CADENA
-"otra cadena"   CADENA
