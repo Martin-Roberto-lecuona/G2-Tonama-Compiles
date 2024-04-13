@@ -7,9 +7,9 @@
 FILE  *yyin;
 int yylval;
 char *yyltext;
-
+int flag = 0;
 int yyerror(void);
-
+void saveSymbol(const char* value,const char* token);
 %}
 
 %option noyywrap  
@@ -72,7 +72,8 @@ init                    {printf("\nInit : %s\n", yytext);return INIT;}
         }
 {FLOT}			        {printf("\nFlotante: %s\n", yytext);return FLOT;}
 {ID}			        {printf("\nIdentificador: %s\n", yytext);return ID;}
-{COMILLA}.*{COMILLA}|{COMILLA_I}.*{COMILLA_D} {   
+{COMILLA}.*{COMILLA}|{COMILLA_I}.*{COMILLA_D} {
+            saveSymbol(yytext,"CADENA");
             if(strlen(yytext) > 100){
                 printf( "ERROR LEXICO : supera el maximo de caracteres: %s\n", yytext ); 
                 exit (0);
@@ -99,4 +100,20 @@ init                    {printf("\nInit : %s\n", yytext);return INIT;}
 {COMENT}             {printf("\nComentario: %s\n", yytext);}
 .			            { printf( "ERROR LEXICO : Caracter no reconocido: %s\n", yytext ); exit (0);}
 
+%%
 
+void saveSymbol(const char* value,const char* token) {
+   FILE* file = fopen("simbols.txt", "a+");
+      if (file == NULL) {
+          perror("Error al abrir el archivo");
+          exit(1);
+      }
+         if(flag == 0 ){
+         fprintf(file, "Tabla de simbolos:\n");
+         fprintf(file, "Simbolo     Token\n");
+         flag = 1;
+       }
+
+      fprintf(file, "%s   %s\n",value,token);
+      fclose(file);
+}
