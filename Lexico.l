@@ -67,10 +67,12 @@ init                    {printf("\nInit : %s\n", yytext);return INIT;}
                 printf( "ERROR LEXICO : supera el maximo de caracteres: %s\n", yytext ); 
                 exit (0);
             }
+            saveSymbol(yytext,"",yytext,"");
             printf("\nConstante: %s\n", yytext);
             return CTE;
         }
-{FLOT}			        {printf("\nFlotante: %s\n", yytext);return FLOT;}
+{FLOT}			        { saveSymbol(yytext,"",yytext,"");
+                      printf("\nFlotante: %s\n", yytext);return FLOT;}
 {ID}			        { saveSymbol(yytext,"","_","");
                     printf("\nIdentificador: %s\n", yytext);return ID;}
 {COMILLA}.*{COMILLA}|{COMILLA_I}.*{COMILLA_D} {
@@ -78,6 +80,7 @@ init                    {printf("\nInit : %s\n", yytext);return INIT;}
                 printf( "ERROR LEXICO : supera el maximo de caracteres: %s\n", yytext ); 
                 exit (0);
             }
+            saveSymbol(yytext,"","_","");
             printf("\nCadena: %s\n", yytext);
             return CADENA;
         }
@@ -113,6 +116,7 @@ void saveSymbol(const char* nombre,const char* tipoDato,const char* valor,const 
       }
       if(flag == 0 ){
          fprintf(file,"%-30s|%-30s|%-30s|\n","NOMBRE","TIPODATO","VALOR","LONGITUD");
+         fprintf(file,"---------------------------------------------------------------------------------------------\n");
          flag = 1;
        }
 
