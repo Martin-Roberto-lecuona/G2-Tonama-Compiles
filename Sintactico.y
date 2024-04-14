@@ -8,6 +8,8 @@ int yystopparser=0;
 FILE  *yyin;
   int yyerror();
   int yylex();
+
+void updateType(const char* nombre, const char* tipoDato);
 %}
 
 %token CTE
@@ -63,8 +65,12 @@ sentencia:
 	;
 
 asignacion:
-	ID OP_ASIG expresion {printf("    ID = Expresion es ASIGNACION\n");}
-	|ID OP_ASIG CADENA {printf("    ID = CADENA es ASIGNACION\n");}
+	ID OP_ASIG asignable{printf("    ID = asignable es ASIGNACION\n");}
+	;
+
+asignable:
+	expresion {printf("    ID = Expresion es ASIGNABLE\n");}
+	| CADENA {printf("    ID = CADENA es ASIGNABLE\n");}
 	;
 
 seleccion:
@@ -143,8 +149,12 @@ int main(int argc, char *argv[])
         return 0;
 }
 int yyerror(void)
-     {
-       printf("Error Sintactico\n");
-	 exit (1);
-     }
+{
+	printf("Error Sintactico\n");
+	exit (1);
+}
 
+void updateType(const char* nombre, const char* tipoDato){
+	// find  the variable in symbol table and update its type.
+
+}

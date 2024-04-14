@@ -4,11 +4,20 @@
 #include <string.h>
 
 #include "y.tab.h"
+#define MAX_FILAS 1024
 FILE  *yyin;
 int yylval;
 char *yyltext;
 int flag = 0;
 int yyerror(void);
+typedef struct{
+    const char* nombre;
+    const char* tipoDato;
+    const char* valor;
+    const char* longitud;
+}t_fila;
+t_fila filas[MAX_FILAS];
+int filaActual=0;
 void saveSymbol(const char* nombre,const char* tipoDato,const char* valor,const char* longitud);
 %}
 
@@ -67,14 +76,27 @@ init                    {printf("\nInit : %s\n", yytext);return INIT;}
                 printf( "ERROR LEXICO : supera el maximo de caracteres: %s\n", yytext ); 
                 exit (0);
             }
-            saveSymbol(yytext,"",yytext,"");
+            char symbol[100];
+            strcpy(symbol, "_"); 
+            strcat(symbol, yytext);
+            saveSymbol(symbol,"",yytext,"");
             printf("\nConstante: %s\n", yytext);
             return CTE;
         }
-{FLOT}			        { saveSymbol(yytext,"",yytext,"");
-                      printf("\nFlotante: %s\n", yytext);return FLOT;}
-{ID}			        { saveSymbol(yytext,"","_","");
-                    printf("\nIdentificador: %s\n", yytext);return ID;}
+{FLOT}	{ 
+            char symbol[100];
+            strcpy(symbol, "_"); 
+            strcat(symbol, yytext);
+            saveSymbol(symbol,"",yytext,"");
+            printf("\nFlotante: %s\n", yytext);
+            return FLOT;
+        }
+
+{ID}    { 
+            saveSymbol(yytext,"","_","");
+            printf("\nIdentificador: %s\n", yytext);
+            return ID;
+        }
 {COMILLA}.*{COMILLA}|{COMILLA_I}.*{COMILLA_D} {
             if(strlen(yytext) > 100){
                 printf( "ERROR LEXICO : supera el maximo de caracteres: %s\n", yytext ); 
@@ -82,7 +104,10 @@ init                    {printf("\nInit : %s\n", yytext);return INIT;}
             }
             char sizeString[50];
             sprintf(sizeString, "%d", strlen(yytext));
-            saveSymbol(yytext,"",yytext,sizeString);
+            char symbol[100];
+            strcpy(symbol, "_"); 
+            strcat(symbol, yytext);
+            saveSymbol(symbol,"",yytext,"");
             printf("\nCadena: %s\n", yytext);
             return CADENA;
         }
@@ -108,20 +133,25 @@ init                    {printf("\nInit : %s\n", yytext);return INIT;}
 %%
 
 void saveSymbol(const char* nombre,const char* tipoDato,const char* valor,const char* longitud) {
-   if(flag == 0){
-      remove("symbol-table.txt");
-   }
-   FILE* file = fopen("symbol-table.txt", "a+");
-      if (file == NULL) {
-          perror("Error al abrir el archivo");
-          exit(1);
-      }
-      if(flag == 0 ){
-         fprintf(file,"%-50s|%-30s|%-30s|%-30s\n","NOMBRE","TIPODATO","VALOR","LONGITUD");
-         fprintf(file,"-------------------------------------------------------------------------------------------------------------------------\n");
-         flag = 1;
-       }
+    if(flag == 0){
+        remove("symbol-table.txt");
+    }
+    FILE* file = fopen("symbol-table.txt", "a+");
+    if (file == NULL) {
+        perror("Error al abrir el archivo");
+        exit(1);
+    }
+    if(flag == 0 ){
+        fprintf(file,"%-50s|%-30s|%-30s|%-30s\n","NOMBRE","TIPODATO","VALOR","LONGITUD");
+        fprintf(file,"-------------------------------------------------------------------------------------------------------------------------\n");
+        flag = 1;
+    }
 
-      fprintf(file,"_%-49s|%-30s|%-30s|%-30s\n", nombre, tipoDato, valor, longitud);
-      fclose(file);
+    fprintf(file,"%-49s|%-30s|%-30s|%-30s\n", nombre, tipoDato, valor, longitud);
+    /* strcpy(filas[filaActual].nombre,nombre);
+    strcpy(filas[filaActual].tipoDato,tipoDato);
+    strcpy(filas[filaActual].valor,valor);
+    strcpy(filas[filaActual].longitud,longitud); */
+    /* filaActual++; */
+    fclose(file);
 }

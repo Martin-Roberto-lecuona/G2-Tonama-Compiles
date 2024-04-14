@@ -11,7 +11,8 @@ Factor es Termino
 
 Identificador: b
 Termino es Expresion
-    ID = Expresion es ASIGNACION
+    ID = Expresion es ASIGNABLE
+    ID = asignable es ASIGNACION
  sentencia es bloque
 
 Asignacion: :=
@@ -22,7 +23,8 @@ Factor es Termino
 
 Identificador: c
 Termino es Expresion
-    ID = Expresion es ASIGNACION
+    ID = Expresion es ASIGNABLE
+    ID = asignable es ASIGNACION
  bloque sentencia es bloque
 
 Asignacion: :=
@@ -33,7 +35,8 @@ Factor es Termino
 
 Si: if
 Termino es Expresion
-    ID = Expresion es ASIGNACION
+    ID = Expresion es ASIGNABLE
+    ID = asignable es ASIGNACION
  bloque sentencia es bloque
 
 ParAbre: (
@@ -97,7 +100,8 @@ Factor es Termino
 
 Identificador: a
 Termino es Expresion
-    ID = Expresion es ASIGNACION
+    ID = Expresion es ASIGNABLE
+    ID = asignable es ASIGNACION
  bloque sentencia es bloque
 
 Asignacion: :=
@@ -108,7 +112,8 @@ Factor es Termino
 
 Identificador: a
 Termino es Expresion
-    ID = Expresion es ASIGNACION
+    ID = Expresion es ASIGNABLE
+    ID = asignable es ASIGNACION
  bloque sentencia es bloque
 
 Asignacion: :=
@@ -119,13 +124,15 @@ Factor es Termino
 
 Identificador: b
 Termino es Expresion
-    ID = Expresion es ASIGNACION
+    ID = Expresion es ASIGNABLE
+    ID = asignable es ASIGNACION
  bloque sentencia es bloque
 
 Asignacion: :=
 
 Cadena: "@sdADaSjfla%dfg"
-    ID = CADENA es ASIGNACION
+    ID = CADENA es ASIGNABLE
+    ID = asignable es ASIGNACION
  bloque sentencia es bloque
 
 Identificador: b
@@ -133,7 +140,8 @@ Identificador: b
 Asignacion: :=
 
 Cadena: "asldk  fh sjf"
-    ID = CADENA es ASIGNACION
+    ID = CADENA es ASIGNABLE
+    ID = asignable es ASIGNACION
  bloque sentencia es bloque
 
 Comentario: *- if.txt -*
@@ -246,7 +254,8 @@ Factor es Termino
 
 Identificador: b
 Termino es Expresion
-    ID = Expresion es ASIGNACION
+    ID = Expresion es ASIGNABLE
+    ID = asignable es ASIGNACION
  bloque sentencia es bloque
 
 Asignacion: :=
@@ -257,7 +266,8 @@ Factor es Termino
 
 Identificador: c
 Termino es Expresion
-    ID = Expresion es ASIGNACION
+    ID = Expresion es ASIGNABLE
+    ID = asignable es ASIGNACION
  bloque sentencia es bloque
 
 Asignacion: :=
@@ -268,7 +278,8 @@ Factor es Termino
 
 Si: if
 Termino es Expresion
-    ID = Expresion es ASIGNACION
+    ID = Expresion es ASIGNABLE
+    ID = asignable es ASIGNACION
  bloque sentencia es bloque
 
 ParAbre: (
@@ -319,7 +330,8 @@ Factor es Termino
 
 Identificador: b
 Termino es Expresion
-    ID = Expresion es ASIGNACION
+    ID = Expresion es ASIGNABLE
+    ID = asignable es ASIGNACION
  bloque sentencia es bloque
 
 Asignacion: :=
@@ -330,7 +342,8 @@ Factor es Termino
 
 Identificador: c
 Termino es Expresion
-    ID = Expresion es ASIGNACION
+    ID = Expresion es ASIGNABLE
+    ID = asignable es ASIGNACION
  bloque sentencia es bloque
 
 Asignacion: :=
@@ -341,7 +354,8 @@ Factor es Termino
 
 Si: if
 Termino es Expresion
-    ID = Expresion es ASIGNACION
+    ID = Expresion es ASIGNABLE
+    ID = asignable es ASIGNACION
  bloque sentencia es bloque
 
 ParAbre: (
@@ -418,7 +432,8 @@ Factor es Termino
 
 Identificador: b
 Termino es Expresion
-    ID = Expresion es ASIGNACION
+    ID = Expresion es ASIGNABLE
+    ID = asignable es ASIGNACION
  bloque sentencia es bloque
 
 Asignacion: :=
@@ -429,7 +444,8 @@ Factor es Termino
 
 Mientras: mientras
 Termino es Expresion
-    ID = Expresion es ASIGNACION
+    ID = Expresion es ASIGNABLE
+    ID = asignable es ASIGNACION
  bloque sentencia es bloque
 
 ParAbre: (
@@ -478,7 +494,8 @@ Factor es Termino
 
 LLaveCierra: }
 Expresion+Termino es Expresion
-    ID = Expresion es ASIGNACION
+    ID = Expresion es ASIGNABLE
+    ID = asignable es ASIGNACION
  bloque sentencia es bloque
 mientras (condicion) bloque = iteracion
  bloque sentencia es bloque
@@ -698,7 +715,8 @@ Factor es Termino
 
 LLaveCierra: }
 Expresion+Termino es Expresion
-    ID = Expresion es ASIGNACION
+    ID = Expresion es ASIGNABLE
+    ID = asignable es ASIGNACION
  sentencia es bloque
 
 Comentario: *- caso 4 -*
@@ -758,7 +776,8 @@ Factor es Termino
 
 LLaveCierra: }
 Expresion+Termino es Expresion
-    ID = Expresion es ASIGNACION
+    ID = Expresion es ASIGNABLE
+    ID = asignable es ASIGNACION
  sentencia es bloque
 
 Comentario: *- caso 5 -*
@@ -830,7 +849,8 @@ Factor es Termino
 
 LLaveCierra: }
 Expresion+Termino es Expresion
-    ID = Expresion es ASIGNACION
+    ID = Expresion es ASIGNABLE
+    ID = asignable es ASIGNACION
  sentencia es bloque
 
 Comentario: *- Anidados -*
@@ -898,7 +918,8 @@ Factor es Termino
 
 Mientras: mientras
 Expresion-Termino es Expresion
-    ID = Expresion es ASIGNACION
+    ID = Expresion es ASIGNABLE
+    ID = asignable es ASIGNACION
  sentencia es bloque
 
 ParAbre: (
@@ -938,7 +959,8 @@ Factor es Termino
 
 LLaveCierra: }
 Expresion-Termino es Expresion
-    ID = Expresion es ASIGNACION
+    ID = Expresion es ASIGNABLE
+    ID = asignable es ASIGNACION
  sentencia es bloque
 mientras (condicion) bloque = iteracion
  bloque sentencia es bloque
@@ -973,7 +995,8 @@ Factor es Termino
 
 LLaveCierra: }
 Expresion+Termino es Expresion
-    ID = Expresion es ASIGNACION
+    ID = Expresion es ASIGNABLE
+    ID = asignable es ASIGNACION
  bloque sentencia es bloque
 
 Sino: sino
@@ -1019,7 +1042,8 @@ Factor es Termino
 
 Mientras: mientras
 Expresion-Termino es Expresion
-    ID = Expresion es ASIGNACION
+    ID = Expresion es ASIGNABLE
+    ID = asignable es ASIGNACION
  sentencia es bloque
 
 ParAbre: (
@@ -1059,7 +1083,8 @@ Factor es Termino
 
 LLaveCierra: }
 Expresion-Termino es Expresion
-    ID = Expresion es ASIGNACION
+    ID = Expresion es ASIGNABLE
+    ID = asignable es ASIGNACION
  sentencia es bloque
 mientras (condicion) bloque = iteracion
  bloque sentencia es bloque
@@ -1094,7 +1119,8 @@ Factor es Termino
 
 LLaveCierra: }
 Expresion+Termino es Expresion
-    ID = Expresion es ASIGNACION
+    ID = Expresion es ASIGNABLE
+    ID = asignable es ASIGNACION
  bloque sentencia es bloque
 SI (condicion) bloque sino bloque = seleccion
  bloque sentencia es bloque
