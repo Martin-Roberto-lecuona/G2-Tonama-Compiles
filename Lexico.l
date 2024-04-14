@@ -67,9 +67,7 @@ init                    {printf("\nInit : %s\n", yytext);return INIT;}
                 printf( "ERROR LEXICO : supera el maximo de caracteres: %s\n", yytext ); 
                 exit (0);
             }
-            char sizeString[50];
-            sprintf(sizeString, "%d", strlen(yytext));
-            saveSymbol(yytext,"","",sizeString);
+            saveSymbol(yytext,"",yytext,"");
             printf("\nConstante: %s\n", yytext);
             return CTE;
         }
@@ -84,7 +82,7 @@ init                    {printf("\nInit : %s\n", yytext);return INIT;}
             }
             char sizeString[50];
             sprintf(sizeString, "%d", strlen(yytext));
-            saveSymbol(yytext,"","_",sizeString);
+            saveSymbol(yytext,"",yytext,sizeString);
             printf("\nCadena: %s\n", yytext);
             return CADENA;
         }
