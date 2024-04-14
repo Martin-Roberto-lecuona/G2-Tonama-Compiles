@@ -67,7 +67,9 @@ init                    {printf("\nInit : %s\n", yytext);return INIT;}
                 printf( "ERROR LEXICO : supera el maximo de caracteres: %s\n", yytext ); 
                 exit (0);
             }
-            saveSymbol(yytext,"",yytext,"");
+            char sizeString[50];
+            sprintf(sizeString, "%d", strlen(yytext));
+            saveSymbol(yytext,"","",sizeString);
             printf("\nConstante: %s\n", yytext);
             return CTE;
         }
@@ -80,7 +82,9 @@ init                    {printf("\nInit : %s\n", yytext);return INIT;}
                 printf( "ERROR LEXICO : supera el maximo de caracteres: %s\n", yytext ); 
                 exit (0);
             }
-            saveSymbol(yytext,"","_","");
+            char sizeString[50];
+            sprintf(sizeString, "%d", strlen(yytext));
+            saveSymbol(yytext,"","_",sizeString);
             printf("\nCadena: %s\n", yytext);
             return CADENA;
         }
@@ -115,11 +119,11 @@ void saveSymbol(const char* nombre,const char* tipoDato,const char* valor,const 
           exit(1);
       }
       if(flag == 0 ){
-         fprintf(file,"%-30s|%-30s|%-30s|\n","NOMBRE","TIPODATO","VALOR","LONGITUD");
-         fprintf(file,"---------------------------------------------------------------------------------------------\n");
+         fprintf(file,"%-50s|%-30s|%-30s|%-30s\n","NOMBRE","TIPODATO","VALOR","LONGITUD");
+         fprintf(file,"-------------------------------------------------------------------------------------------------------------------------\n");
          flag = 1;
        }
 
-      fprintf(file,"_%-29s|%-30s|%-30s|%-30s\n", nombre, tipoDato, valor, longitud);
+      fprintf(file,"_%-49s|%-30s|%-30s|%-30s\n", nombre, tipoDato, valor, longitud);
       fclose(file);
 }
