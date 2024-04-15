@@ -5,6 +5,11 @@
 
 #include "y.tab.h"
 #define MAX_FILAS 1024
+#define MIN_INT -2147483648
+#define MAX_INT 2147483647
+#define MIN_FLOAT -2147483648.f
+#define MAX_FLOAT 2147483647.f
+
 FILE  *yyin;
 int yylval;
 char *yyltext;
