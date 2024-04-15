@@ -13,6 +13,8 @@ int flag = 0;
 int yyerror(void);
 
 void saveSymbolOLD(const char* nombre,const char* tipoDato,const char* valor,const char* longitud);
+int validateInteger(int Value);
+int validateFloat(float Value);
 
 %}
 
@@ -67,42 +69,38 @@ init                    {printf("\nInit : %s\n", yytext);return INIT;}
 
 {COMA}                  {printf("\nComa: %s\n", yytext);return COMA;}
 {CTE}   {
-            if(strlen(yytext) > 100){
+            if(strlen(yytext) > 10){
                 printf( "ERROR LEXICO : supera el maximo de caracteres: %s\n", yytext ); 
                 exit (0);
             }
-            char symbol[100];
-            strcpy(symbol, "_"); 
-            strcat(symbol, yytext);
-            saveSymbolOLD(symbol,"",yytext,"");
-            printf("\nConstante: %s\n", yytext);
-            return CTE;
+            if(validateInteger(atoi(yytext))){
+                printf("\nConstante: %s\n", yytext);
+                return CTE;
+            }
         }
 {FLOT}	{ 
-            char symbol[100];
-            strcpy(symbol, "_"); 
-            strcat(symbol, yytext);
-            saveSymbolOLD(symbol,"",yytext,"");
-            printf("\nFlotante: %s\n", yytext);
-            return FLOT;
+           if(strlen(yytext) > 10){
+                printf( "ERROR LEXICO : supera el maximo de caracteres: %s\n", yytext ); 
+                exit (0);
+            }
+            if(validateFloat(atof(yytext))){
+                printf("\nFlotante: %s\n", yytext);
+                return FLOT;
+            }
         }
 
 {ID}    { 
-            saveSymbolOLD(yytext,"","_","");
-            printf("\nIdentificador: %s\n", yytext);
-            return ID;
-        }
-{COMILLA}.*{COMILLA}|{COMILLA_I}.*{COMILLA_D} {
-            if(strlen(yytext) > 100){
+            if(strlen(yytext) > 30){
                 printf( "ERROR LEXICO : supera el maximo de caracteres: %s\n", yytext ); 
                 exit (0);
             }
-            char sizeString[50];
-            sprintf(sizeString, "%d", strlen(yytext));
-            char symbol[100];
-            strcpy(symbol, "_"); 
-            strcat(symbol, yytext);
-            saveSymbolOLD(symbol,"",yytext,"");
+            printf("\nIdentificador: %s\n", yytext);return ID;
+        }
+{COMILLA}.*{COMILLA}|{COMILLA_I}.*{COMILLA_D} {
+           if(strlen(yytext) > 100){
+                printf( "ERROR LEXICO : supera el maximo de caracteres: %s\n", yytext ); 
+                exit (0);
+            }
             printf("\nCadena: %s\n", yytext);
             return CADENA;
         }
@@ -126,22 +124,22 @@ init                    {printf("\nInit : %s\n", yytext);return INIT;}
 .			            { printf( "ERROR LEXICO : Caracter no reconocido: %s\n", yytext ); exit (0);}
 
 %%
+int validateInteger(int Value) {
+    if(Value <= (int)MAX_INT && Value >= (int)MIN_INT) {
+        return 1;
+	}        
+    else {
+        fprintf(stderr, "LEXICAL ERROR (line %d): Integer constant out of range (Allowed range: from %d to %d) -> \%d\n", yylineno, (int)MIN_INT, (int)MAX_INT, Value);
+        system("PAUSE");
+        exit(-1);
+    }
+}
 
-void saveSymbolOLD(const char* nombre,const char* tipoDato,const char* valor,const char* longitud) {
-    if(flag == 0){
-        remove("symbol-table.txt");
-    }
-    FILE* file = fopen("symbol-table.txt", "a+");
-    if (file == NULL) {
-        perror("Error al abrir el archivo");
-        exit(1);
-    }
-    if(flag == 0 ){
-        fprintf(file,"%-50s|%-30s|%-30s|%-30s\n","NOMBRE","TIPODATO","VALOR","LONGITUD");
-        fprintf(file,"-------------------------------------------------------------------------------------------------------------------------\n");
-        flag = 1;
-    }
-
-    fprintf(file,"%-49s|%-30s|%-30s|%-30s\n", nombre, tipoDato, valor, longitud);
-    fclose(file);
+int validateFloat(float Value) {
+	if(Value > (float)MAX_FLOAT || Value < (float)MIN_FLOAT) {
+		fprintf(stderr, "LEXICAL ERROR (line %d): Float constant out of range (Allowed range: from %f to %f) -> \%f\n", yylineno, (float)MIN_FLOAT, (float)MAX_FLOAT, atof(yytext));
+        system("PAUSE");	
+		exit(-1);
+	}
+	return 1;
 }

@@ -5,8 +5,8 @@ flex Lexico.l
 bison -dyv Sintactico.y
 
 gcc.exe lex.yy.c y.tab.c -o lyc-compiler-1.0.0.exe
-lyc-compiler-1.0.0.exe prueba.txt > resultado.txt
-@REM lyc-compiler-1.0.0.exe simple.txt > resultado.txt
+@REM lyc-compiler-1.0.0.exe prueba.txt > resultado.txt
+lyc-compiler-1.0.0.exe simple.txt > resultado.txt
 @REM compilador.exe pruebasFallas.txt
 
 

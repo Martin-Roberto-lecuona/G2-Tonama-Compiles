@@ -8,19 +8,22 @@
 #define MAX_FILAS 1024
 int yystopparser=0;
 FILE  *yyin;
-  int yyerror();
-  int yylex();
+int yyerror();
+int yylex();
 char *yytext;
 
 
 int pos = -1;
 
+int posInit[50]={-1};
+// poner  en posInit la posicion de cada variable que se declara, para poder hacer el init correspondiente 
 typedef struct{
     char nombre[100];
     char tipoDato[15];
     char valor[50];
     char longitud[5];
 }t_fila;
+
 t_fila filas[MAX_FILAS];
 int filaActual=0;
 void saveInFile();
