@@ -3,13 +3,30 @@
 %{
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "y.tab.h"
+#define MAX_FILAS 1024
 int yystopparser=0;
 FILE  *yyin;
   int yyerror();
   int yylex();
+char *yytext;
 
-void updateType(const char* nombre, const char* tipoDato);
+
+int pos = -1;
+
+typedef struct{
+    char nombre[100];
+    char tipoDato[15];
+    char valor[50];
+    char longitud[5];
+}t_fila;
+t_fila filas[MAX_FILAS];
+int filaActual=0;
+void saveInFile();
+int findSymbol(char* nombre);
+void updateTipoDatoSymbol(int pos, char* tipoDato);
+void saveSymbol(const char* nombre,const char* tipoDato,const char* valor,const char* longitud);
 %}
 
 %token CTE
@@ -65,12 +82,28 @@ sentencia:
 	;
 
 asignacion:
-	ID OP_ASIG asignable{printf("    ID = asignable es ASIGNACION\n");}
+	ID {
+		pos = findSymbol(yytext); 
+		if (pos==-1) {
+			saveSymbol(yytext,"","_","");
+			pos = filaActual-1;
+		}  
+	}
+	OP_ASIG asignable{printf("    ID = asignable es ASIGNACION\n");}
 	;
 
 asignable:
 	expresion {printf("    ID = Expresion es ASIGNABLE\n");}
-	| CADENA {printf("    ID = CADENA es ASIGNABLE\n");}
+	| CADENA {
+		printf("    ID = CADENA es ASIGNABLE\n"); 
+		char symbol[100];
+		strcpy(symbol, "_"); 
+		strcat(symbol, yytext);
+		char largo[10];
+		sprintf(largo,"%d", strlen(yytext));
+		saveSymbol(symbol,"",yytext,largo);
+		updateTipoDatoSymbol(pos,"CADENA");
+		}
 	;
 
 seleccion:
@@ -117,8 +150,21 @@ termino:
 
 factor:
 	ID {printf("    ID es Factor \n");}
-	| CTE {printf("    CTE es Factor\n");}
-	| FLOT {printf("    FLOT es Factor\n");}
+	| CTE {
+		printf("    CTE es Factor\n");
+		char symbol[100];
+		strcpy(symbol, "_"); 
+		strcat(symbol, yytext);
+		saveSymbol(symbol,"",yytext,"");
+		updateTipoDatoSymbol(pos,"ENTERO");
+		}
+	| FLOT {printf("    FLOT es Factor\n");
+		char symbol[100];
+		strcpy(symbol, "_"); 
+		strcat(symbol, yytext);
+		saveSymbol(symbol,"", yytext,"");
+		updateTipoDatoSymbol(pos,"FLOTANTE");
+		}
 	;
 declaraciones:
 	variables DOS_PUNT TIPO_DATO declaraciones
@@ -137,16 +183,14 @@ int main(int argc, char *argv[])
     if((yyin = fopen(argv[1], "rt"))==NULL)
     {
         printf("\nNo se puede abrir el archivo de prueba: %s\n", argv[1]);
-       
     }
     else
     { 
-        
         yyparse();
-        
     }
+	saveInFile();
 	fclose(yyin);
-        return 0;
+    return 0;
 }
 int yyerror(void)
 {
@@ -154,7 +198,41 @@ int yyerror(void)
 	exit (1);
 }
 
-void updateType(const char* nombre, const char* tipoDato){
-	// find  the variable in symbol table and update its type.
+void saveInFile(){
 
+    FILE* file = fopen("symbol-table2.txt", "w");
+    if (file == NULL) {
+        perror("Error al abrir el archivo");
+        exit(1);
+    }
+	fprintf(file,"%-50s|%-30s|%-30s|%-30s\n","NOMBRE","TIPODATO","VALOR","LONGITUD");
+	fprintf(file,"-------------------------------------------------------------------------------------------------------------------------\n");
+
+	for(int i=0; i <sizeof(filas) / sizeof(filas[0]); i++){
+		if(strlen(filas[i].nombre)==0)
+			break;
+    	fprintf(file,"%-49s|%-30s|%-30s|%-30s\n", filas[i].nombre, filas[i].tipoDato, filas[i].valor, filas[i].longitud);
+	}
+    fclose(file);
+}
+int findSymbol(char* nombre){
+	int pos = 0, i=0, tam = sizeof(filas) / sizeof(filas[0]);
+	while (strcmp(filas[i].nombre,nombre)!=0 && i<tam ){
+		i++;
+		pos = i;
+	}
+	return i>=tam ? -1 : pos;
+}
+void updateTipoDatoSymbol(int pos, char* tipoDato){
+	if (pos==-1)
+		return;
+	strcpy(filas[pos].tipoDato,tipoDato);
+}
+void saveSymbol(const char* nombre,const char* tipoDato,const char* valor,const char* longitud) {
+    
+	strcpy(filas[filaActual].nombre,nombre);
+    strcpy(filas[filaActual].tipoDato,tipoDato);
+    strcpy(filas[filaActual].valor,valor);
+    strcpy(filas[filaActual].longitud,longitud);
+    filaActual++;
 }

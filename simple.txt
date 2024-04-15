@@ -1,0 +1,15 @@
+a := 1
+b := 1.2
+c := "cadena1"
+c := "cadena2"
+
+init {
+    v1 : Int
+    a1, b1 : Float
+    p1, p2, p3 : String
+}
+
+if (a > b AND c > b)
+{
+    escribir("a es mas grande que b y c es mas grande que b")
+}

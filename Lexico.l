@@ -8,17 +8,12 @@
 FILE  *yyin;
 int yylval;
 char *yyltext;
+
 int flag = 0;
 int yyerror(void);
-typedef struct{
-    const char* nombre;
-    const char* tipoDato;
-    const char* valor;
-    const char* longitud;
-}t_fila;
-t_fila filas[MAX_FILAS];
-int filaActual=0;
-void saveSymbol(const char* nombre,const char* tipoDato,const char* valor,const char* longitud);
+
+void saveSymbolOLD(const char* nombre,const char* tipoDato,const char* valor,const char* longitud);
+
 %}
 
 %option noyywrap  
@@ -79,7 +74,7 @@ init                    {printf("\nInit : %s\n", yytext);return INIT;}
             char symbol[100];
             strcpy(symbol, "_"); 
             strcat(symbol, yytext);
-            saveSymbol(symbol,"",yytext,"");
+            saveSymbolOLD(symbol,"",yytext,"");
             printf("\nConstante: %s\n", yytext);
             return CTE;
         }
@@ -87,13 +82,13 @@ init                    {printf("\nInit : %s\n", yytext);return INIT;}
             char symbol[100];
             strcpy(symbol, "_"); 
             strcat(symbol, yytext);
-            saveSymbol(symbol,"",yytext,"");
+            saveSymbolOLD(symbol,"",yytext,"");
             printf("\nFlotante: %s\n", yytext);
             return FLOT;
         }
 
 {ID}    { 
-            saveSymbol(yytext,"","_","");
+            saveSymbolOLD(yytext,"","_","");
             printf("\nIdentificador: %s\n", yytext);
             return ID;
         }
@@ -107,7 +102,7 @@ init                    {printf("\nInit : %s\n", yytext);return INIT;}
             char symbol[100];
             strcpy(symbol, "_"); 
             strcat(symbol, yytext);
-            saveSymbol(symbol,"",yytext,"");
+            saveSymbolOLD(symbol,"",yytext,"");
             printf("\nCadena: %s\n", yytext);
             return CADENA;
         }
@@ -132,7 +127,7 @@ init                    {printf("\nInit : %s\n", yytext);return INIT;}
 
 %%
 
-void saveSymbol(const char* nombre,const char* tipoDato,const char* valor,const char* longitud) {
+void saveSymbolOLD(const char* nombre,const char* tipoDato,const char* valor,const char* longitud) {
     if(flag == 0){
         remove("symbol-table.txt");
     }
@@ -148,10 +143,5 @@ void saveSymbol(const char* nombre,const char* tipoDato,const char* valor,const 
     }
 
     fprintf(file,"%-49s|%-30s|%-30s|%-30s\n", nombre, tipoDato, valor, longitud);
-    /* strcpy(filas[filaActual].nombre,nombre);
-    strcpy(filas[filaActual].tipoDato,tipoDato);
-    strcpy(filas[filaActual].valor,valor);
-    strcpy(filas[filaActual].longitud,longitud); */
-    /* filaActual++; */
     fclose(file);
 }
