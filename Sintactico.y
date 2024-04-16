@@ -6,29 +6,34 @@
 #include <string.h>
 #include "y.tab.h"
 #define MAX_FILAS 1024
+#define FLOAT "FLOTANTE"
+#define INT "ENTERO"
+#define STR "CADENA"
+
+
 int yystopparser=0;
 FILE  *yyin;
 int yyerror();
 int yylex();
 char *yytext;
 
-
 int pos = -1;
+int allPosInit[50]={-1};
+int posInit=0;
 
-int posInit[50]={-1};
-// poner  en posInit la posicion de cada variable que se declara, para poder hacer el init correspondiente 
+extern char lastID[31];
 typedef struct{
     char nombre[100];
     char tipoDato[15];
     char valor[50];
     char longitud[5];
 }t_fila;
-
 t_fila filas[MAX_FILAS];
 int filaActual=0;
 void saveInFile();
 int findSymbol(char* nombre);
 void updateTipoDatoSymbol(int pos, char* tipoDato);
+void updateTipoDatoSymbolInit(char* tipoDato);
 void saveSymbol(const char* nombre,const char* tipoDato,const char* valor,const char* longitud);
 %}
 
@@ -66,11 +71,11 @@ void saveSymbol(const char* nombre,const char* tipoDato,const char* valor,const 
 
 %%
 proyecto : 
-	bloque {printf(" FIN\n");}
+	bloque {printf("\tFIN\n");}
 	;
 bloque:
-	sentencia {printf(" sentencia es bloque\n");}
-	| bloque sentencia {printf(" bloque sentencia es bloque\n");}
+	sentencia {printf("\tsentencia es bloque\n");}
+	| bloque sentencia {printf("\tbloque sentencia es bloque\n");}
 	;
 
 sentencia:
@@ -80,7 +85,7 @@ sentencia:
 	| ESCRIBIR PARENTE_I CADENA PARENTE_D
 	| ESCRIBIR PARENTE_I ID PARENTE_D
 	| LEER PARENTE_I ID PARENTE_D
-	| INIT LLAVE_I declaraciones LLAVE_D
+	| INIT LLAVE_I declaraciones LLAVE_D {printf("\tinit { declaraciones } es SENTENCIA\n");}
 	| INIT LLAVE_I LLAVE_D
 	;
 
@@ -92,29 +97,29 @@ asignacion:
 			pos = filaActual-1;
 		}  
 	}
-	OP_ASIG asignable{printf("    ID = asignable es ASIGNACION\n");}
+	OP_ASIG asignable{printf("\tID = asignable es ASIGNACION\n");}
 	;
 
 asignable:
-	expresion {printf("    ID = Expresion es ASIGNABLE\n");}
+	expresion {printf("\tID = Expresion es ASIGNABLE\n");}
 	| CADENA {
-		printf("    ID = CADENA es ASIGNABLE\n"); 
+		printf("\tID = CADENA es ASIGNABLE\n"); 
 		char symbol[100];
 		strcpy(symbol, "_"); 
 		strcat(symbol, yytext);
 		char largo[10];
 		sprintf(largo,"%d", strlen(yytext));
 		saveSymbol(symbol,"",yytext,largo);
-		updateTipoDatoSymbol(pos,"CADENA");
+		updateTipoDatoSymbol(pos,STR);
 		}
 	;
 
 seleccion:
-	SI PARENTE_I condicion PARENTE_D LLAVE_I bloque LLAVE_D SINO LLAVE_I bloque LLAVE_D {printf("SI (condicion) bloque sino bloque = seleccion\n");}
-	| SI PARENTE_I condicion PARENTE_D LLAVE_I bloque LLAVE_D {printf("SI (condicion) bloque = seleccion\n");}
+	SI PARENTE_I condicion PARENTE_D LLAVE_I bloque LLAVE_D SINO LLAVE_I bloque LLAVE_D {printf("\tSI (condicion) bloque sino bloque = seleccion\n");}
+	| SI PARENTE_I condicion PARENTE_D LLAVE_I bloque LLAVE_D {printf("\tSI (condicion) bloque = seleccion\n");}
 	;
 iteracion:
-	MIENTRAS PARENTE_I condicion PARENTE_D LLAVE_I bloque LLAVE_D {printf("mientras (condicion) bloque = iteracion\n");}
+	MIENTRAS PARENTE_I condicion PARENTE_D LLAVE_I bloque LLAVE_D {printf("\tmientras (condicion) bloque = iteracion\n");}
 	;
 compuertas:
 	AND
@@ -129,54 +134,79 @@ comparador:
 	;
 
 condicion:
-	comparacion {printf("comparacion = condicion\n");}
-	|condicion compuertas comparacion {printf("condicion compuerta comparacion = condicion\n");}
+	comparacion {printf("\tcomparacion = condicion\n");}
+	|condicion compuertas comparacion {printf("\tcondicion compuerta comparacion = condicion\n");}
 	;
 comparacion:
-	expresion comparador expresion {printf("expresion comparador expresion = comparacion\n");}
-	|NOT comparacion {printf("NOT comparacion = comparacion\n");}
-	| PARENTE_I comparacion PARENTE_D {printf("(comparacion) = comparacion\n");}
-	| factor {printf("factor = comparacion\n");}
+	expresion comparador expresion {printf("\texpresion comparador expresion = comparacion\n");}
+	|NOT comparacion {printf("\tNOT comparacion = comparacion\n");}
+	| PARENTE_I comparacion PARENTE_D {printf("\t(comparacion) = comparacion\n");}
+	| factor {printf("\tfactor = comparacion\n");}
 	;
 
 expresion:
-	termino {printf("Termino es Expresion\n");}
-	|expresion OP_SUMA termino {printf("Expresion+Termino es Expresion\n");}
-	|expresion OP_REST termino {printf("Expresion-Termino es Expresion\n");}
+	termino {printf("\tTermino es Expresion\n");}
+	|expresion OP_SUMA termino {printf("\tExpresion+Termino es Expresion\n");}
+	|expresion OP_REST termino {printf("\tExpresion-Termino es Expresion\n");}
 	;
 
 termino:
-	factor {printf("Factor es Termino\n");}
-	|termino OP_MULT factor {printf("Termino*Factor es Termino\n");}
-	|termino OP_DIVI factor {printf("Termino/Factor es Termino\n");}
+	factor {printf("\tFactor es Termino\n");}
+	|termino OP_MULT factor {printf("\tTermino*Factor es Termino\n");}
+	|termino OP_DIVI factor {printf("\tTermino/Factor es Termino\n");}
 	;
 
 factor:
-	ID {printf("    ID es Factor \n");}
+	ID {printf("\tID es Factor \n");}
 	| CTE {
-		printf("    CTE es Factor\n");
+		printf("\tCTE es Factor\n");
 		char symbol[100];
 		strcpy(symbol, "_"); 
 		strcat(symbol, yytext);
 		saveSymbol(symbol,"",yytext,"");
-		updateTipoDatoSymbol(pos,"ENTERO");
+		updateTipoDatoSymbol(pos,INT);
 		}
-	| FLOT {printf("    FLOT es Factor\n");
+	| FLOT {printf("\tFLOT es Factor\n");
 		char symbol[100];
 		strcpy(symbol, "_"); 
 		strcat(symbol, yytext);
 		saveSymbol(symbol,"", yytext,"");
-		updateTipoDatoSymbol(pos,"FLOTANTE");
+		updateTipoDatoSymbol(pos,FLOAT);
 		}
 	;
 declaraciones:
-	variables DOS_PUNT TIPO_DATO declaraciones
-	| variables DOS_PUNT TIPO_DATO
+	declaraciones variables DOS_PUNT TIPO_DATO {
+			updateTipoDatoSymbolInit(yytext);
+			printf("\tvariable : tipo dato declaracion es DECLARACION\n");
+		}
+	| variables DOS_PUNT TIPO_DATO {
+			updateTipoDatoSymbolInit(yytext);
+			printf("\tvariable : tipo dato es DECLARACION\n");
+		}
 	;
 
 variables:
-	ID COMA variables
-	| ID
+	ID { 
+			pos = findSymbol(yytext); 
+			if (pos==-1) {
+				saveSymbol(yytext,"","_","");
+				pos = filaActual-1;
+			}
+			allPosInit[posInit]=pos;
+			posInit++;  
+			printf("\tid es VARIABLE \n");
+		}
+	
+	| variables COMA ID {
+							pos = findSymbol(yytext); 
+								if (pos==-1) {
+									saveSymbol(yytext,"","_","");
+									pos = filaActual-1;
+								}
+								allPosInit[posInit]=pos;
+								posInit++;  
+							printf("\tid, variables es VARIABLES\n");
+						}
 	;
 %%
 
@@ -203,7 +233,7 @@ int yyerror(void)
 
 void saveInFile(){
 
-    FILE* file = fopen("symbol-table2.txt", "w");
+    FILE* file = fopen("symbol-table.txt", "w");
     if (file == NULL) {
         perror("Error al abrir el archivo");
         exit(1);
@@ -229,7 +259,27 @@ int findSymbol(char* nombre){
 void updateTipoDatoSymbol(int pos, char* tipoDato){
 	if (pos==-1)
 		return;
-	strcpy(filas[pos].tipoDato,tipoDato);
+	if(strlen(filas[pos].tipoDato)!= 0 && strcmp(filas[pos].tipoDato, tipoDato)!= 0){
+		printf("\nError semantico: El símbolo %s ya fue declarado con un tipo de dato distinto.\n", filas[pos].tipoDato);
+		exit(-1) ;
+	}
+	else
+		strcpy(filas[pos].tipoDato,tipoDato);
+}
+void updateTipoDatoSymbolInit( char* tipoDato){
+	char tipoAux[10];
+
+	if(strcmp("Int",tipoDato)==0)
+		strcpy(tipoAux,INT);
+	else if(strcmp("Float",tipoDato)==0)
+		strcpy(tipoAux,FLOAT);
+	else if(strcmp("String",tipoDato)==0)
+		strcpy(tipoAux,STR);
+	
+	for (int i =0; i < posInit ;i++ ){
+		updateTipoDatoSymbol(allPosInit[i],tipoAux);
+		allPosInit[i]=-1;
+	}
 }
 void saveSymbol(const char* nombre,const char* tipoDato,const char* valor,const char* longitud) {
     

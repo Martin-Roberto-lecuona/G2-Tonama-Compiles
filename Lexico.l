@@ -17,6 +17,8 @@ char *yyltext;
 int flag = 0;
 int yyerror(void);
 
+char lastID[31];
+
 void saveSymbolOLD(const char* nombre,const char* tipoDato,const char* valor,const char* longitud);
 int validateInteger(int Value);
 int validateFloat(float Value);
@@ -62,7 +64,7 @@ DOS_PUNT          ":"
 %%
 
 "Float"|"Int"|"String"  {printf("\nTipo de dato : %s\n", yytext);return TIPO_DATO;}
-AND                     {printf("\nComparacion AND : %s\n", yytext);return AND;}
+AND                     {printf("\nComparacion AND : %s\n");return AND;}
 OR                      {printf("\nComparacion OR : %s\n", yytext);return OR;}
 NOT                     {printf("\nNegacion NOT : %s\n", yytext);return NOT;}
 escribir                {printf("\nEscribir : %s\n", yytext);return ESCRIBIR;}
@@ -99,6 +101,7 @@ init                    {printf("\nInit : %s\n", yytext);return INIT;}
                 printf( "ERROR LEXICO : supera el maximo de caracteres: %s\n", yytext ); 
                 exit (0);
             }
+            strcpy(lastID,yytext);
             printf("\nIdentificador: %s\n", yytext);return ID;
         }
 {COMILLA}.*{COMILLA}|{COMILLA_I}.*{COMILLA_D} {

@@ -4,128 +4,88 @@ Identificador: a
 Asignacion: :=
 
 Constante: 1
-    CTE es Factor
-Factor es Termino
+	CTE es Factor
+	Factor es Termino
 
 Identificador: b
-Termino es Expresion
-    ID = Expresion es ASIGNABLE
-    ID = asignable es ASIGNACION
- sentencia es bloque
+	Termino es Expresion
+	ID = Expresion es ASIGNABLE
+	ID = asignable es ASIGNACION
+	sentencia es bloque
 
 Asignacion: :=
 
 Flotante: 1.2
-    FLOT es Factor
-Factor es Termino
+	FLOT es Factor
+	Factor es Termino
 
 Identificador: c
-Termino es Expresion
-    ID = Expresion es ASIGNABLE
-    ID = asignable es ASIGNACION
- bloque sentencia es bloque
+	Termino es Expresion
+	ID = Expresion es ASIGNABLE
+	ID = asignable es ASIGNACION
+	bloque sentencia es bloque
 
 Asignacion: :=
 
 Cadena: "cadena1"
-    ID = CADENA es ASIGNABLE
-    ID = asignable es ASIGNACION
- bloque sentencia es bloque
+	ID = CADENA es ASIGNABLE
+	ID = asignable es ASIGNACION
+	bloque sentencia es bloque
 
 Identificador: c
 
 Asignacion: :=
 
 Cadena: "cadena2"
-    ID = CADENA es ASIGNABLE
-    ID = asignable es ASIGNACION
- bloque sentencia es bloque
+	ID = CADENA es ASIGNABLE
+	ID = asignable es ASIGNACION
+	bloque sentencia es bloque
 
 Init : init
 
 LLaveAbre: {
 
-Identificador: v1
+Identificador: i1
+	id es VARIABLE 
 
 Dos puntos: :
 
 Tipo de dato : Int
+	variable : tipo dato es DECLARACION
 
-Identificador: a1
+Identificador: f1
+	id es VARIABLE 
 
 Coma: ,
 
-Identificador: b1
+Identificador: f1
+	id, variables es VARIABLES
 
 Dos puntos: :
 
 Tipo de dato : Float
+	variable : tipo dato declaracion es DECLARACION
 
-Identificador: p1
-
-Coma: ,
-
-Identificador: p2
+Identificador: s1
+	id es VARIABLE 
 
 Coma: ,
 
-Identificador: p3
+Identificador: s2
+	id, variables es VARIABLES
+
+Coma: ,
+
+Identificador: s3
+	id, variables es VARIABLES
+
+Coma: ,
+
+Identificador: i1
+	id, variables es VARIABLES
 
 Dos puntos: :
 
 Tipo de dato : String
 
-LLaveCierra: }
- bloque sentencia es bloque
-
-Si: if
-
-ParAbre: (
-
-Identificador: a
-    ID es Factor 
-
-Mayor: >
-Factor es Termino
-Termino es Expresion
-
-Identificador: b
-    ID es Factor 
-Factor es Termino
-
-Comparacion AND : AND
-Termino es Expresion
-expresion comparador expresion = comparacion
-comparacion = condicion
-
-Identificador: c
-    ID es Factor 
-
-Mayor: >
-Factor es Termino
-Termino es Expresion
-
-Identificador: b
-    ID es Factor 
-Factor es Termino
-
-ParCierra: )
-Termino es Expresion
-expresion comparador expresion = comparacion
-condicion compuerta comparacion = condicion
-
-LLaveAbre: {
-
-Escribir : escribir
-
-ParAbre: (
-
-Cadena: "a es mas grande que b y c es mas grande que b"
-
-ParCierra: )
- sentencia es bloque
-
-LLaveCierra: }
-SI (condicion) bloque = seleccion
- bloque sentencia es bloque
- FIN
+Error semantico: El símbolo ENTERO ya fue declarado con un tipo de dato distinto.

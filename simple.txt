@@ -4,9 +4,9 @@ c := "cadena1"
 c := "cadena2"
 
 init {
-    v1 : Int
-    a1, b1 : Float
-    p1, p2, p3 : String
+    i1 : Int
+    f1, f1 : Float
+    s1, s2, s3: String
 }
 
 if (a > b AND c > b)
