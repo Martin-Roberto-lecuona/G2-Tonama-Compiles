@@ -63,7 +63,7 @@ DOS_PUNT          ":"
 %%
 
 "Float"|"Int"|"String"  {printf("\nTipo de dato : %s\n", yytext);return TIPO_DATO;}
-AND                     {printf("\nComparacion AND : %s\n");return AND;}
+AND                     {printf("\nComparacion AND : %s\n", yytext);return AND;}
 OR                      {printf("\nComparacion OR : %s\n", yytext);return OR;}
 NOT                     {printf("\nNegacion NOT : %s\n", yytext);return NOT;}
 escribir                {printf("\nEscribir : %s\n", yytext);return ESCRIBIR;}

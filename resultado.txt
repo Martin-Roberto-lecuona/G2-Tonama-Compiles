@@ -103,7 +103,7 @@ Identificador: b
 	ID es Factor 
 	Factor es Termino
 
-Comparacion AND : YYцллллллллллллллллллллjh8И#vХЧЪ▀u┘Жu*Х8▓ШЪг
+Comparacion AND : AND
 	Termino es Expresion
 	expresion comparador expresion = comparacion
 	comparacion = condicion
