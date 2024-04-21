@@ -19,7 +19,6 @@ int yyerror(void);
 
 char lastID[31];
 
-void saveSymbolOLD(const char* nombre,const char* tipoDato,const char* valor,const char* longitud);
 int validateInteger(int Value);
 int validateFloat(float Value);
 
@@ -84,6 +83,7 @@ init                    {printf("\nInit : %s\n", yytext);return INIT;}
                 printf("\nConstante: %s\n", yytext);
                 return CTE;
             }
+            exit(-1);
         }
 {FLOT}	{ 
            if(strlen(yytext) > 10){
@@ -94,6 +94,7 @@ init                    {printf("\nInit : %s\n", yytext);return INIT;}
                 printf("\nFlotante: %s\n", yytext);
                 return FLOT;
             }
+            exit(-1);
         }
 
 {ID}    { 
@@ -132,22 +133,18 @@ init                    {printf("\nInit : %s\n", yytext);return INIT;}
 .			            { printf( "ERROR LEXICO : Caracter no reconocido: %s\n", yytext ); exit (0);}
 
 %%
-int validateInteger(int Value) {
-    if(Value <= (int)MAX_INT && Value >= (int)MIN_INT) {
-        return 1;
-	}        
-    else {
-        fprintf(stderr, "LEXICAL ERROR (line %d): Integer constant out of range (Allowed range: from %d to %d) -> \%d\n", yylineno, (int)MIN_INT, (int)MAX_INT, Value);
-        system("PAUSE");
-        exit(-1);
-    }
+int validateInteger(int value) {
+    if(value <= (int)MAX_INT && value >= (int)MIN_INT) 
+        return 1;  
+        
+    fprintf(stderr, "LEXICAL ERROR (line %d): Integer constant out of range (Allowed range: from %d to %d) -> \%d\n", yylineno, (int)MIN_INT, (int)MAX_INT, value);
+    return 0;
 }
 
-int validateFloat(float Value) {
-	if(Value > (float)MAX_FLOAT || Value < (float)MIN_FLOAT) {
+int validateFloat(float value) {
+	if(value > (float)MAX_FLOAT || value < (float)MIN_FLOAT) {
 		fprintf(stderr, "LEXICAL ERROR (line %d): Float constant out of range (Allowed range: from %f to %f) -> \%f\n", yylineno, (float)MIN_FLOAT, (float)MAX_FLOAT, atof(yytext));
-        system("PAUSE");	
-		exit(-1);
+		return 0;
 	}
 	return 1;
 }

@@ -79,13 +79,63 @@ Coma: ,
 Identificador: s3
 	id, variables es VARIABLES
 
-Coma: ,
-
-Identificador: i1
-	id, variables es VARIABLES
-
 Dos puntos: :
 
 Tipo de dato : String
+	variable : tipo dato declaracion es DECLARACION
 
-Error semantico: El sÃ­mbolo ENTERO ya fue declarado con un tipo de dato distinto.
+LLaveCierra: }
+	init { declaraciones } es SENTENCIA
+	bloque sentencia es bloque
+
+Si: if
+
+ParAbre: (
+
+Identificador: a
+	ID es Factor 
+
+Mayor: >
+	Factor es Termino
+	Termino es Expresion
+
+Identificador: b
+	ID es Factor 
+	Factor es Termino
+
+Comparacion AND : YYÃÌÌÌÌÌÌÌÌÌÌÌÌÌÌÌÌÌÌÌÌjh8é#vèþÿ‹u…öu*è8’ûÿÇ
+	Termino es Expresion
+	expresion comparador expresion = comparacion
+	comparacion = condicion
+
+Identificador: c
+	ID es Factor 
+
+Mayor: >
+	Factor es Termino
+	Termino es Expresion
+
+Identificador: b
+	ID es Factor 
+	Factor es Termino
+
+ParCierra: )
+	Termino es Expresion
+	expresion comparador expresion = comparacion
+	condicion compuerta comparacion = condicion
+
+LLaveAbre: {
+
+Escribir : escribir
+
+ParAbre: (
+
+Cadena: "a es mas grande que b y c es mas grande que b"
+
+ParCierra: )
+	sentencia es bloque
+
+LLaveCierra: }
+	SI (condicion) bloque = seleccion
+	bloque sentencia es bloque
+	FIN

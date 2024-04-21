@@ -233,7 +233,7 @@ int yyerror(void)
 
 void saveInFile(){
 
-    FILE* file = fopen("symbol-table.txt", "w");
+    FILE* file = fopen("symbol-table.txt", "w+");
     if (file == NULL) {
         perror("Error al abrir el archivo");
         exit(1);
