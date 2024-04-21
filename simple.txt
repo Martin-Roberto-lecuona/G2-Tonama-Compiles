@@ -13,3 +13,6 @@ if (a > b AND c > b)
 {
     escribir("a es mas grande que b y c es mas grande que b")
 }
+variableEN:="en"
+byc := buscoYReemplazo("buscar", variableEN, "reemplazo")
+aplicarDescuento(27.5, [500, 305, 79.4, 10], 3) 

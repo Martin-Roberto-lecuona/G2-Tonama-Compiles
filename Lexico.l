@@ -42,6 +42,7 @@ ID			{LETRA}({LETRA}|{DIGITO})*
 COMENT     "*-"((("-"[^*])?)|[^-])*"-*"
 
 
+
 OP_ASIG   	":""="
 OP_SUMA		"+"
 OP_MULT      "*"
@@ -56,12 +57,13 @@ PARENTE_I			"("
 PARENTE_D			")"
 LLAVE_I          "{"
 LLAVE_D          "}"
+CORCH_I          "["
+CORCH_D          "]"
 DOS_PUNT          ":"
 
 
 
 %%
-
 "Float"|"Int"|"String"  {printf("\nTipo de dato : %s\n", yytext);return TIPO_DATO;}
 AND                     {printf("\nComparacion AND : %s\n", yytext);return AND;}
 OR                      {printf("\nComparacion OR : %s\n", yytext);return OR;}
@@ -72,6 +74,8 @@ init                    {printf("\nInit : %s\n", yytext);return INIT;}
 "si"|"if"               {printf("\nSi: %s\n", yytext);return SI;}
 "mientras"|"while"      {printf("\nMientras: %s\n", yytext);return MIENTRAS;}
 "sino"|"else"           {printf("\nSino: %s\n", yytext);return SINO;}
+"buscoYReemplazo"       {printf("\nBusco y reemplazo: %s\n", yytext);return BUSC_Y_REMP;}
+"aplicarDescuento"       {printf("\nAplicar Descuento: %s\n", yytext);return APLIC_DESC;}
 
 {COMA}                  {printf("\nComa: %s\n", yytext);return COMA;}
 {CTE}   {
@@ -105,7 +109,7 @@ init                    {printf("\nInit : %s\n", yytext);return INIT;}
             strcpy(lastID,yytext);
             printf("\nIdentificador: %s\n", yytext);return ID;
         }
-{COMILLA}.*{COMILLA}|{COMILLA_I}.*{COMILLA_D} {
+{COMILLA}[^"]*{COMILLA}|{COMILLA_I}.*{COMILLA_D} {
            if(strlen(yytext) > 100){
                 printf( "ERROR LEXICO : supera el maximo de caracteres: %s\n", yytext ); 
                 exit (0);
@@ -127,6 +131,8 @@ init                    {printf("\nInit : %s\n", yytext);return INIT;}
 {PARENTE_D}			        {printf("\nParCierra: %s\n", yytext);return PARENTE_D;}
 {LLAVE_I}			        {printf("\nLLaveAbre: %s\n", yytext);return LLAVE_I;}
 {LLAVE_D}			        {printf("\nLLaveCierra: %s\n", yytext);return LLAVE_D;}
+{CORCH_I}			        {printf("\nCorcheteAbre: %s\n", yytext);return CORCH_I;}
+{CORCH_D}			        {printf("\nCorcheteCierra: %s\n", yytext);return CORCH_D;}
 {DOS_PUNT}                    {printf("\nDos puntos: %s\n", yytext);return DOS_PUNT;}
 {BLANCO}
 {COMENT}             {printf("\nComentario: %s\n", yytext);}

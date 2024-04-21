@@ -9,7 +9,7 @@ Constante: 1
 
 Identificador: b
 	Termino es Expresion
-	ID = Expresion es ASIGNABLE
+	Expresion es ASIGNABLE
 	ID = asignable es ASIGNACION
 	sentencia es bloque
 
@@ -21,7 +21,7 @@ Flotante: 1.2
 
 Identificador: c
 	Termino es Expresion
-	ID = Expresion es ASIGNABLE
+	Expresion es ASIGNABLE
 	ID = asignable es ASIGNACION
 	bloque sentencia es bloque
 
@@ -136,6 +136,85 @@ ParCierra: )
 	sentencia es bloque
 
 LLaveCierra: }
+
+Identificador: variableEN
 	SI (condicion) bloque = seleccion
+	bloque sentencia es bloque
+
+Asignacion: :=
+
+Constante: 1
+	CTE es Factor
+	Factor es Termino
+
+Identificador: byc
+	Termino es Expresion
+	Expresion es ASIGNABLE
+	ID = asignable es ASIGNACION
+	bloque sentencia es bloque
+
+Asignacion: :=
+
+Busco y reemplazo: buscoYReemplazo
+
+ParAbre: (
+
+Cadena: "buscar"
+
+CADENA es factorString
+
+Coma: ,
+
+Identificador: variableEN
+	ID es factorString 
+
+Coma: ,
+
+Cadena: "reemplazo"
+
+CADENA es factorString
+
+ParCierra: )
+	buscarYreemplazar es ASIGNABLE
+	ID = asignable es ASIGNACION
+	bloque sentencia es bloque
+
+Aplicar Descuento: aplicarDescuento
+
+ParAbre: (
+
+Flotante: 27.5
+	Flotante es factorFlotante
+
+Coma: ,
+
+CorcheteAbre: [
+
+Constante: 500
+	CTE es factorTodoFloat
+
+Coma: ,
+
+Constante: 305
+	CTE es factorTodoFloat
+
+Coma: ,
+
+Flotante: 79.4
+	Flotante es factorFlotante
+
+Coma: ,
+
+Constante: 10
+	CTE es factorTodoFloat
+
+CorcheteCierra: ]
+
+Coma: ,
+
+Constante: 3
+	CTE es factorCte
+
+ParCierra: )
 	bloque sentencia es bloque
 	FIN
