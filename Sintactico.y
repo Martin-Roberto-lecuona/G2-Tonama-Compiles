@@ -35,6 +35,9 @@ int findSymbol(char* nombre);
 void updateTipoDatoSymbol(int pos, char* tipoDato);
 void updateTipoDatoSymbolInit(char* tipoDato);
 void saveSymbol(const char* nombre,const char* tipoDato,const char* valor,const char* longitud);
+void saveSymbolCte(const char* valor);
+void saveSymbolCadena(const char* valor);
+
 %}
 
 %token CTE
@@ -58,6 +61,8 @@ void saveSymbol(const char* nombre,const char* tipoDato,const char* valor,const 
 %token OP_IGUAL
 %token LLAVE_I
 %token LLAVE_D
+%token CORCH_I         
+%token CORCH_D         
 %token ESCRIBIR
 %token LEER
 %token OR
@@ -67,6 +72,8 @@ void saveSymbol(const char* nombre,const char* tipoDato,const char* valor,const 
 %token DOS_PUNT
 %token TIPO_DATO
 %token COMA
+%token BUSC_Y_REMP
+%token APLIC_DESC
 
 
 %%
@@ -87,8 +94,48 @@ sentencia:
 	| LEER PARENTE_I ID PARENTE_D
 	| INIT LLAVE_I declaraciones LLAVE_D {printf("\tinit { declaraciones } es SENTENCIA\n");}
 	| INIT LLAVE_I LLAVE_D
+	| buscarYreemplazar
+	| aplicarDescuento
+	;
+aplicarDescuento:
+	APLIC_DESC PARENTE_I factorFlotante COMA CORCH_I listaNum CORCH_D COMA factorCte PARENTE_D
 	;
 
+listaNum:
+	listaNum COMA factorTodoFloat 
+	| factorTodoFloat
+	;
+buscarYreemplazar:
+	BUSC_Y_REMP PARENTE_I factorString COMA factorString COMA factorString PARENTE_D
+	;
+
+factorString:
+	ID {printf("\tID es factorString \n");}
+	| CADENA {
+		printf("\nCADENA es factorString\n");
+		saveSymbolCadena(yytext);}
+	;
+factorFlotante:
+	ID {printf("\tID es factorFlotante \n");}
+	| FLOT {
+		printf("\tFlotante es factorFlotante\n");
+		saveSymbolCte(yytext);
+		}
+	;
+factorCte:
+	ID {printf("\tID es factorCte \n");}
+	| CTE {
+		printf("\tCTE es factorCte\n");
+		saveSymbolCte(yytext);
+		}
+	;
+factorTodoFloat:
+	factorFlotante 
+	| CTE {
+		printf("\tCTE es factorTodoFloat\n");
+		saveSymbolCte(yytext);
+		}
+	;
 asignacion:
 	ID {
 		pos = findSymbol(yytext); 
@@ -101,16 +148,15 @@ asignacion:
 	;
 
 asignable:
-	expresion {printf("\tID = Expresion es ASIGNABLE\n");}
+	expresion {printf("\tExpresion es ASIGNABLE\n");}
 	| CADENA {
 		printf("\tID = CADENA es ASIGNABLE\n"); 
-		char symbol[100];
-		strcpy(symbol, "_"); 
-		strcat(symbol, yytext);
-		char largo[10];
-		sprintf(largo,"%d", strlen(yytext));
-		saveSymbol(symbol,"",yytext,largo);
+		saveSymbolCadena(yytext);
 		updateTipoDatoSymbol(pos,STR);
+		}
+	| buscarYreemplazar {
+		printf("\tbuscarYreemplazar es ASIGNABLE\n"); 
+		updateTipoDatoSymbol(pos,INT);
 		}
 	;
 
@@ -160,17 +206,11 @@ factor:
 	ID {printf("\tID es Factor \n");}
 	| CTE {
 		printf("\tCTE es Factor\n");
-		char symbol[100];
-		strcpy(symbol, "_"); 
-		strcat(symbol, yytext);
-		saveSymbol(symbol,"",yytext,"");
+		saveSymbolCte(yytext);
 		updateTipoDatoSymbol(pos,INT);
 		}
 	| FLOT {printf("\tFLOT es Factor\n");
-		char symbol[100];
-		strcpy(symbol, "_"); 
-		strcat(symbol, yytext);
-		saveSymbol(symbol,"", yytext,"");
+		saveSymbolCte(yytext);
 		updateTipoDatoSymbol(pos,FLOAT);
 		}
 	;
@@ -288,4 +328,19 @@ void saveSymbol(const char* nombre,const char* tipoDato,const char* valor,const 
     strcpy(filas[filaActual].valor,valor);
     strcpy(filas[filaActual].longitud,longitud);
     filaActual++;
+}
+
+void saveSymbolCte(const char* valor){
+	char symbol[100];
+	strcpy(symbol, "_"); 
+	strcat(symbol, valor);
+	saveSymbol(symbol,"",valor,"");
+}
+void saveSymbolCadena(const char* valor){
+	char symbol[100];
+	strcpy(symbol, "_"); 
+	strcat(symbol, valor);
+	char largo[10];
+	sprintf(largo,"%d", strlen(valor));
+	saveSymbol(symbol,"",valor,largo);
 }
