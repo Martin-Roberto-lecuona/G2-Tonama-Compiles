@@ -143,15 +143,12 @@ Identificador: variableEN
 
 Asignacion: :=
 
-Constante: 1
-	CTE es Factor
-	Factor es Termino
-
-Identificador: byc
-	Termino es Expresion
-	Expresion es ASIGNABLE
+Cadena: "en"
+	ID = CADENA es ASIGNABLE
 	ID = asignable es ASIGNACION
 	bloque sentencia es bloque
+
+Identificador: byc
 
 Asignacion: :=
 

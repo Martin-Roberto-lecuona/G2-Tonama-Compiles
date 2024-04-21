@@ -136,25 +136,51 @@ sino
 -*
 
 *- pruebas que fallan -*
+
+*- asignacion vacia -*
 *-
- a := 
+    a := 
+-*
+
+*- sino llaves -*
+*-
     si (a > b)
     {
         escribir("a es mas grande que b")
     }
     sino
     {
-        escribir("a es mas chico o igual a b}")
+        escribir("a es mas chico o igual a b")
+-*
+
+*- sino sin si -*
+*- 
     sino
     {
         escribir("a ")
     }
+-*
+
+*- mientras sin condicion -*
+*- 
     mientras (escribir("a "))
     {
         escribir("a ")
     }
+-*
+
+*- error de tokens -*
+*-
     $a:=1
     "a":=1
-    
+-*
 
+*- aplicarDescuento lista vacia -*
+*-
+    aplicarDescuento(50, [], 1) 
+-*
+
+*- aplicarDescuento con cadena -*
+*-
+    aplicarDescuento("50", [1,23,3], 1) 
 -*
