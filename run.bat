@@ -1,18 +1,17 @@
 :: Script para windows
 del resultado.txt
 flex Lexico.l
-pause
+
 bison -dyv Sintactico.y
-pause
-gcc.exe lex.yy.c y.tab.c -o compilador.exe
-pause
-compilador.exe prueba.txt > resultado.txt
-@REM compilador.exe ./ejemplos/commAnidado.txt
+
+gcc.exe lex.yy.c y.tab.c -o lyc-compiler-1.0.0.exe
+@REM lyc-compiler-1.0.0.exe prueba.txt > resultado.txt
+lyc-compiler-1.0.0.exe simple.txt > resultado.txt
 @REM compilador.exe pruebasFallas.txt
 
-pause
+
 @echo off
-del compilador.exe
+del lyc-compiler-1.0.0.exe
 del lex.yy.c
 del y.tab.c
 del y.tab.h

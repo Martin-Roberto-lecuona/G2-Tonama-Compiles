@@ -4,11 +4,23 @@
 #include <string.h>
 
 #include "y.tab.h"
+#define MAX_FILAS 1024
+#define MIN_INT -2147483648
+#define MAX_INT 2147483647
+#define MIN_FLOAT -2147483648.f
+#define MAX_FLOAT 2147483647.f
+
 FILE  *yyin;
 int yylval;
 char *yyltext;
 
+int flag = 0;
 int yyerror(void);
+
+char lastID[31];
+
+int validateInteger(int Value);
+int validateFloat(float Value);
 
 %}
 
@@ -63,17 +75,38 @@ init                    {printf("\nInit : %s\n", yytext);return INIT;}
 
 {COMA}                  {printf("\nComa: %s\n", yytext);return COMA;}
 {CTE}   {
-            if(strlen(yytext) > 100){
+            if(strlen(yytext) > 10){
                 printf( "ERROR LEXICO : supera el maximo de caracteres: %s\n", yytext ); 
                 exit (0);
             }
-            printf("\nConstante: %s\n", yytext);
-            return CTE;
+            if(validateInteger(atoi(yytext))){
+                printf("\nConstante: %s\n", yytext);
+                return CTE;
+            }
+            exit(-1);
         }
-{FLOT}			        {printf("\nFlotante: %s\n", yytext);return FLOT;}
-{ID}			        {printf("\nIdentificador: %s\n", yytext);return ID;}
-{COMILLA}.*{COMILLA}|{COMILLA_I}.*{COMILLA_D} {   
-            if(strlen(yytext) > 100){
+{FLOT}	{ 
+           if(strlen(yytext) > 10){
+                printf( "ERROR LEXICO : supera el maximo de caracteres: %s\n", yytext ); 
+                exit (0);
+            }
+            if(validateFloat(atof(yytext))){
+                printf("\nFlotante: %s\n", yytext);
+                return FLOT;
+            }
+            exit(-1);
+        }
+
+{ID}    { 
+            if(strlen(yytext) > 30){
+                printf( "ERROR LEXICO : supera el maximo de caracteres: %s\n", yytext ); 
+                exit (0);
+            }
+            strcpy(lastID,yytext);
+            printf("\nIdentificador: %s\n", yytext);return ID;
+        }
+{COMILLA}.*{COMILLA}|{COMILLA_I}.*{COMILLA_D} {
+           if(strlen(yytext) > 100){
                 printf( "ERROR LEXICO : supera el maximo de caracteres: %s\n", yytext ); 
                 exit (0);
             }
@@ -99,4 +132,19 @@ init                    {printf("\nInit : %s\n", yytext);return INIT;}
 {COMENT}             {printf("\nComentario: %s\n", yytext);}
 .			            { printf( "ERROR LEXICO : Caracter no reconocido: %s\n", yytext ); exit (0);}
 
+%%
+int validateInteger(int value) {
+    if(value <= (int)MAX_INT && value >= (int)MIN_INT) 
+        return 1;  
+        
+    fprintf(stderr, "LEXICAL ERROR (line %d): Integer constant out of range (Allowed range: from %d to %d) -> \%d\n", yylineno, (int)MIN_INT, (int)MAX_INT, value);
+    return 0;
+}
 
+int validateFloat(float value) {
+	if(value > (float)MAX_FLOAT || value < (float)MIN_FLOAT) {
+		fprintf(stderr, "LEXICAL ERROR (line %d): Float constant out of range (Allowed range: from %f to %f) -> \%f\n", yylineno, (float)MIN_FLOAT, (float)MAX_FLOAT, atof(yytext));
+		return 0;
+	}
+	return 1;
+}
