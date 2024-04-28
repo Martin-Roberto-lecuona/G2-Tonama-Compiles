@@ -1,0 +1,197 @@
+*- and.txt -*
+a := 1
+b := 1
+c := 2
+
+if (a > b AND c > b)
+{
+    escribir("a es mas grande que b y c es mas grande que b")
+}
+
+*- assignments.txt -*
+g := 99999.99
+g := 99.
+g := .9999
+
+h := "@sdADaSjfla%dfg"
+h := "asldk  fh sjf"
+
+*- cadena.txt -*
+y:= "abc"
+y:= “abc”
+
+*- comment.txt -*
+*- Esto es un comentario -*
+
+*- if.txt -*
+si (a > b)
+{
+    escribir("a es mas grande que b")
+}
+sino
+{
+    escribir("a es mas chico o igual a b")
+}
+
+*- init.txt -*
+init {
+    variable1 : Int
+    a1, b1 : Float
+    p1, p2, p3 : String
+}
+init {
+}
+
+*- not.txt -*
+a := 1
+b := 1
+c := 2
+
+if (NOT a > b)
+{
+    escribir("a no es mas grande que b")
+}
+
+*- or.txt -*
+a := 1
+b := 1
+c := 2
+
+if (a > b OR c > b)
+{
+    escribir("a es mas grande que b o c es mas grande que b")
+}
+
+
+*- read.txt -*
+leer(base) *- base es una variable -*
+
+*- while.txt -*
+a := 1
+b := 3
+
+mientras (a > b)
+{
+    escribir("a es mas grande que b")
+    a := a + 1
+}
+
+*- write.txt -*
+escribir("ewr")  *- “ewr” es una cte string -*
+escribir(var1)  *- var1 es una variable numérica definida previamente -*
+
+*- Casos mas extremos -*
+
+*- Condiciones -*
+*- caso 1 -*
+mientras (a AND b)
+{
+    escribir("a ")
+}
+mientras (1 OR 0)
+{
+    escribir("a ")
+}
+*- caso 2 -*
+mientras (NOT a>b AND NOT b>a)
+{
+    escribir("a ")
+}
+*- caso 3 -*
+si(a>b AND NOT b>a)
+{
+    a := a + 1
+}
+*- caso 4 -*
+si(a AND b > a AND b )
+{
+    a := a + 1
+}
+*- caso 5 -*
+si((a>b) AND (b>a))
+{
+    a := a + 1
+}
+
+*- Anidados -*
+si(a>b)
+{
+    mientras(a > b){
+        a := a - 1
+        mientras (b>c){
+          b := b - 1  
+        }
+        escribir("cadena")
+    }
+    a := a + 1
+}
+sino
+{
+    mientras(a > b){
+        a := a - 1
+        mientras (b>c){
+          b := b - 1  
+        }
+        escribir("cadena else")
+    }
+    a := a + 1
+}
+
+*- Comentario
+    *-hijo
+    2 * 3 - 1  
+-*
+
+*- pruebas que fallan -*
+
+*- asignacion vacia -*
+*-
+    a := 
+-*
+
+*- sino llaves -*
+*-
+    si (a > b)
+    {
+        escribir("a es mas grande que b")
+    }
+    sino
+    {
+        escribir("a es mas chico o igual a b")
+-*
+
+*- sino sin si -*
+*-
+    sino
+    {
+        escribir("a ")
+    }
+-*
+
+*- mientras sin condicion -*
+*-
+    mientras (escribir("a "))
+    {
+        escribir("a ")
+    }
+-*
+
+*- error de tokens -*
+*-
+    $a:=1
+-*
+
+*- error de tokens -*
+*-
+    "a":=1
+-*
+
+*- aplicarDescuento lista vacia -*
+*-
+    aplicarDescuento(50, [], 1)
+-*
+
+*- aplicarDescuento con cadena -*
+*-
+    aplicarDescuento("50", [1,23,3], 1) 
+-*
