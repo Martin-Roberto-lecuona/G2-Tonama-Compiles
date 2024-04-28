@@ -135,8 +135,8 @@ init                    {printf("\nInit : %s\n", yytext);return INIT;}
 {CORCH_D}			    {printf("\nCorcheteCierra: %s\n", yytext);return CORCH_D;}
 {DOS_PUNT}              {printf("\nDos puntos: %s\n", yytext);return DOS_PUNT;}
 {COMENT}                {printf("\nComentario: %s\n", yytext);}
-.			            { printf( "ERROR LEXICO : Caracter no reconocido: %s\n", yytext ); exit (0);}
 {BLANCO}
+.			            {printf( "ERROR LEXICO : Caracter no reconocido: %s\n", yytext ); exit (0);}
 
 %%
 int validateInteger(int value) {
