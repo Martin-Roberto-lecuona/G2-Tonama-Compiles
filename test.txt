@@ -1,6 +1,6 @@
 *- and.txt -*
-a := 1
-b := 1
+a := -1
+b := 1 + 2 - 3
 c := 2
 
 if (a > b AND c > b)

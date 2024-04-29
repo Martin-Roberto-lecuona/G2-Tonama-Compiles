@@ -209,6 +209,14 @@ factor:
 		saveSymbolCte(yytext);
 		updateTipoDatoSymbol(pos,INT);
 		}
+	| OP_REST CTE {
+		printf("\t-CTE es Factor\n");
+		char symbol[12];
+		strcpy(symbol, "-"); 
+		strcat(symbol, yytext);
+		saveSymbolCte(symbol);
+		updateTipoDatoSymbol(pos,INT);
+		}
 	| FLOT {printf("\tFLOT es Factor\n");
 		saveSymbolCte(yytext);
 		updateTipoDatoSymbol(pos,FLOAT);
