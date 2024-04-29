@@ -1,5 +1,10 @@
-# Plantilla para TP Integrador usando Flex y Bison (C)
+# Compilador en lenguaje C - Grupo 2 - 1er cuatrimestre 2024
+## Miembros
+Ignacio Hector Jesus Montovio
 
+Martin Roberto Lecuona
+
+Tomas Rojas
 ## Prerequisitos. 
 
 Para poder usar esta plantilla deberá:
@@ -19,9 +24,11 @@ Descargue los instaladores para Windows de las siguientes páginas:
 2. [Bison](http://gnuwin32.sourceforge.net/packages/bison.htm)
 3. [GCC](https://sourceforge.net/projects/mingw/files/)
 4. Siga el siguiente [instructivo](https://issuu.com/lilianachisaguano/docs/instalacion_de_flex__bison_y_mingw)
+5. Correr el archivo ./run.bat
 
 * Tanto para los binarios instalados flex y bison, es recomendable instalarlos en C:\GnuWin32 y luego agregar "C:\GnuWin32\bin" en variables de entorno -> variables del sistema -> editar variable path y agregar a la lista.
 * Lo mismo para gcc, agregar el path donde sea instalado (ej: C:\MinGW\bin) a las variables del sistema en la variable path.
+
 
 ### Ubuntu
 
@@ -42,6 +49,7 @@ which flex
 which bison
 which gcc
 ```
+4. Correr el archivo ./run.sh
 
 ### Mac
 
@@ -60,3 +68,4 @@ which flex
 which bison
 which gcc
 ```
+4. Correr el archivo ./run.sh

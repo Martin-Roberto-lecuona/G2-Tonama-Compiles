@@ -30,8 +30,8 @@ int validateFloat(float Value);
 DIGITO		[0-9]
 LETRA		[a-zA-Z]
 COMILLA     ["]
-COMILLA_I    [“]
-COMILLA_D    [”]
+COMILLA_I   [“]
+COMILLA_D   [”]
 
 BLANCO      [ \t\n\r]
 COMA        [,]
@@ -39,27 +39,27 @@ COMA        [,]
 CTE		    {DIGITO}+
 FLOT        ({DIGITO}*"."{DIGITO}+|{DIGITO}+"."{DIGITO}*)
 ID			{LETRA}({LETRA}|{DIGITO})*
-COMENT     "*-"((("-"[^*])?)|[^-])*"-*"
+COMENT      "*-"((("-"[^*])?)|[^-])*"-*"
 
 
 
-OP_ASIG   	":""="
-OP_SUMA		"+"
-OP_MULT      "*"
-OP_REST		"-"
-OP_DIVI      "/"
-OP_MENOR    "<"
-OP_MAYOR    ">"
-OP_MENOR_IGUAL ">="
-OP_MAYOR_IGUAL "<="
-OP_IGUAL      "=="
+OP_ASIG   	        ":""="
+OP_SUMA		        "+"
+OP_MULT             "*"
+OP_REST		        "-"
+OP_DIVI             "/"
+OP_MENOR            "<"
+OP_MAYOR            ">"
+OP_MENOR_IGUAL      ">="
+OP_MAYOR_IGUAL      "<="
+OP_IGUAL            "=="
 PARENTE_I			"("
 PARENTE_D			")"
-LLAVE_I          "{"
-LLAVE_D          "}"
-CORCH_I          "["
-CORCH_D          "]"
-DOS_PUNT          ":"
+LLAVE_I             "{"
+LLAVE_D             "}"
+CORCH_I             "["
+CORCH_D             "]"
+DOS_PUNT            ":"
 
 
 
@@ -75,7 +75,7 @@ init                    {printf("\nInit : %s\n", yytext);return INIT;}
 "mientras"|"while"      {printf("\nMientras: %s\n", yytext);return MIENTRAS;}
 "sino"|"else"           {printf("\nSino: %s\n", yytext);return SINO;}
 "buscoYReemplazo"       {printf("\nBusco y reemplazo: %s\n", yytext);return BUSC_Y_REMP;}
-"aplicarDescuento"       {printf("\nAplicar Descuento: %s\n", yytext);return APLIC_DESC;}
+"aplicarDescuento"      {printf("\nAplicar Descuento: %s\n", yytext);return APLIC_DESC;}
 
 {COMA}                  {printf("\nComa: %s\n", yytext);return COMA;}
 {CTE}   {
@@ -118,25 +118,25 @@ init                    {printf("\nInit : %s\n", yytext);return INIT;}
             return CADENA;
         }
 {OP_SUMA}		        {printf("\nSuma: %s\n", yytext);return OP_SUMA;}
-{OP_ASIG}			        {printf("\nAsignacion: %s\n", yytext);return OP_ASIG;}
+{OP_ASIG}			    {printf("\nAsignacion: %s\n", yytext);return OP_ASIG;}
 {OP_MULT}		        {printf("\nMultiplicacion: %s\n", yytext);return OP_MULT;}
 {OP_REST}		        {printf("\nResta: %s\n", yytext);return OP_REST;}
 {OP_DIVI}		        {printf("\nDivision: %s\n", yytext);return OP_DIVI;}
 {OP_MAYOR}		        {printf("\nMayor: %s\n", yytext);return OP_MENOR;}
 {OP_MENOR}		        {printf("\nMenor: %s\n", yytext);return OP_MAYOR;}
-{OP_MAYOR_IGUAL}		        {printf("\nMayor igual: %s\n", yytext);return OP_MAYOR_IGUAL;}
-{OP_MENOR_IGUAL}		        {printf("\nMenor igual: %s\n", yytext);return OP_MENOR_IGUAL;}
+{OP_MAYOR_IGUAL}		{printf("\nMayor igual: %s\n", yytext);return OP_MAYOR_IGUAL;}
+{OP_MENOR_IGUAL}		{printf("\nMenor igual: %s\n", yytext);return OP_MENOR_IGUAL;}
 {OP_IGUAL}		        {printf("\nIgual: %s\n", yytext);return OP_IGUAL;}
-{PARENTE_I}			        {printf("\nParAbre: %s\n", yytext);return PARENTE_I;}
-{PARENTE_D}			        {printf("\nParCierra: %s\n", yytext);return PARENTE_D;}
-{LLAVE_I}			        {printf("\nLLaveAbre: %s\n", yytext);return LLAVE_I;}
-{LLAVE_D}			        {printf("\nLLaveCierra: %s\n", yytext);return LLAVE_D;}
-{CORCH_I}			        {printf("\nCorcheteAbre: %s\n", yytext);return CORCH_I;}
-{CORCH_D}			        {printf("\nCorcheteCierra: %s\n", yytext);return CORCH_D;}
-{DOS_PUNT}                    {printf("\nDos puntos: %s\n", yytext);return DOS_PUNT;}
+{PARENTE_I}			    {printf("\nParAbre: %s\n", yytext);return PARENTE_I;}
+{PARENTE_D}			    {printf("\nParCierra: %s\n", yytext);return PARENTE_D;}
+{LLAVE_I}			    {printf("\nLLaveAbre: %s\n", yytext);return LLAVE_I;}
+{LLAVE_D}			    {printf("\nLLaveCierra: %s\n", yytext);return LLAVE_D;}
+{CORCH_I}			    {printf("\nCorcheteAbre: %s\n", yytext);return CORCH_I;}
+{CORCH_D}			    {printf("\nCorcheteCierra: %s\n", yytext);return CORCH_D;}
+{DOS_PUNT}              {printf("\nDos puntos: %s\n", yytext);return DOS_PUNT;}
+{COMENT}                {printf("\nComentario: %s\n", yytext);}
 {BLANCO}
-{COMENT}             {printf("\nComentario: %s\n", yytext);}
-.			            { printf( "ERROR LEXICO : Caracter no reconocido: %s\n", yytext ); exit (0);}
+.			            {printf( "ERROR LEXICO : Caracter no reconocido: %s\n", yytext ); exit (0);}
 
 %%
 int validateInteger(int value) {

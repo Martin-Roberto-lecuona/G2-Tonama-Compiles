@@ -68,6 +68,7 @@ compilador
 .vscode/
 
 ### Resultado
-./resultado.txt
+resultado.txt
 compilador.exe
 symbol-table.txt
+lyc-compiler-1.0.0.exe
