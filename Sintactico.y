@@ -221,6 +221,7 @@ factor:
 		saveSymbolCte(yytext);
 		updateTipoDatoSymbol(pos,FLOAT);
 		}
+	| PARENTE_I expresion PARENTE_D {printf("\t(exp_logica) es Factor\n");}
 	;
 declaraciones:
 	declaraciones variables DOS_PUNT TIPO_DATO {
