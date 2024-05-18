@@ -195,3 +195,9 @@ sino
 *-
     aplicarDescuento("50", [1,23,3], 1) 
 -*
+*- buscoYReemplazo -*
+String buscar = "buscar"
+String en = "Hola, quiero buscar una palabra y reemplazarla en este texto."
+String reemplazo = "reemplazo"
+
+int resultado = buscoYReemplazo(buscar, en, reemplazo)

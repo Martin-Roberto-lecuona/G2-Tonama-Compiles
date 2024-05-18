@@ -75,7 +75,6 @@ void saveSymbolCadena(const char* valor);
 %token BUSC_Y_REMP
 %token APLIC_DESC
 
-
 %%
 proyecto : 
 	bloque {printf("\tFIN\n");}
@@ -145,6 +144,14 @@ asignacion:
 		}  
 	}
 	OP_ASIG asignable{printf("\tID = asignable es ASIGNACION\n");}
+	| TIPO_DATO ID {
+		pos = findSymbol(yytext); 
+		if (pos==-1) {
+			saveSymbol(yytext,"","_","");
+			pos = filaActual-1;
+		}  
+	}
+	OP_ASIG asignable{printf("\tID = asignable es ASIGNACION\n");}
 	;
 
 asignable:
@@ -168,7 +175,7 @@ iteracion:
 	MIENTRAS PARENTE_I condicion PARENTE_D LLAVE_I bloque LLAVE_D {printf("\tmientras (condicion) bloque = iteracion\n");}
 	;
 compuertas:
-	AND
+	AND {printf("\tAND = compuertas\n");}
 	|OR
 	;
 comparador:
@@ -179,14 +186,22 @@ comparador:
 	| OP_IGUAL
 	;
 
+/* errores de redux
+comparacion:
+	expresion comparador expresion {printf("\texpresion comparador expresion = comparacion\n");}
+	|NOT comparacion {printf("\tNOT comparacion = comparacion\n");}
+	| PARENTE_I comparacion PARENTE_D {printf("\t(comparacion) = comparacion\n");}
+	| expresion {printf("\tfactor = comparacion\n");}
+	; */
+
 condicion:
 	comparacion {printf("\tcomparacion = condicion\n");}
 	|condicion compuertas comparacion {printf("\tcondicion compuerta comparacion = condicion\n");}
 	;
 comparacion:
-	expresion comparador expresion {printf("\texpresion comparador expresion = comparacion\n");}
-	|NOT comparacion {printf("\tNOT comparacion = comparacion\n");}
-	| PARENTE_I comparacion PARENTE_D {printf("\t(comparacion) = comparacion\n");}
+	comparacion comparador factor {printf("\texpresion comparador expresion = comparacion\n");}
+	| NOT factor {printf("\tNOT comparacion = comparacion\n");}
+	| PARENTE_I comparacion comparador factor PARENTE_D {printf("\t(comparacion) = comparacion\n");}
 	| factor {printf("\tfactor = comparacion\n");}
 	;
 
