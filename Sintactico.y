@@ -185,8 +185,7 @@ condicion:
 	;
 comparacion:
 	expresion comparador expresion {printf("\texpresion comparador expresion = comparacion\n");}
-	|NOT comparacion {printf("\tNOT comparacion = comparacion\n");}
-	| PARENTE_I comparacion PARENTE_D {printf("\t(comparacion) = comparacion\n");}
+	| NOT comparacion {printf("\tNOT comparacion = comparacion\n");}
 	| factor {printf("\tfactor = comparacion\n");}
 	;
 
