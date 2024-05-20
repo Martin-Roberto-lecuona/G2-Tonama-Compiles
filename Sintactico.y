@@ -28,6 +28,15 @@ typedef struct{
     char valor[50];
     char longitud[5];
 }t_fila;
+
+typedef struct s_nodo{
+    char* info;
+    struct s_nodo *izq;
+    struct s_nodo *der;
+}tNodoArbol;
+
+typedef tNodoArbol *t_arbol;
+
 t_fila filas[MAX_FILAS];
 int filaActual=0;
 void saveInFile();
@@ -37,6 +46,22 @@ void updateTipoDatoSymbolInit(char* tipoDato);
 void saveSymbol(const char* nombre,const char* tipoDato,const char* valor,const char* longitud);
 void saveSymbolCte(const char* valor);
 void saveSymbolCadena(const char* valor);
+
+void crearArbol(t_arbol *pa);
+void saveArbolFile(t_arbol *p);
+
+tNodoArbol* crearHoja( char* terminal);
+tNodoArbol* crearHojaStr( char* terminal);
+tNodoArbol* crearNodo(char* terminal, t_arbol* arbol, tNodoArbol* NoTerminalIzq,  tNodoArbol* NoTerminalDer);
+void recorrer(t_arbol *arbol);
+
+tNodoArbol* expresionPtr ;
+tNodoArbol* terminoPtr;
+tNodoArbol* factorPtr;
+tNodoArbol* asignacionPtr;
+tNodoArbol* asignablePtr;
+
+t_arbol arbol;
 
 %}
 
@@ -151,11 +176,11 @@ asignacion:
 			pos = filaActual-1;
 		}  
 	}
-	OP_ASIG asignable{printf("\tID = asignable es ASIGNACION\n");}
+	OP_ASIG asignable{printf("\tID = asignable es ASIGNACION\n"); asignablePtr = crearNodo("asignacion",&arbol, crearHoja("id"), asignablePtr);}
 	;
 
 asignable:
-	expresion {printf("\tExpresion es ASIGNABLE\n");}
+	expresion {printf("\tExpresion es ASIGNABLE\n"); asignablePtr = expresionPtr;}
 	| CADENA {
 		printf("\tID = CADENA es ASIGNABLE\n"); 
 		saveSymbolCadena(yytext);
@@ -186,14 +211,6 @@ comparador:
 	| OP_IGUAL
 	;
 
-/* errores de redux
-comparacion:
-	expresion comparador expresion {printf("\texpresion comparador expresion = comparacion\n");}
-	|NOT comparacion {printf("\tNOT comparacion = comparacion\n");}
-	| PARENTE_I comparacion PARENTE_D {printf("\t(comparacion) = comparacion\n");}
-	| expresion {printf("\tfactor = comparacion\n");}
-	; */
-
 condicion:
 	comparacion {printf("\tcomparacion = condicion\n");}
 	|condicion compuertas comparacion {printf("\tcondicion compuerta comparacion = condicion\n");}
@@ -206,23 +223,24 @@ comparacion:
 	;
 
 expresion:
-	termino {printf("\tTermino es Expresion\n");}
-	|expresion OP_SUMA termino {printf("\tExpresion+Termino es Expresion\n");}
-	|expresion OP_REST termino {printf("\tExpresion-Termino es Expresion\n");}
+	termino {printf("\tTermino es Expresion\n"); expresionPtr = terminoPtr;}
+	|expresion OP_SUMA termino {printf("\tExpresion+Termino es Expresion\n");expresionPtr = crearNodo("+",&arbol,expresionPtr, terminoPtr);}
+	|expresion OP_REST termino {printf("\tExpresion-Termino es Expresion\n");expresionPtr = crearNodo("-",&arbol,expresionPtr, terminoPtr);}
 	;
 
 termino:
-	factor {printf("\tFactor es Termino\n");}
-	|termino OP_MULT factor {printf("\tTermino*Factor es Termino\n");}
-	|termino OP_DIVI factor {printf("\tTermino/Factor es Termino\n");}
+	factor {printf("\tFactor es Termino\n"); terminoPtr = factorPtr; }
+	|termino OP_MULT factor {printf("\tTermino*Factor es Termino\n");terminoPtr = crearNodo("*",&arbol,terminoPtr, factorPtr);}
+	|termino OP_DIVI factor {printf("\tTermino/Factor es Termino\n");terminoPtr = crearNodo("/",&arbol,terminoPtr, factorPtr);}
 	;
 
 factor:
-	ID {printf("\tID es Factor \n");}
+	ID {printf("\tID es Factor \n");factorPtr = crearHoja(yytext);}
 	| CTE {
 		printf("\tCTE es Factor\n");
 		saveSymbolCte(yytext);
 		updateTipoDatoSymbol(pos,INT);
+		factorPtr = crearHoja(yytext);
 		}
 	| OP_REST CTE {
 		printf("\t-CTE es Factor\n");
@@ -231,10 +249,12 @@ factor:
 		strcat(symbol, yytext);
 		saveSymbolCte(symbol);
 		updateTipoDatoSymbol(pos,INT);
+		factorPtr = crearHoja(symbol);
 		}
 	| FLOT {printf("\tFLOT es Factor\n");
 		saveSymbolCte(yytext);
 		updateTipoDatoSymbol(pos,FLOAT);
+		factorPtr = crearHoja(yytext);
 		}
 	| PARENTE_I expresion PARENTE_D {printf("\t(exp_logica) es Factor\n");}
 	;
@@ -277,6 +297,13 @@ variables:
 
 int main(int argc, char *argv[])
 {
+	expresionPtr = (tNodoArbol*)malloc(sizeof(tNodoArbol));
+    terminoPtr = (tNodoArbol*)malloc(sizeof(tNodoArbol));
+    factorPtr = (tNodoArbol*)malloc(sizeof(tNodoArbol));
+    asignacionPtr = (tNodoArbol*)malloc(sizeof(tNodoArbol));
+    asignablePtr = (tNodoArbol*)malloc(sizeof(tNodoArbol));
+
+    crearArbol(&arbol);
     if((yyin = fopen(argv[1], "rt"))==NULL)
     {
         printf("\nNo se puede abrir el archivo de prueba: %s\n", argv[1]);
@@ -286,6 +313,7 @@ int main(int argc, char *argv[])
         yyparse();
     }
 	saveInFile();
+	saveArbolFile(&arbol);
 	fclose(yyin);
     return 0;
 }
@@ -367,4 +395,47 @@ void saveSymbolCadena(const char* valor){
 	char largo[10];
 	sprintf(largo,"%d", strlen(valor));
 	saveSymbol(symbol,"",valor,largo);
+}
+
+void crearArbol(t_arbol *pa)
+{
+    *pa = NULL;
+}
+
+tNodoArbol* crearHoja(char* terminal){
+    printf("crearHoja new: %s \n", terminal);
+	tNodoArbol* nuevo = (tNodoArbol*)malloc(sizeof(tNodoArbol));
+    nuevo->info = malloc(strlen(terminal)+1);
+    memcpy(nuevo->info, terminal, strlen(terminal)+1);
+    nuevo->der= NULL;
+    nuevo->izq= NULL;
+    printf("FIN crearHoja\n");
+    return nuevo;
+}
+
+tNodoArbol* crearNodo(char* terminal, t_arbol* arbol, tNodoArbol* NoTerminalIzq,  tNodoArbol* NoTerminalDer){
+    printf("crearNodo\n");
+    tNodoArbol* nodo = (tNodoArbol*)malloc(sizeof(tNodoArbol));
+    nodo->info = malloc(strlen(terminal)+1);
+    memcpy(nodo->info, terminal, strlen(terminal)+1);
+    nodo->der= NoTerminalDer;
+    nodo->izq= NoTerminalIzq;
+    *arbol = nodo;
+    printf("FIN crearNodo\n");
+    return nodo;
+}
+
+void recorrer(t_arbol *p)
+{
+    if(!*p)
+    {
+        return;
+    }
+    recorrer(&(*p)->izq);
+    printf("%s\n", (*p)->info);
+    recorrer(&(*p)->der);
+}
+void saveArbolFile(t_arbol *p){
+    printf("Recorrer: \n");
+    recorrer(p);
 }
