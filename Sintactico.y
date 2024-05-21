@@ -13,6 +13,7 @@
 
 int yystopparser=0;
 FILE  *yyin;
+FILE  *treeFile;
 int yyerror();
 int yylex();
 char *yytext;
@@ -46,7 +47,10 @@ void updateTipoDatoSymbolInit(char* tipoDato);
 void saveSymbol(const char* nombre,const char* tipoDato,const char* valor,const char* longitud);
 void saveSymbolCte(const char* valor);
 void saveSymbolCadena(const char* valor);
-
+void appendTreeFile(char *cad);
+void createTreeFile();
+void closeTreeFile();
+void linkTreeFile(char *nodeValue, char *leftValue, char *rightValue);
 void crearArbol(t_arbol *pa);
 void saveArbolFile(t_arbol *p);
 
@@ -304,6 +308,7 @@ int main(int argc, char *argv[])
     asignablePtr = (tNodoArbol*)malloc(sizeof(tNodoArbol));
 
     crearArbol(&arbol);
+    createTreeFile();
     if((yyin = fopen(argv[1], "rt"))==NULL)
     {
         printf("\nNo se puede abrir el archivo de prueba: %s\n", argv[1]);
@@ -315,12 +320,37 @@ int main(int argc, char *argv[])
 	saveInFile();
 	saveArbolFile(&arbol);
 	fclose(yyin);
+	closeTreeFile();
     return 0;
 }
 int yyerror(void)
 {
 	printf("Error Sintactico\n");
 	exit (1);
+}
+
+void createTreeFile(){
+    treeFile = fopen("tree.dot", "w+");
+    if (treeFile == NULL) {
+	perror("Error al abrir el archivo");
+	exit(1);
+    }
+    fprintf(treeFile,"digraph ejemplo1{\n");
+}
+
+void closeTreeFile(){
+	fprintf(treeFile,"}");
+	fclose(treeFile);
+}
+
+void appendTreeFile(char *cad){
+      fprintf(treeFile,"\"%s\";\n",cad);
+}
+
+void linkTreeFile(char *nodeValue, char *leftValue, char *rightValue){
+	fprintf(treeFile,"\"%s\";\n",nodeValue);
+	fprintf(treeFile,"\"%s\" -> \"%s\";\n",nodeValue,leftValue);
+	fprintf(treeFile,"\"%s\" -> \"%s\";\n",nodeValue,rightValue);
 }
 
 void saveInFile(){
@@ -410,6 +440,7 @@ tNodoArbol* crearHoja(char* terminal){
     nuevo->der= NULL;
     nuevo->izq= NULL;
     printf("FIN crearHoja\n");
+    appendTreeFile(terminal);
     return nuevo;
 }
 
@@ -422,6 +453,7 @@ tNodoArbol* crearNodo(char* terminal, t_arbol* arbol, tNodoArbol* NoTerminalIzq,
     nodo->izq= NoTerminalIzq;
     *arbol = nodo;
     printf("FIN crearNodo\n");
+    linkTreeFile(terminal, NoTerminalIzq->info, NoTerminalDer->info);
     return nodo;
 }
 
