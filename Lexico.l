@@ -44,6 +44,7 @@ COMENT      "*-"((("-"[^*])?)|[^-])*"-*"
 
 
 OP_ASIG   	        ":""="
+OP_ASIG2   	        "="
 OP_SUMA		        "+"
 OP_MULT             "*"
 OP_REST		        "-"
@@ -64,7 +65,7 @@ DOS_PUNT            ":"
 
 
 %%
-"Float"|"Int"|"String"  {printf("\nTipo de dato : %s\n", yytext);return TIPO_DATO;}
+"Float"|"Int"|"String"|"float"|"int" {printf("\nTipo de dato : %s\n", yytext);return TIPO_DATO;}
 AND                     {printf("\nComparacion AND : %s\n", yytext);return AND;}
 OR                      {printf("\nComparacion OR : %s\n", yytext);return OR;}
 NOT                     {printf("\nNegacion NOT : %s\n", yytext);return NOT;}
@@ -118,7 +119,7 @@ init                    {printf("\nInit : %s\n", yytext);return INIT;}
             return CADENA;
         }
 {OP_SUMA}		        {printf("\nSuma: %s\n", yytext);return OP_SUMA;}
-{OP_ASIG}			    {printf("\nAsignacion: %s\n", yytext);return OP_ASIG;}
+{OP_ASIG}|{OP_ASIG2}	{printf("\nAsignacion: %s\n", yytext);return OP_ASIG;}
 {OP_MULT}		        {printf("\nMultiplicacion: %s\n", yytext);return OP_MULT;}
 {OP_REST}		        {printf("\nResta: %s\n", yytext);return OP_REST;}
 {OP_DIVI}		        {printf("\nDivision: %s\n", yytext);return OP_DIVI;}

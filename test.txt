@@ -1,4 +1,7 @@
 *- and.txt -*
+init{
+    a,b,c: Int
+}
 a := -1
 c := 2
 b := a*(c-21)/4
@@ -9,6 +12,10 @@ if (a > b AND c > b)
 }
 
 *- assignments.txt -*
+init{
+    g: Float
+    h: String
+}
 g := 99999.99
 g := 99.
 g := .9999
@@ -17,6 +24,9 @@ h := "@sdADaSjfla%dfg"
 h := "asldk  fh sjf"
 
 *- cadena.txt -*
+init{
+    y: String
+}
 y:= "abc"
 y:= “abc”
 
@@ -77,6 +87,9 @@ mientras (a > b)
 }
 
 *- write.txt -*
+init{
+    var1: Int
+}
 escribir("ewr")  *- “ewr” es una cte string -*
 escribir(var1)  *- var1 es una variable numérica definida previamente -*
 
@@ -141,6 +154,19 @@ sino
     *-hijo
     2 * 3 - 1  
 -*
+*- buscoYReemplazo -*
+init{
+    buscar, en, reemplazo: String
+    resultado: Int
+}
+buscar = "buscar"
+en = "Hola, quiero buscar una palabra y reemplazarla en este texto."
+reemplazo = "reemplazo"
+
+resultado = buscoYReemplazo(buscar, en, reemplazo)
+
+*- aplicarDescuento -*
+aplicarDescuento(50.0, [1,23,3], 1) 
 
 *- Temas especiales -*
 
