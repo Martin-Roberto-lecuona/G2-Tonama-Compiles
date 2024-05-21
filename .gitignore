@@ -72,3 +72,4 @@ resultado.txt
 compilador.exe
 symbol-table.txt
 lyc-compiler-1.0.0.exe
+tree.dot
