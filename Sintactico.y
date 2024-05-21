@@ -40,6 +40,7 @@ typedef tNodoArbol *t_arbol;
 
 t_fila filas[MAX_FILAS];
 int filaActual=0;
+void createSymbolTableInFile();
 void saveInFile();
 int findSymbol(char* nombre);
 void updateTipoDatoSymbol(int pos, char* tipoDato);
@@ -47,6 +48,7 @@ void updateTipoDatoSymbolInit(char* tipoDato);
 void saveSymbol(const char* nombre,const char* tipoDato,const char* valor,const char* longitud);
 void saveSymbolCte(const char* valor);
 void saveSymbolCadena(const char* valor);
+void saveSymbolFloat(const char* valor);
 void appendTreeFile(char *cad);
 void createTreeFile();
 void closeTreeFile();
@@ -147,7 +149,7 @@ factorFlotante:
 	ID {printf("\tID es factorFlotante \n");}
 	| FLOT {
 		printf("\tFlotante es factorFlotante\n");
-		saveSymbolCte(yytext);
+		saveSymbolFloat(yytext);
 		}
 	;
 factorCte:
@@ -168,19 +170,14 @@ asignacion:
 	ID {
 		pos = findSymbol(yytext); 
 		if (pos==-1) {
-			saveSymbol(yytext,"","_","");
-			pos = filaActual-1;
-		}  
+			printf("Error: %s no declarado\n", yytext);
+			exit(-1);
+		} 
 	}
-	OP_ASIG asignable{printf("\tID = asignable es ASIGNACION\n");}
-	| TIPO_DATO ID {
-		pos = findSymbol(yytext); 
-		if (pos==-1) {
-			saveSymbol(yytext,"","_","");
-			pos = filaActual-1;
-		}  
-	}
-	OP_ASIG asignable{printf("\tID = asignable es ASIGNACION\n"); asignablePtr = crearNodo("asignacion",&arbol, crearHoja("id"), asignablePtr);}
+	OP_ASIG asignable{
+					printf("\tID = asignable es ASIGNACION\n"); 
+					asignablePtr = crearNodo("asignacion",&arbol, crearHoja("id"), asignablePtr);
+					}
 	;
 
 asignable:
@@ -256,7 +253,7 @@ factor:
 		factorPtr = crearHoja(symbol);
 		}
 	| FLOT {printf("\tFLOT es Factor\n");
-		saveSymbolCte(yytext);
+		saveSymbolFloat(yytext);
 		updateTipoDatoSymbol(pos,FLOAT);
 		factorPtr = crearHoja(yytext);
 		}
@@ -309,6 +306,7 @@ int main(int argc, char *argv[])
 
     crearArbol(&arbol);
     createTreeFile();
+	createSymbolTableInFile();
     if((yyin = fopen(argv[1], "rt"))==NULL)
     {
         printf("\nNo se puede abrir el archivo de prueba: %s\n", argv[1]);
@@ -328,14 +326,22 @@ int yyerror(void)
 	printf("Error Sintactico\n");
 	exit (1);
 }
-
+void createSymbolTableInFile(){
+	FILE* file = fopen("symbol-table.txt", "w");
+    if (file == NULL) {
+        perror("Error al abrir el archivo");
+        exit(1);
+    }
+	fprintf(file,"Error de compilacion");
+    fclose(file);
+}
 void createTreeFile(){
     treeFile = fopen("tree.dot", "w+");
     if (treeFile == NULL) {
-	perror("Error al abrir el archivo");
-	exit(1);
+		perror("Error al abrir el archivo");
+		exit(1);
     }
-    fprintf(treeFile,"digraph ejemplo1{\n");
+    fprintf(treeFile,"digraph programa{\n");
 }
 
 void closeTreeFile(){
@@ -382,7 +388,7 @@ void updateTipoDatoSymbol(int pos, char* tipoDato){
 	if (pos==-1)
 		return;
 	if(strlen(filas[pos].tipoDato)!= 0 && strcmp(filas[pos].tipoDato, tipoDato)!= 0){
-		printf("\nError semantico: El símbolo %s ya fue declarado con un tipo de dato distinto.\n", filas[pos].tipoDato);
+		printf("\nError semantico: El símbolo %s. Se esperaba %s no un %s \n", filas[pos].nombre, filas[pos].tipoDato, tipoDato);
 		exit(-1) ;
 	}
 	else
@@ -416,7 +422,13 @@ void saveSymbolCte(const char* valor){
 	char symbol[100];
 	strcpy(symbol, "_"); 
 	strcat(symbol, valor);
-	saveSymbol(symbol,"",valor,"");
+	saveSymbol(symbol,"ENTERO",valor,"");
+}
+void saveSymbolFloat(const char* valor){
+	char symbol[100];
+	strcpy(symbol, "_"); 
+	strcat(symbol, valor);
+	saveSymbol(symbol,"FLOTANTE",valor,"");
 }
 void saveSymbolCadena(const char* valor){
 	char symbol[100];
@@ -424,7 +436,7 @@ void saveSymbolCadena(const char* valor){
 	strcat(symbol, valor);
 	char largo[10];
 	sprintf(largo,"%d", strlen(valor));
-	saveSymbol(symbol,"",valor,largo);
+	saveSymbol(symbol,"CADENA",valor,largo);
 }
 
 void crearArbol(t_arbol *pa)
@@ -433,26 +445,26 @@ void crearArbol(t_arbol *pa)
 }
 
 tNodoArbol* crearHoja(char* terminal){
-    printf("crearHoja new: %s \n", terminal);
+    /* printf("crearHoja new: %s \n", terminal); */
 	tNodoArbol* nuevo = (tNodoArbol*)malloc(sizeof(tNodoArbol));
     nuevo->info = malloc(strlen(terminal)+1);
     memcpy(nuevo->info, terminal, strlen(terminal)+1);
     nuevo->der= NULL;
     nuevo->izq= NULL;
-    printf("FIN crearHoja\n");
+    /* printf("FIN crearHoja\n"); */
     appendTreeFile(terminal);
     return nuevo;
 }
 
 tNodoArbol* crearNodo(char* terminal, t_arbol* arbol, tNodoArbol* NoTerminalIzq,  tNodoArbol* NoTerminalDer){
-    printf("crearNodo\n");
+    /* printf("crearNodo\n"); */
     tNodoArbol* nodo = (tNodoArbol*)malloc(sizeof(tNodoArbol));
     nodo->info = malloc(strlen(terminal)+1);
     memcpy(nodo->info, terminal, strlen(terminal)+1);
     nodo->der= NoTerminalDer;
     nodo->izq= NoTerminalIzq;
     *arbol = nodo;
-    printf("FIN crearNodo\n");
+    /* printf("FIN crearNodo\n"); */
     linkTreeFile(terminal, NoTerminalIzq->info, NoTerminalDer->info);
     return nodo;
 }
@@ -464,10 +476,10 @@ void recorrer(t_arbol *p)
         return;
     }
     recorrer(&(*p)->izq);
-    printf("%s\n", (*p)->info);
+    /* printf("%s\n", (*p)->info); */
     recorrer(&(*p)->der);
 }
 void saveArbolFile(t_arbol *p){
-    printf("Recorrer: \n");
+    /* printf("Recorrer: \n"); */
     recorrer(p);
 }
