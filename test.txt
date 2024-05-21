@@ -142,6 +142,20 @@ sino
     2 * 3 - 1  
 -*
 
+*- Temas especiales -*
+
+*- Busco y reemplazo -*
+
+buscar = "buscar";
+en = "Hola, quiero buscar una palabra y reemplazarla en este texto.";
+reemplazo = "reemplazo";
+
+resultado = buscoYReemplazo(buscar, en, reemplazo);
+
+*- Aplicar descuento -*
+
+aplicarDescuento(27.5, [500, 305, 79.4, 10], 3)
+
 *- pruebas que fallan -*
 
 *- asignacion vacia -*
