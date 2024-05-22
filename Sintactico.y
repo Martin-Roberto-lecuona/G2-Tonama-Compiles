@@ -9,11 +9,13 @@
 #define FLOAT "FLOTANTE"
 #define INT "ENTERO"
 #define STR "CADENA"
+#define TAM_ID 31
+
+#define VAL_INIT(x) (strcmp(x, "String") == 0 ? "$" : "0")
 
 
 int yystopparser=0;
 FILE  *yyin;
-FILE  *treeFile;
 int yyerror();
 int yylex();
 char *yytext;
@@ -34,14 +36,18 @@ typedef struct s_nodo{
     char* info;
     struct s_nodo *izq;
     struct s_nodo *der;
+	int uniqueId;
 }tNodoArbol;
 
 typedef tNodoArbol *t_arbol;
 
 t_fila filas[MAX_FILAS];
 int filaActual=0;
+char auxIdName[TAM_ID];
+int uniqueIdMain = 0;
+
 void createSymbolTableInFile();
-void saveInFile();
+void saveSymbolTableFile();
 int findSymbol(char* nombre);
 void updateTipoDatoSymbol(int pos, char* tipoDato);
 void updateTipoDatoSymbolInit(char* tipoDato);
@@ -49,23 +55,32 @@ void saveSymbol(const char* nombre,const char* tipoDato,const char* valor,const 
 void saveSymbolCte(const char* valor);
 void saveSymbolCadena(const char* valor);
 void saveSymbolFloat(const char* valor);
-void appendTreeFile(char *cad);
+void clearString(char* cad, int tam);
+
+
 void createTreeFile();
-void closeTreeFile();
-void linkTreeFile(char *nodeValue, char *leftValue, char *rightValue);
+void mostrarRelacion(t_arbol *p, FILE  *treeFile);
 void crearArbol(t_arbol *pa);
 void saveArbolFile(t_arbol *p);
 
 tNodoArbol* crearHoja( char* terminal);
 tNodoArbol* crearHojaStr( char* terminal);
 tNodoArbol* crearNodo(char* terminal, t_arbol* arbol, tNodoArbol* NoTerminalIzq,  tNodoArbol* NoTerminalDer);
-void recorrer(t_arbol *arbol);
+void recorrer(t_arbol *p, FILE  *treeFile);
 
+tNodoArbol* asignacionPtr;
 tNodoArbol* expresionPtr ;
 tNodoArbol* terminoPtr;
 tNodoArbol* factorPtr;
-tNodoArbol* asignacionPtr;
 tNodoArbol* asignablePtr;
+
+tNodoArbol* bloquePtr;
+
+tNodoArbol* sentenciaPtr;
+
+tNodoArbol* initPtr;
+tNodoArbol* declaracionesPtr;
+tNodoArbol* variablesPtr;
 
 t_arbol arbol;
 
@@ -108,21 +123,30 @@ t_arbol arbol;
 
 %%
 proyecto : 
-	bloque {printf("\tFIN\n");}
+	bloque {printf("\tFIN\n"); }
 	;
 bloque:
-	sentencia {printf("\tsentencia es bloque\n");}
-	| bloque sentencia {printf("\tbloque sentencia es bloque\n");}
+	sentencia {printf("\nBloque -> sentencia\n"); bloquePtr = sentenciaPtr; }
+	| bloque sentencia {printf("\tBloque -> sentencia es bloque\n"); 
+						uniqueIdMain++;
+						bloquePtr = crearNodo("Bloque",&arbol, bloquePtr, sentenciaPtr);
+						}
 	;
 
 sentencia:
-	asignacion
-	| iteracion 
-	| seleccion
-	| ESCRIBIR PARENTE_I CADENA PARENTE_D
+	asignacion {printf("\tsentencia -> asignacion\n"); 
+				sentenciaPtr = crearNodo("Sentencia",&arbol, asignacionPtr, NULL);
+				}
+	| iteracion {printf("\tsentencia -> iteracion\n");}
+	| seleccion {printf("\tsentencia -> seleccion\n");}
+	| ESCRIBIR PARENTE_I CADENA PARENTE_D {printf("\tsentencia -> escribir ( cadena )\n");}
 	| ESCRIBIR PARENTE_I ID PARENTE_D
 	| LEER PARENTE_I ID PARENTE_D
-	| INIT LLAVE_I declaraciones LLAVE_D {printf("\tinit { declaraciones } es SENTENCIA\n");}
+	| INIT LLAVE_I declaraciones LLAVE_D {
+								printf("\tsentencia -> init { declaraciones }\n"); 
+								uniqueIdMain++;
+								sentenciaPtr = crearNodo("init", &arbol,declaracionesPtr,NULL); 
+								 }
 	| INIT LLAVE_I LLAVE_D
 	| buscarYreemplazar
 	| aplicarDescuento
@@ -140,7 +164,7 @@ buscarYreemplazar:
 	;
 
 factorString:
-	ID {printf("\tID es factorString \n");}
+	ID {printf("\tfactorString -> ID \n");}
 	| CADENA {
 		printf("\nCADENA es factorString\n");
 		saveSymbolCadena(yytext);}
@@ -173,10 +197,14 @@ asignacion:
 			printf("Error: %s no declarado\n", yytext);
 			exit(-1);
 		} 
+		strcpy(auxIdName,yytext);
 	}
 	OP_ASIG asignable{
-					printf("\tID = asignable es ASIGNACION\n"); 
-					asignablePtr = crearNodo("asignacion",&arbol, crearHoja("id"), asignablePtr);
+					printf("\tasignacion -> = asignable\n"); 
+					
+					asignablePtr = crearNodo("=",&arbol, crearHoja(auxIdName), asignablePtr);
+					asignacionPtr = asignablePtr;
+					clearString(auxIdName, TAM_ID);
 					}
 	;
 
@@ -186,6 +214,11 @@ asignable:
 		printf("\tID = CADENA es ASIGNABLE\n"); 
 		saveSymbolCadena(yytext);
 		updateTipoDatoSymbol(pos,STR);
+		// borrar ultimo y primero 
+		char* cadena = yytext;
+		cadena++;
+		cadena[strlen(cadena) - 1] = '\0';
+		// asignablePtr = crearNodo("=*",&arbol,crearHoja(cadena), asignablePtr);
 		}
 	| buscarYreemplazar {
 		printf("\tbuscarYreemplazar es ASIGNABLE\n"); 
@@ -201,8 +234,8 @@ iteracion:
 	MIENTRAS PARENTE_I condicion PARENTE_D LLAVE_I bloque LLAVE_D {printf("\tmientras (condicion) bloque = iteracion\n");}
 	;
 compuertas:
-	AND {printf("\tAND = compuertas\n");}
-	|OR
+	AND {printf("\tcompuertas -> AND\n");}
+	|OR {printf("\tcompuertas -> OR\n");}
 	;
 comparador:
 	OP_MAYOR
@@ -236,7 +269,9 @@ termino:
 	;
 
 factor:
-	ID {printf("\tID es Factor \n");factorPtr = crearHoja(yytext);}
+	ID {printf("\tID es Factor \n");
+		factorPtr = crearHoja(yytext);
+		}
 	| CTE {
 		printf("\tCTE es Factor\n");
 		saveSymbolCte(yytext);
@@ -245,8 +280,7 @@ factor:
 		}
 	| OP_REST CTE {
 		printf("\t-CTE es Factor\n");
-		char symbol[12];
-		strcpy(symbol, "-"); 
+		char symbol[12] = "-";
 		strcat(symbol, yytext);
 		saveSymbolCte(symbol);
 		updateTipoDatoSymbol(pos,INT);
@@ -259,14 +293,20 @@ factor:
 		}
 	| PARENTE_I expresion PARENTE_D {printf("\t(exp_logica) es Factor\n");}
 	;
+
 declaraciones:
 	declaraciones variables DOS_PUNT TIPO_DATO {
 			updateTipoDatoSymbolInit(yytext);
-			printf("\tvariable : tipo dato declaracion es DECLARACION\n");
+			printf("\tdeclaraciones -> declaraciones variables : TipoDato\n");
+			uniqueIdMain++;
+			declaracionesPtr = crearNodo("=", &arbol, variablesPtr, crearHoja(VAL_INIT(yytext)));
+			declaracionesPtr = crearNodo("init", &arbol,declaracionesPtr,NULL);
 		}
 	| variables DOS_PUNT TIPO_DATO {
 			updateTipoDatoSymbolInit(yytext);
-			printf("\tvariable : tipo dato es DECLARACION\n");
+			printf("\tdeclaraciones -> variables : TipoDato\n");
+			// declaracionesPtr = crearNodo("=", &arbol, variablesPtr, crearHoja(VAL_INIT(yytext)));
+			// declaracionesPtr = crearNodo("init", &arbol,declaracionesPtr,NULL);
 		}
 	;
 
@@ -279,7 +319,8 @@ variables:
 			}
 			allPosInit[posInit]=pos;
 			posInit++;  
-			printf("\tid es VARIABLE \n");
+			printf("\tvariable-> id \n");
+			variablesPtr = crearHoja(yytext);
 		}
 	
 	| variables COMA ID {
@@ -288,9 +329,11 @@ variables:
 									saveSymbol(yytext,"","_","");
 									pos = filaActual-1;
 								}
-								allPosInit[posInit]=pos;
-								posInit++;  
-							printf("\tid, variables es VARIABLES\n");
+							allPosInit[posInit]=pos;
+							posInit++;  
+							printf("\tvariable-> variable , id \n");
+							variablesPtr = crearNodo("=", &arbol,crearHoja(yytext), variablesPtr);
+							uniqueIdMain++;
 						}
 	;
 %%
@@ -298,11 +341,13 @@ variables:
 
 int main(int argc, char *argv[])
 {
+    asignacionPtr = (tNodoArbol*)malloc(sizeof(tNodoArbol));
 	expresionPtr = (tNodoArbol*)malloc(sizeof(tNodoArbol));
     terminoPtr = (tNodoArbol*)malloc(sizeof(tNodoArbol));
     factorPtr = (tNodoArbol*)malloc(sizeof(tNodoArbol));
-    asignacionPtr = (tNodoArbol*)malloc(sizeof(tNodoArbol));
     asignablePtr = (tNodoArbol*)malloc(sizeof(tNodoArbol));
+	bloquePtr = (tNodoArbol*)malloc(sizeof(tNodoArbol));
+	sentenciaPtr = (tNodoArbol*)malloc(sizeof(tNodoArbol));
 
     crearArbol(&arbol);
     createTreeFile();
@@ -315,10 +360,9 @@ int main(int argc, char *argv[])
     { 
         yyparse();
     }
-	saveInFile();
+	saveSymbolTableFile();
 	saveArbolFile(&arbol);
 	fclose(yyin);
-	closeTreeFile();
     return 0;
 }
 int yyerror(void)
@@ -336,30 +380,16 @@ void createSymbolTableInFile(){
     fclose(file);
 }
 void createTreeFile(){
-    treeFile = fopen("tree.dot", "w+");
+    FILE* treeFile = fopen("tree.dot", "w");
     if (treeFile == NULL) {
 		perror("Error al abrir el archivo");
 		exit(1);
     }
-    fprintf(treeFile,"digraph programa{\n");
-}
-
-void closeTreeFile(){
-	fprintf(treeFile,"}");
+    fprintf(treeFile,"Error de compilacion\n");
 	fclose(treeFile);
 }
 
-void appendTreeFile(char *cad){
-      fprintf(treeFile,"\"%s\";\n",cad);
-}
-
-void linkTreeFile(char *nodeValue, char *leftValue, char *rightValue){
-	fprintf(treeFile,"\"%s\";\n",nodeValue);
-	fprintf(treeFile,"\"%s\" -> \"%s\";\n",nodeValue,leftValue);
-	fprintf(treeFile,"\"%s\" -> \"%s\";\n",nodeValue,rightValue);
-}
-
-void saveInFile(){
+void saveSymbolTableFile(){
 
     FILE* file = fopen("symbol-table.txt", "w+");
     if (file == NULL) {
@@ -451,8 +481,8 @@ tNodoArbol* crearHoja(char* terminal){
     memcpy(nuevo->info, terminal, strlen(terminal)+1);
     nuevo->der= NULL;
     nuevo->izq= NULL;
+	nuevo->uniqueId=uniqueIdMain;
     /* printf("FIN crearHoja\n"); */
-    appendTreeFile(terminal);
     return nuevo;
 }
 
@@ -464,22 +494,49 @@ tNodoArbol* crearNodo(char* terminal, t_arbol* arbol, tNodoArbol* NoTerminalIzq,
     nodo->der= NoTerminalDer;
     nodo->izq= NoTerminalIzq;
     *arbol = nodo;
+	nodo->uniqueId=uniqueIdMain;
     /* printf("FIN crearNodo\n"); */
-    linkTreeFile(terminal, NoTerminalIzq->info, NoTerminalDer->info);
     return nodo;
 }
 
-void recorrer(t_arbol *p)
-{
+void recorrer(t_arbol *p, FILE  *treeFile){
     if(!*p)
     {
         return;
     }
-    recorrer(&(*p)->izq);
-    /* printf("%s\n", (*p)->info); */
-    recorrer(&(*p)->der);
+    recorrer(&(*p)->izq,treeFile);
+	mostrarRelacion(p,treeFile);
+    recorrer(&(*p)->der,treeFile);
+}
+void mostrarRelacion(t_arbol *p, FILE  *treeFile){
+
+	if ((*p)->izq){
+		fprintf(treeFile,"\"%s_%d\" -> \"%s_%d\";\n",
+													(*p)->info,
+													(*p)->uniqueId,
+													(*p)->izq->info,
+													(*p)->izq->uniqueId);
+	}
+	if ((*p)->der){
+		fprintf(treeFile,"\"%s_%d\" -> \"%s_%d\";\n",
+													(*p)->info,
+													(*p)->uniqueId,
+													(*p)->der->info,
+													(*p)->der->uniqueId);
+	}
 }
 void saveArbolFile(t_arbol *p){
-    /* printf("Recorrer: \n"); */
-    recorrer(p);
+    FILE  *treeFile = fopen("tree.dot", "w");
+    if (treeFile == NULL) {
+		perror("Error al abrir el archivo");
+		exit(1);
+    }
+    fprintf(treeFile,"digraph programa{\n");
+    recorrer(p,treeFile);
+	fprintf(treeFile,"}");
+	fclose(treeFile);
+}
+
+void clearString(char* cad, int tam){
+	memset(cad, 0, tam);
 }
