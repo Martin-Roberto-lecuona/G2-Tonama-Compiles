@@ -11,7 +11,7 @@
 
 #define TAM_ID 31
 
-#define VAL_INIT(x) (strcmp(x, "String") == 0 ? "$" : "0")
+#define VAL_INIT(x) (strcmp(x, "String") == 0 ? "($)" : "0")
 
 int yystopparser=0;
 FILE  *yyin;
@@ -139,7 +139,7 @@ asignacion:
 	}
 	OP_ASIG asignable{
 					printf("\tasignacion -> = asignable\n");
-
+					uniqueIdMain++;
 					asignablePtr = crearNodo("=",&arbol, crearHoja(auxIdName), asignablePtr);
 					asignacionPtr = asignablePtr;
 					clearString(auxIdName, TAM_ID);
@@ -153,10 +153,13 @@ asignable:
 		saveSymbolCadena(yytext);
 		updateTipoDatoSymbol(pos,STR);
 		// borrar ultimo y primero
-		char* cadena = yytext;
-		cadena++;
-		cadena[strlen(cadena) - 1] = '\0';
-		// asignablePtr = crearNodo("=*",&arbol,crearHoja(cadena), asignablePtr);
+		char cadena[100] ;
+		strcpy(cadena,yytext);
+		cadena[0] = '(';
+		cadena[strlen(cadena)-1] = ')';
+		cadena[strlen(cadena)] = '\0';
+		// asignablePtr = crearNodo("CAD =",&arbol,crearHoja(cadena), asignablePtr);
+		asignablePtr = crearHoja(cadena);
 		}
 	| buscarYreemplazar {
 		printf("\tbuscarYreemplazar es ASIGNABLE\n");
@@ -237,13 +240,22 @@ declaraciones:
 			updateTipoDatoSymbolInit(yytext);
 			printf("\tdeclaraciones -> declaraciones variables : TipoDato\n");
 			uniqueIdMain++;
-			declaracionesPtr = crearNodo("=", &arbol, variablesPtr, crearHoja(VAL_INIT(yytext)));
-			declaracionesPtr = crearNodo("init", &arbol,declaracionesPtr,NULL);
+			if(variablesPtrAux != NULL){
+				declaracionesPtr = crearNodo("init", &arbol, declaracionesPtr, variablesPtr);
+				uniqueIdMain++;
+				declaracionesPtr = crearNodo("init", &arbol, declaracionesPtr, crearHoja(VAL_INIT(yytext)));
+			}
+			else {
+				declaracionesPtr = crearNodo("init", &arbol, variablesPtr, crearHoja(VAL_INIT(yytext)));
+			}
+			variablesPtrAux = NULL;
 		}
 	| variables DOS_PUNT TIPO_DATO {
 			updateTipoDatoSymbolInit(yytext);
 			printf("\tdeclaraciones -> variables : TipoDato\n");
-			// declaracionesPtr = crearNodo("=", &arbol, variablesPtr, crearHoja(VAL_INIT(yytext)));
+			// uniqueIdMain++;
+			declaracionesPtr = crearNodo("init", &arbol, variablesPtr, crearHoja(VAL_INIT(yytext)));
+			variablesPtrAux = declaracionesPtr;
 			// declaracionesPtr = crearNodo("init", &arbol,declaracionesPtr,NULL);
 		}
 	;

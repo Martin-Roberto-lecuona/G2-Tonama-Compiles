@@ -42,6 +42,8 @@ tNodoArbol *sentenciaPtr;
 tNodoArbol *initPtr;
 tNodoArbol *declaracionesPtr;
 tNodoArbol *variablesPtr;
+tNodoArbol *variablesPtrAux;
+
 t_arbol arbol;
 int uniqueIdMain = 0;
 
