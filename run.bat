@@ -1,6 +1,6 @@
 :: Script para windows
 del resultado.txt
-del tree.dot
+
 flex Lexico.l
 bison -dyv Sintactico.y
 

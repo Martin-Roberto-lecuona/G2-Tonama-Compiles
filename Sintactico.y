@@ -45,8 +45,8 @@ void clearString(char* cad, int tam);
 %token OP_IGUAL
 %token LLAVE_I
 %token LLAVE_D
-%token CORCH_I         
-%token CORCH_D         
+%token CORCH_I
+%token CORCH_D
 %token ESCRIBIR
 %token LEER
 %token OR
@@ -60,19 +60,19 @@ void clearString(char* cad, int tam);
 %token APLIC_DESC
 
 %%
-proyecto : 
+proyecto :
 	bloque {printf("\tFIN\n"); }
 	;
 bloque:
 	sentencia {printf("\nBloque -> sentencia\n"); bloquePtr = sentenciaPtr; }
-	| bloque sentencia {printf("\tBloque -> sentencia es bloque\n"); 
+	| bloque sentencia {printf("\tBloque -> sentencia es bloque\n");
 						uniqueIdMain++;
 						bloquePtr = crearNodo("Bloque",&arbol, bloquePtr, sentenciaPtr);
 						}
 	;
 
 sentencia:
-	asignacion {printf("\tsentencia -> asignacion\n"); 
+	asignacion {printf("\tsentencia -> asignacion\n");
 				sentenciaPtr = crearNodo("Sentencia",&arbol, asignacionPtr, NULL);
 				}
 	| iteracion {printf("\tsentencia -> iteracion\n");}
@@ -81,9 +81,9 @@ sentencia:
 	| ESCRIBIR PARENTE_I ID PARENTE_D
 	| LEER PARENTE_I ID PARENTE_D
 	| INIT LLAVE_I declaraciones LLAVE_D {
-								printf("\tsentencia -> init { declaraciones }\n"); 
+								printf("\tsentencia -> init { declaraciones }\n");
 								uniqueIdMain++;
-								sentenciaPtr = crearNodo("init", &arbol,declaracionesPtr,NULL); 
+								sentenciaPtr = crearNodo("init", &arbol,declaracionesPtr,NULL);
 								 }
 	| INIT LLAVE_I LLAVE_D
 	| buscarYreemplazar
@@ -94,7 +94,7 @@ aplicarDescuento:
 	;
 
 listaNum:
-	listaNum COMA factorTodoFloat 
+	listaNum COMA factorTodoFloat
 	| factorTodoFloat
 	;
 buscarYreemplazar:
@@ -122,7 +122,7 @@ factorCte:
 		}
 	;
 factorTodoFloat:
-	factorFlotante 
+	factorFlotante
 	| CTE {
 		printf("\tCTE es factorTodoFloat\n");
 		saveSymbolCte(yytext);
@@ -130,16 +130,16 @@ factorTodoFloat:
 	;
 asignacion:
 	ID {
-		pos = findSymbol(yytext); 
+		pos = findSymbol(yytext);
 		if (pos==-1) {
 			printf("Error: %s no declarado\n", yytext);
 			exit(-1);
-		} 
+		}
 		strcpy(auxIdName,yytext);
 	}
 	OP_ASIG asignable{
-					printf("\tasignacion -> = asignable\n"); 
-					
+					printf("\tasignacion -> = asignable\n");
+
 					asignablePtr = crearNodo("=",&arbol, crearHoja(auxIdName), asignablePtr);
 					asignacionPtr = asignablePtr;
 					clearString(auxIdName, TAM_ID);
@@ -149,17 +149,17 @@ asignacion:
 asignable:
 	expresion {printf("\tExpresion es ASIGNABLE\n"); asignablePtr = expresionPtr;}
 	| CADENA {
-		printf("\tID = CADENA es ASIGNABLE\n"); 
+		printf("\tID = CADENA es ASIGNABLE\n");
 		saveSymbolCadena(yytext);
 		updateTipoDatoSymbol(pos,STR);
-		// borrar ultimo y primero 
+		// borrar ultimo y primero
 		char* cadena = yytext;
 		cadena++;
 		cadena[strlen(cadena) - 1] = '\0';
 		// asignablePtr = crearNodo("=*",&arbol,crearHoja(cadena), asignablePtr);
 		}
 	| buscarYreemplazar {
-		printf("\tbuscarYreemplazar es ASIGNABLE\n"); 
+		printf("\tbuscarYreemplazar es ASIGNABLE\n");
 		updateTipoDatoSymbol(pos,INT);
 		}
 	;
@@ -249,26 +249,26 @@ declaraciones:
 	;
 
 variables:
-	ID { 
-			pos = findSymbol(yytext); 
+	ID {
+			pos = findSymbol(yytext);
 			if (pos==-1) {
 				saveSymbol(yytext,"","_","");
 				pos = filaActual-1;
 			}
 			allPosInit[posInit]=pos;
-			posInit++;  
+			posInit++;
 			printf("\tvariable-> id \n");
 			variablesPtr = crearHoja(yytext);
 		}
-	
+
 	| variables COMA ID {
-							pos = findSymbol(yytext); 
+							pos = findSymbol(yytext);
 								if (pos==-1) {
 									saveSymbol(yytext,"","_","");
 									pos = filaActual-1;
 								}
 							allPosInit[posInit]=pos;
-							posInit++;  
+							posInit++;
 							printf("\tvariable-> variable , id \n");
 							variablesPtr = crearNodo("=", &arbol,crearHoja(yytext), variablesPtr);
 							uniqueIdMain++;
@@ -286,7 +286,6 @@ int main(int argc, char *argv[]) {
   sentenciaPtr = (tNodoArbol *) malloc(sizeof(tNodoArbol));
 
   crearArbol(&arbol);
-  createTreeFile();
   createSymbolTableInFile();
   if ((yyin = fopen(argv[1], "rt")) == NULL) {
     printf("\nNo se puede abrir el archivo de prueba: %s\n", argv[1]);

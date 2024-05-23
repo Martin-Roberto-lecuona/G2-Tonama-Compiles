@@ -55,16 +55,6 @@ void crearArbol(t_arbol *pa) {
   *pa = NULL;
 }
 
-void createTreeFile() {
-  FILE *treeFile = fopen("tree.dot", "w");
-  if (treeFile == NULL) {
-    perror("Error al abrir el archivo");
-    exit(1);
-  }
-  fprintf(treeFile, "Error de compilacion\n");
-  fclose(treeFile);
-}
-
 void mostrarRelacion(t_arbol *p, FILE *treeFile) {
 
   if ((*p)->izq) {

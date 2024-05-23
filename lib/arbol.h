@@ -19,8 +19,6 @@ void crearArbol(t_arbol *pa);
 
 void saveArbolFile(t_arbol *p);
 
-void createTreeFile();
-
 tNodoArbol *crearHoja(char *terminal);
 
 tNodoArbol *crearHojaStr(char *terminal);
