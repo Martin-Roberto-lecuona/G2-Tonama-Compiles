@@ -4,7 +4,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
-#define MAX_FILAS 1024
+
 
 typedef struct s_nodo {
   char *info;
@@ -45,14 +45,5 @@ tNodoArbol *variablesPtr;
 t_arbol arbol;
 int uniqueIdMain = 0;
 
-typedef struct{
-  char nombre[100];
-  char tipoDato[15];
-  char valor[50];
-  char longitud[5];
-}t_fila;
-
-t_fila filas[MAX_FILAS];
-int filaActual=0;
 
 #endif
