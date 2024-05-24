@@ -1,11 +1,11 @@
 :: Script para windows
 del resultado.txt
-del tree.dot
+
 flex Lexico.l
 bison -dyv Sintactico.y
 
 gcc.exe lex.yy.c y.tab.c -o lyc-compiler-1.0.0.exe
-lyc-compiler-1.0.0.exe test.txt > resultado.txt
+lyc-compiler-1.0.0.exe testeo_arbol.txt > resultado.txt
 
 @echo off
 del lyc-compiler-1.0.0.exe
