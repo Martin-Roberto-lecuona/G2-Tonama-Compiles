@@ -188,13 +188,11 @@ comparador:
 
 condicion:
 	comparacion {printf("\tcomparacion = condicion\n");}
-	|condicion compuertas comparacion {printf("\tcondicion compuerta comparacion = condicion\n");}
+	|comparacion compuertas comparacion {printf("\tcondicion compuerta comparacion = condicion\n");}
+	| NOT comparacion
 	;
 comparacion:
-	comparacion comparador factor {printf("\texpresion comparador expresion = comparacion\n");}
-	| NOT factor {printf("\tNOT comparacion = comparacion\n");}
-	| PARENTE_I comparacion comparador factor PARENTE_D {printf("\t(comparacion) = comparacion\n");}
-	| factor {printf("\tfactor = comparacion\n");}
+	factor comparador factor {printf("\texpresion comparador expresion = comparacion\n");}
 	;
 
 expresion:
