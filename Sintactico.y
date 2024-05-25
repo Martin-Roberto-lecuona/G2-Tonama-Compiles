@@ -64,10 +64,12 @@ proyecto :
 	bloque {printf("\tFIN\n"); }
 	;
 bloque:
-	sentencia {printf("\nBloque -> sentencia\n"); bloquePtr = sentenciaPtr; }
+	sentencia {printf("\nBloque -> sentencia\n"); bloquePtr = sentenciaPtr; apilarDinamica(&pila,bloquePtr); }
 	| bloque sentencia {printf("\tBloque -> sentencia es bloque\n");
 						uniqueIdMain++;
+						bloquePtr = desapilarDinamica(&pila);
 						bloquePtr = crearNodo("Bloque",&arbol, bloquePtr, sentenciaPtr);
+						apilarDinamica(&pila,bloquePtr);
 						}
 	;
 
@@ -75,15 +77,20 @@ sentencia:
 	asignacion {printf("\tsentencia -> asignacion\n");
 				sentenciaPtr = crearNodo("Sentencia",&arbol, asignacionPtr, NULL);
 				}
-	| iteracion {printf("\tsentencia -> iteracion\n");}
-	| seleccion {printf("\tsentencia -> seleccion\n");}
+	| iteracion {printf("\tsentencia -> iteracion\n");
+	            //uniqueIdMain++;
+	            //sentenciaPtr = crearNodo("Sentencia", &arbol,iteracionPtr,NULL);
+	            }
+	| seleccion {printf("\tsentencia -> seleccion\n");
+	              uniqueIdMain++;
+	             sentenciaPtr = crearNodo("Seleccion",&arbol, seleccionPtr, NULL);}
 	| ESCRIBIR PARENTE_I CADENA PARENTE_D {printf("\tsentencia -> escribir ( cadena )\n");}
 	| ESCRIBIR PARENTE_I ID PARENTE_D
 	| LEER PARENTE_I ID PARENTE_D
 	| INIT LLAVE_I declaraciones LLAVE_D {
 								printf("\tsentencia -> init { declaraciones }\n");
 								uniqueIdMain++;
-								sentenciaPtr = crearNodo("init", &arbol,declaracionesPtr,NULL);
+								sentenciaPtr = crearNodo("Sentencia", &arbol,declaracionesPtr,NULL);
 								 }
 	| INIT LLAVE_I LLAVE_D
 	| buscarYreemplazar
@@ -168,31 +175,49 @@ asignable:
 	;
 
 seleccion:
-	SI PARENTE_I condicion PARENTE_D LLAVE_I bloque LLAVE_D SINO LLAVE_I bloque LLAVE_D {printf("\tSI (condicion) bloque sino bloque = seleccion\n");}
-	| SI PARENTE_I condicion PARENTE_D LLAVE_I bloque LLAVE_D {printf("\tSI (condicion) bloque = seleccion\n");}
+	SI PARENTE_I condicion PARENTE_D LLAVE_I bloque LLAVE_D SINO LLAVE_I bloque LLAVE_D
+	      {printf("\tSI (condicion) bloque sino bloque = seleccion\n");
+	       uniqueIdMain++;
+         seleccionPtr = crearNodo("IF",&arbol,condicionPtr,crearNodo("CUERPO",&arbol,desapilarDinamica(&pila),desapilarDinamica(&pila)));}
+	| SI PARENTE_I condicion PARENTE_D LLAVE_I bloque  LLAVE_D{
+                 printf("\tSI (condicion) bloque = seleccion\n");
+                 uniqueIdMain++;
+                 bloquePtr = desapilarDinamica(&pila);
+                 seleccionPtr = crearNodo("IF",&arbol,condicionPtr,bloquePtr);
+                 }
 	;
 iteracion:
-	MIENTRAS PARENTE_I condicion PARENTE_D LLAVE_I bloque LLAVE_D {printf("\tmientras (condicion) bloque = iteracion\n");}
+	MIENTRAS PARENTE_I condicion PARENTE_D LLAVE_I bloque LLAVE_D {
+	    printf("\tmientras (condicion) bloque = iteracion\n");
+	    //uniqueIdMain++;
+	    //bloquePtr = desapilarDinamica(&pila);
+	    //iteracionPtr = crearNodo("WHILE",&arbol,condicionPtr,bloquePtr);
+	    }
 	;
 compuertas:
-	AND {printf("\tcompuertas -> AND\n");}
-	|OR {printf("\tcompuertas -> OR\n");}
+	AND {printf("\tcompuertas -> AND\n"); compuertasPtr = crearHoja("AND");}
+	|OR {printf("\tcompuertas -> OR\n"); compuertasPtr = crearHoja("OR");}
 	;
 comparador:
-	OP_MAYOR
-	| OP_MENOR
-	| OP_MAYOR_IGUAL
-	| OP_MENOR_IGUAL
-	| OP_IGUAL
+	OP_MAYOR { comparadorPtr = crearHoja(">");}
+	| OP_MENOR { comparadorPtr = crearHoja("<");}
+	| OP_MAYOR_IGUAL { comparadorPtr = crearHoja(">=");}
+	| OP_MENOR_IGUAL { comparadorPtr = crearHoja("<=");}
+	| OP_IGUAL { comparadorPtr = crearHoja("==");}
 	;
 
 condicion:
-	comparacion {printf("\tcomparacion = condicion\n");}
-	|comparacion compuertas comparacion {printf("\tcondicion compuerta comparacion = condicion\n");}
-	| NOT comparacion
+	comparacion {printf("\tcomparacion = condicion\n"); condicionPtr = comparacionPtr;}
+	|comparacion compuertas comparacion {printf("\tcondicion compuerta comparacion = condicion\n");
+	condicionPtr = crearNodo(compuertasPtr->info, &arbol, desapilarDinamica(&pila), desapilarDinamica(&pila));}
+	| NOT comparacion {condicionPtr = crearNodo("NOT", &arbol, comparacionPtr , NULL);}
 	;
 comparacion:
-	factor comparador factor {printf("\texpresion comparador expresion = comparacion\n");}
+	factor comparador factor {printf("\texpresion comparador expresion = comparacion\n");
+	uniqueIdMain++;
+	comparacionPtr = crearNodo(comparadorPtr->info, &arbol,  desapilarDinamica(&pila), desapilarDinamica(&pila));
+	apilarDinamica(&pila, comparacionPtr);
+}
 	;
 
 expresion:
@@ -210,6 +235,7 @@ termino:
 factor:
 	ID {printf("\tID es Factor \n");
 		factorPtr = crearHoja(yytext);
+		apilarDinamica(&pila, factorPtr);
 		}
 	| CTE {
 		printf("\tCTE es Factor\n");

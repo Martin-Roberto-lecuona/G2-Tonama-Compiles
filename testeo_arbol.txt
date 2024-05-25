@@ -1,13 +1,27 @@
-*- comentario -*
-init{
-    v1, v2,v3:Int
-    s4,s5:String
+init {
+    a,b,c : Int
 }
-v1 = 2 + 4 * 3
-v2 = var + 5 
-v3 = v2 * 4
-s4 = "cad1"
-s5 = "cad2"
 
+a := 1
+b := 1
+if (a > b OR c > b)
+{
+    c := 3
+    c := 2
+}
+sino
+{
+   c := 2
+   c := 3
+}
 
-
+if (a > b OR c > b)
+{
+    c := 3
+    c := 2
+}
+sino
+{
+   c := 2
+   c := 3
+}
