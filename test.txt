@@ -172,11 +172,11 @@ aplicarDescuento(50.0, [1,23,3], 1)
 
 *- Busco y reemplazo -*
 
-buscar = "buscar";
-en = "Hola, quiero buscar una palabra y reemplazarla en este texto.";
-reemplazo = "reemplazo";
+buscar = "buscar"
+en = "Hola, quiero buscar una palabra y reemplazarla en este texto."
+reemplazo = "reemplazo"
 
-resultado = buscoYReemplazo(buscar, en, reemplazo);
+resultado = buscoYReemplazo(buscar, en, reemplazo)
 
 *- Aplicar descuento -*
 

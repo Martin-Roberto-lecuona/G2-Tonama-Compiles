@@ -123,8 +123,8 @@ init                    {printf("\nInit : %s\n", yytext);return INIT;}
 {OP_MULT}		        {printf("\nMultiplicacion: %s\n", yytext);return OP_MULT;}
 {OP_REST}		        {printf("\nResta: %s\n", yytext);return OP_REST;}
 {OP_DIVI}		        {printf("\nDivision: %s\n", yytext);return OP_DIVI;}
-{OP_MAYOR}		        {printf("\nMayor: %s\n", yytext);return OP_MENOR;}
-{OP_MENOR}		        {printf("\nMenor: %s\n", yytext);return OP_MAYOR;}
+{OP_MAYOR}		        {printf("\nMayor: %s\n", yytext);return OP_MAYOR;}
+{OP_MENOR}		        {printf("\nMenor: %s\n", yytext);return OP_MENOR;}
 {OP_MAYOR_IGUAL}		{printf("\nMayor igual: %s\n", yytext);return OP_MAYOR_IGUAL;}
 {OP_MENOR_IGUAL}		{printf("\nMenor igual: %s\n", yytext);return OP_MENOR_IGUAL;}
 {OP_IGUAL}		        {printf("\nIgual: %s\n", yytext);return OP_IGUAL;}
