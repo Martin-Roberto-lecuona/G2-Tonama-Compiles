@@ -17,8 +17,11 @@ sino
    c := 2
    c := 3
 }
-
-
+-*
+mientras(a>b){
+    escribir("entra while")
+    a := a + 1
+}
 if (a > b OR c > b)
 {
     escribir("entra if")
@@ -26,9 +29,5 @@ if (a > b OR c > b)
 }
 
 
--*
-mientras(a>b){
-    a := 1
-}
 
 cad := "Salimo"

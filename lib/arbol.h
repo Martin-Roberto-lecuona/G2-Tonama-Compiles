@@ -35,7 +35,7 @@ tNodoArbol *crearNodo(char *terminal,
                       t_arbol *arbol,
                       tNodoArbol *NoTerminalIzq,
                       tNodoArbol *NoTerminalDer);
-                      
+
 tNodoArbol *asignarHijosNodo(tNodoArbol *Padre,
                       t_arbol *arbol,
                       tNodoArbol *NoTerminalIzq,
@@ -54,6 +54,7 @@ tNodoArbol *terminoPtr;
 tNodoArbol *factorPtr;
 tNodoArbol *asignablePtr;
 tNodoArbol *bloquePtr;
+tNodoArbol *bloqueInternoPtr;
 tNodoArbol *sentenciaPtr;
 tNodoArbol *initPtr;
 tNodoArbol *declaracionesPtr;

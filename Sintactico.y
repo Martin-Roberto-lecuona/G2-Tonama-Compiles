@@ -68,26 +68,38 @@ proyecto :
 	bloque {printf("\tFIN\n"); }
 	;
 bloque:
-	sentencia {printf("\nBloque -> sentencia\n"); bloquePtr = sentenciaPtr; apilarDinamica(&pila,bloquePtr); }
+	sentencia {
+				printf("\nBloque -> sentencia\n"); 
+				bloquePtr = sentenciaPtr; 
+			}
 	| bloque sentencia {printf("\tBloque -> sentencia es bloque\n");
 						uniqueIdMain++;
-						bloquePtr = desapilarDinamica(&pila);
 						bloquePtr = crearNodo("Bloque",&arbol, bloquePtr, sentenciaPtr);
-						apilarDinamica(&pila,bloquePtr);
 						}
 	;
-
+bloqueInterno:
+	sentencia {
+				printf("\t BloqueInterno -> sentencia\n"); 
+				bloqueInternoPtr = sentenciaPtr; 
+			}
+	| bloqueInterno sentencia {printf("\t BloqueInterno -> sentencia es bloque\n");
+						uniqueIdMain++;
+						bloqueInternoPtr = crearNodo("Bloque",&arbol, bloqueInternoPtr, sentenciaPtr);
+						}
+	;
+	
 sentencia:
-	asignacion {printf("\tsentencia -> asignacion\n");
-				sentenciaPtr = crearNodo("Sentencia",&arbol, asignacionPtr, NULL);
+	asignacion {	printf("\tsentencia -> asignacion\n");
+					sentenciaPtr = crearNodo("Sentencia",&arbol, asignacionPtr, NULL);
 				}
-	| iteracion {printf("\tsentencia -> iteracion\n");
-	            uniqueIdMain++;
-	            sentenciaPtr = crearNodo("Sentencia", &arbol,iteracionPtr,NULL);
+	| iteracion {	printf("\tsentencia -> iteracion\n");
+	            	uniqueIdMain++;
+	            	sentenciaPtr = crearNodo("Sentencia", &arbol,iteracionPtr,NULL);
 	            }
-	| seleccion {printf("\tsentencia -> seleccion\n");
-	              uniqueIdMain++;
-	             sentenciaPtr = crearNodo("Seleccion",&arbol, seleccionPtr, NULL);}
+	| seleccion {	printf("\tsentencia -> seleccion\n");
+	              	uniqueIdMain++;
+	             	sentenciaPtr = crearNodo("Seleccion",&arbol, seleccionPtr, NULL);
+				}
 	| ESCRIBIR PARENTE_I CADENA
 								{
 									strcpy(auxCadVal,yytext);
@@ -180,33 +192,30 @@ asignable:
 	;
 
 seleccion:
-	SI PARENTE_I condicion PARENTE_D LLAVE_I bloque LLAVE_D {
+	SI PARENTE_I condicion PARENTE_D LLAVE_I bloqueInterno LLAVE_D {
 				uniqueIdMain++;
-				bloquePtr = desapilarDinamica(&pila);
 				sinoPtr = crearHoja("ELSE");
-				bloquePtr = crearNodo("CUERPO",&arbol,bloquePtr,sinoPtr);
-				seleccionPtr = crearNodo("IF",&arbol,condicionPtr,bloquePtr);
+				bloqueInternoPtr = crearNodo("CUERPO",&arbol,bloqueInternoPtr,sinoPtr);
+				seleccionPtr = crearNodo("IF",&arbol,condicionPtr,bloqueInternoPtr);
 				}
-	SINO LLAVE_I bloque LLAVE_D
+	SINO LLAVE_I bloqueInterno LLAVE_D
 	      {printf("\tseleccion -> SI (condicion) {bloque} sino {bloque}\n");
 	       	uniqueIdMain++;
-			sinoPtr = asignarHijosNodo(sinoPtr,&arbol,desapilarDinamica(&pila), NULL );
+			sinoPtr = asignarHijosNodo(sinoPtr,&arbol,bloqueInternoPtr, NULL );
 			}
-	| SI PARENTE_I condicion PARENTE_D LLAVE_I bloque  LLAVE_D{
+	| SI PARENTE_I condicion PARENTE_D LLAVE_I bloqueInterno LLAVE_D{
                  printf("\tseleccion -> SI (condicion) {bloque}\n");
                  uniqueIdMain++;
-                 bloquePtr = desapilarDinamica(&pila);
-				 bloquePtr = crearNodo("CUERPO",&arbol,bloquePtr,NULL);
-                 seleccionPtr = crearNodo("IF",&arbol,condicionPtr,bloquePtr);
-                 }
+				 bloqueInternoPtr = crearNodo("CUERPO",&arbol,bloqueInternoPtr,NULL);
+                 seleccionPtr = crearNodo("IF",&arbol,condicionPtr,bloqueInternoPtr);
+                }
 	;
 iteracion:
-	MIENTRAS PARENTE_I condicion PARENTE_D LLAVE_I bloque LLAVE_D {
+	MIENTRAS PARENTE_I condicion PARENTE_D LLAVE_I bloqueInterno LLAVE_D {
 	    printf("\tmientras (condicion) bloque = iteracion\n");
 	    uniqueIdMain++;
-	    bloquePtr = desapilarDinamica(&pila);
-		bloquePtr = crearNodo("CUERPO",&arbol,bloquePtr,NULL);
-	    iteracionPtr = crearNodo("WHILE",&arbol,condicionPtr,bloquePtr);
+		bloqueInternoPtr = crearNodo("CUERPO",&arbol,bloqueInternoPtr,NULL);
+	    iteracionPtr = crearNodo("WHILE",&arbol,condicionPtr,bloqueInternoPtr);
 	    }
 	;
 compuertas:
@@ -292,10 +301,8 @@ declaraciones:
 	| variables DOS_PUNT TIPO_DATO {
 			updateTipoDatoSymbolInit(yytext);
 			printf("\tdeclaraciones -> variables : TipoDato\n");
-			// uniqueIdMain++;
 			declaracionesPtr = crearNodo("init", &arbol, variablesPtr, crearHoja(VAL_INIT(yytext)));
 			variablesPtrAux = declaracionesPtr;
-			// declaracionesPtr = crearNodo("init", &arbol,declaracionesPtr,NULL);
 		}
 	;
 
