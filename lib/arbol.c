@@ -99,3 +99,14 @@ tNodoArbol * desapilarDinamica(t_pila *pp)
   free(aux);
   return pd;
 }
+
+tNodoArbol *asignarHijosNodo(tNodoArbol *Padre,
+                      t_arbol *arbol,
+                      tNodoArbol *NoTerminalIzq,
+                      tNodoArbol *NoTerminalDer) {
+
+  Padre->der = NoTerminalDer;
+  Padre->izq = NoTerminalIzq;
+  /* printf("FIN crearNodo\n"); */
+  return Padre;
+}

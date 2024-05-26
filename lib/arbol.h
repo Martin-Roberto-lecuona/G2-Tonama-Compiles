@@ -35,7 +35,11 @@ tNodoArbol *crearNodo(char *terminal,
                       t_arbol *arbol,
                       tNodoArbol *NoTerminalIzq,
                       tNodoArbol *NoTerminalDer);
-
+tNodoArbol *asignarHijosNodo(tNodoArbol *Padre,
+                      t_arbol *arbol,
+                      tNodoArbol *NoTerminalIzq,
+                      tNodoArbol *NoTerminalDer);
+                      
 void recorrer(t_arbol *p, FILE *treeFile);
 
 void mostrarRelacion(t_arbol *p, FILE *treeFile);
@@ -59,6 +63,7 @@ tNodoArbol *compuertasPtr;
 tNodoArbol *condicionPtr;
 tNodoArbol *comparacionPtr;
 tNodoArbol *seleccionPtr;
+tNodoArbol *sinoPtr;
 tNodoArbol *iteracionPtr;
 
 t_arbol arbol;

@@ -175,14 +175,26 @@ asignable:
 	;
 
 seleccion:
-	SI PARENTE_I condicion PARENTE_D LLAVE_I bloque LLAVE_D SINO LLAVE_I bloque LLAVE_D
+	SI PARENTE_I condicion PARENTE_D LLAVE_I bloque LLAVE_D {
+				uniqueIdMain++;
+				bloquePtr = desapilarDinamica(&pila);
+				sinoPtr = crearHoja("ELSE");
+				bloquePtr = crearNodo("CUERPO",&arbol,bloquePtr,sinoPtr);
+				seleccionPtr = crearNodo("IF",&arbol,condicionPtr,bloquePtr);
+				}
+	SINO LLAVE_I bloque LLAVE_D
 	      {printf("\tSI (condicion) bloque sino bloque = seleccion\n");
-	       uniqueIdMain++;
-         seleccionPtr = crearNodo("IF",&arbol,condicionPtr,crearNodo("CUERPO",&arbol,desapilarDinamica(&pila),desapilarDinamica(&pila)));}
+	       	uniqueIdMain++;
+			sinoPtr = asignarHijosNodo(sinoPtr,&arbol,desapilarDinamica(&pila), NULL );
+         	// seleccionPtr = crearNodo("IF",&arbol,condicionPtr,crearNodo("CUERPO",&arbol,desapilarDinamica(&pila),desapilarDinamica(&pila)));
+         	// seleccionPtr = crearNodo("CUERPO",&arbol,desapilarDinamica(&pila),desapilarDinamica(&pila));
+			// seleccionPtr = sinoPtr;
+			}
 	| SI PARENTE_I condicion PARENTE_D LLAVE_I bloque  LLAVE_D{
                  printf("\tSI (condicion) bloque = seleccion\n");
                  uniqueIdMain++;
                  bloquePtr = desapilarDinamica(&pila);
+				 bloquePtr = crearNodo("CUERPO",&arbol,bloquePtr,NULL);
                  seleccionPtr = crearNodo("IF",&arbol,condicionPtr,bloquePtr);
                  }
 	;
