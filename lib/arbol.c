@@ -72,3 +72,30 @@ void mostrarRelacion(t_arbol *p, FILE *treeFile) {
             (*p)->der->uniqueId);
   }
 }
+
+int apilarDinamica(t_pila *PP, tNodoArbol* pd)
+{
+  t_nodo *pnue= (t_nodo *)malloc(sizeof(t_nodo));
+  if(!pnue)
+    return 0;
+
+  pnue->dato = pd;
+  pnue->psig = *PP;
+  *PP=pnue;
+  return 1;
+
+}
+
+tNodoArbol * desapilarDinamica(t_pila *pp)
+{
+  t_nodo *aux;
+
+  if(*pp==NULL)
+    return 0;
+
+  aux = *pp;
+  tNodoArbol * pd = aux->dato; //== (*pp)->dato
+  *pp = aux->psig;
+  free(aux);
+  return pd;
+}
