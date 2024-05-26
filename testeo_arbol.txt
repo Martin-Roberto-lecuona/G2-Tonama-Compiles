@@ -5,6 +5,7 @@ init {
 
 a := 1
 b := 1
+*-
 if (a > b OR c > b)
 {
     c := 3
@@ -16,15 +17,18 @@ sino
    c := 2
    c := 3
 }
+
+
+if (a > b OR c > b)
+{
+    escribir("entra if")
+    escribir("chico")
+}
+
+
+-*
+mientras(a>b){
+    a := 1
+}
+
 cad := "Salimo"
-
-if (a > b OR c > b)
-{
-    c := 3
-    c := 2
-}
-sino
-{
-   c := 2
-   c := 3
-}

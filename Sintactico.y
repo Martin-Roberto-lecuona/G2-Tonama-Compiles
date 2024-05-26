@@ -10,6 +10,8 @@
 #include <string.h>
 
 #define TAM_ID 31
+#define MAX_CAD 100
+
 
 #define VAL_INIT(x) (strcmp(x, "String") == 0 ? "($)" : "0")
 
@@ -20,7 +22,9 @@ int yylex();
 char *yytext;
 extern char lastID[31];
 char auxIdName[TAM_ID];
+char auxCadVal[MAX_CAD];
 void clearString(char* cad, int tam);
+char* trimComillas(char* cad);
 
 %}
 
@@ -78,13 +82,21 @@ sentencia:
 				sentenciaPtr = crearNodo("Sentencia",&arbol, asignacionPtr, NULL);
 				}
 	| iteracion {printf("\tsentencia -> iteracion\n");
-	            //uniqueIdMain++;
-	            //sentenciaPtr = crearNodo("Sentencia", &arbol,iteracionPtr,NULL);
+	            uniqueIdMain++;
+	            sentenciaPtr = crearNodo("Sentencia", &arbol,iteracionPtr,NULL);
 	            }
 	| seleccion {printf("\tsentencia -> seleccion\n");
 	              uniqueIdMain++;
 	             sentenciaPtr = crearNodo("Seleccion",&arbol, seleccionPtr, NULL);}
-	| ESCRIBIR PARENTE_I CADENA PARENTE_D {printf("\tsentencia -> escribir ( cadena )\n");}
+	| ESCRIBIR PARENTE_I CADENA
+								{
+									strcpy(auxCadVal,yytext);
+								} 
+	PARENTE_D {
+		printf("\tsentencia -> escribir ( cadena )\n");
+		uniqueIdMain++;
+	    sentenciaPtr = crearNodo("PUT", &arbol,crearHoja("STDOUT"),crearHoja(trimComillas(auxCadVal)));
+		}
 	| ESCRIBIR PARENTE_I ID PARENTE_D
 	| LEER PARENTE_I ID PARENTE_D
 	| INIT LLAVE_I declaraciones LLAVE_D {
@@ -159,14 +171,7 @@ asignable:
 		printf("\tID = CADENA es ASIGNABLE\n");
 		saveSymbolCadena(yytext);
 		updateTipoDatoSymbol(pos,STR);
-		// borrar ultimo y primero
-		char cadena[100] ;
-		strcpy(cadena,yytext);
-		cadena[0] = '(';
-		cadena[strlen(cadena)-1] = ')';
-		cadena[strlen(cadena)] = '\0';
-		// asignablePtr = crearNodo("CAD =",&arbol,crearHoja(cadena), asignablePtr);
-		asignablePtr = crearHoja(cadena);
+		asignablePtr = crearHoja(trimComillas(yytext));
 		}
 	| buscarYreemplazar {
 		printf("\tbuscarYreemplazar es ASIGNABLE\n");
@@ -183,15 +188,12 @@ seleccion:
 				seleccionPtr = crearNodo("IF",&arbol,condicionPtr,bloquePtr);
 				}
 	SINO LLAVE_I bloque LLAVE_D
-	      {printf("\tSI (condicion) bloque sino bloque = seleccion\n");
+	      {printf("\tseleccion -> SI (condicion) {bloque} sino {bloque}\n");
 	       	uniqueIdMain++;
 			sinoPtr = asignarHijosNodo(sinoPtr,&arbol,desapilarDinamica(&pila), NULL );
-         	// seleccionPtr = crearNodo("IF",&arbol,condicionPtr,crearNodo("CUERPO",&arbol,desapilarDinamica(&pila),desapilarDinamica(&pila)));
-         	// seleccionPtr = crearNodo("CUERPO",&arbol,desapilarDinamica(&pila),desapilarDinamica(&pila));
-			// seleccionPtr = sinoPtr;
 			}
 	| SI PARENTE_I condicion PARENTE_D LLAVE_I bloque  LLAVE_D{
-                 printf("\tSI (condicion) bloque = seleccion\n");
+                 printf("\tseleccion -> SI (condicion) {bloque}\n");
                  uniqueIdMain++;
                  bloquePtr = desapilarDinamica(&pila);
 				 bloquePtr = crearNodo("CUERPO",&arbol,bloquePtr,NULL);
@@ -201,9 +203,10 @@ seleccion:
 iteracion:
 	MIENTRAS PARENTE_I condicion PARENTE_D LLAVE_I bloque LLAVE_D {
 	    printf("\tmientras (condicion) bloque = iteracion\n");
-	    //uniqueIdMain++;
-	    //bloquePtr = desapilarDinamica(&pila);
-	    //iteracionPtr = crearNodo("WHILE",&arbol,condicionPtr,bloquePtr);
+	    uniqueIdMain++;
+	    bloquePtr = desapilarDinamica(&pila);
+		bloquePtr = crearNodo("CUERPO",&arbol,bloquePtr,NULL);
+	    iteracionPtr = crearNodo("WHILE",&arbol,condicionPtr,bloquePtr);
 	    }
 	;
 compuertas:
@@ -353,4 +356,15 @@ int yyerror(void) {
 
 void clearString(char *cad, int tam) {
   memset(cad, 0, tam);
+}
+char* trimComillas(char* cad){
+	char* cadena = malloc(strlen(cad) + 1);
+	if(cadena == NULL) {
+		return NULL;
+	}
+	strcpy(cadena,cad);
+	cadena[0] = '(';
+	cadena[strlen(cadena)-1] = ')';
+	cadena[strlen(cadena)] = '\0';
+	return cadena;
 }

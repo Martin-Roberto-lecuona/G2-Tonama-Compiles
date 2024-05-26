@@ -35,11 +35,12 @@ tNodoArbol *crearNodo(char *terminal,
                       t_arbol *arbol,
                       tNodoArbol *NoTerminalIzq,
                       tNodoArbol *NoTerminalDer);
+                      
 tNodoArbol *asignarHijosNodo(tNodoArbol *Padre,
                       t_arbol *arbol,
                       tNodoArbol *NoTerminalIzq,
                       tNodoArbol *NoTerminalDer);
-                      
+
 void recorrer(t_arbol *p, FILE *treeFile);
 
 void mostrarRelacion(t_arbol *p, FILE *treeFile);
