@@ -231,29 +231,32 @@ comparador:
 	;
 
 condicion:
-	comparacion {printf("\tcomparacion = condicion\n"); condicionPtr = comparacionPtr;}
-	|comparacion compuertas comparacion {printf("\tcondicion compuerta comparacion = condicion\n");
-	condicionPtr = crearNodo(compuertasPtr->info, &arbol, desapilarDinamica(&pila), desapilarDinamica(&pila));}
+	comparacion {printf("\t condicion -> comparacion\n"); condicionPtr = comparacionPtr;}
+	|comparacion compuertas comparacion {
+		printf("\t condicion -> condicion compuerta comparacion\n");
+		condicionPtr = crearNodo(compuertasPtr->info, &arbol, desapilarDinamica(&pila), desapilarDinamica(&pila));
+		}
 	| NOT comparacion {condicionPtr = crearNodo("NOT", &arbol, comparacionPtr , NULL);}
 	;
 comparacion:
-	factor comparador factor {printf("\texpresion comparador expresion = comparacion\n");
-	uniqueIdMain++;
-	comparacionPtr = crearNodo(comparadorPtr->info, &arbol,  desapilarDinamica(&pila), desapilarDinamica(&pila));
-	apilarDinamica(&pila, comparacionPtr);
-}
+	factor comparador factor {
+				printf("\t comparacion -> expresion comparador expresion\n");
+				uniqueIdMain++;
+				comparacionPtr = crearNodo(comparadorPtr->info, &arbol,  desapilarDinamica(&pila), desapilarDinamica(&pila));
+				apilarDinamica(&pila, comparacionPtr);
+	}
 	;
 
 expresion:
-	termino {printf("\tTermino es Expresion\n"); expresionPtr = terminoPtr;}
-	|expresion OP_SUMA termino {printf("\tExpresion+Termino es Expresion\n");expresionPtr = crearNodo("+",&arbol,expresionPtr, terminoPtr);}
-	|expresion OP_REST termino {printf("\tExpresion-Termino es Expresion\n");expresionPtr = crearNodo("-",&arbol,expresionPtr, terminoPtr);}
+	termino {printf("\tExpresion -> Termino\n"); expresionPtr = terminoPtr;}
+	|expresion OP_SUMA termino {printf("\tExpresion -> Expresion + Termino \n");expresionPtr = crearNodo("+",&arbol,expresionPtr, terminoPtr);}
+	|expresion OP_REST termino {printf("\tExpresion -> Expresion - Termino \n");expresionPtr = crearNodo("-",&arbol,expresionPtr, terminoPtr);}
 	;
 
 termino:
-	factor {printf("\tFactor es Termino\n"); terminoPtr = factorPtr; }
-	|termino OP_MULT factor {printf("\tTermino*Factor es Termino\n");terminoPtr = crearNodo("*",&arbol,terminoPtr, factorPtr);}
-	|termino OP_DIVI factor {printf("\tTermino/Factor es Termino\n");terminoPtr = crearNodo("/",&arbol,terminoPtr, factorPtr);}
+	factor {printf("\tTermino -> Factor\n"); terminoPtr = factorPtr; }
+	|termino OP_MULT factor {printf("\tTermino -> Termino * Factor\n");terminoPtr = crearNodo("*",&arbol,terminoPtr, factorPtr);}
+	|termino OP_DIVI factor {printf("\tTermino -> Termino / Factor\n");terminoPtr = crearNodo("/",&arbol,terminoPtr, factorPtr);}
 	;
 
 factor:

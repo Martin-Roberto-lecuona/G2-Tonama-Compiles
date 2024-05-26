@@ -18,11 +18,13 @@ sino
    c := 3
 }
 -*
+
+
 mientras(a>b){
     escribir("entra while")
     a := a + 1
 }
-if (a > b OR c > b)
+if (NOT a > b)
 {
     escribir("entra if")
     escribir("chico")
