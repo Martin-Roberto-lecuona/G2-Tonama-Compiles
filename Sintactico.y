@@ -138,12 +138,13 @@ sentencia:
 						} 
 	| INIT LLAVE_I declaraciones LLAVE_D {
 								printf("\tsentencia -> init { declaraciones }\n");
-								uniqueIdMain++;
-								sentenciaPtr = crearNodo("Sentencia", &arbol,declaracionesPtr,NULL);
+								//uniqueIdMain++;
+								//sentenciaPtr = crearNodo("Sentencia", &arbol,declaracionesPtr,NULL);
 								 }
 	| INIT LLAVE_I LLAVE_D {printf("\tsentencia -> init {}\n");
-								uniqueIdMain++;
-								sentenciaPtr = crearNodo("Sentencia", &arbol,NULL,NULL);}
+								//uniqueIdMain++;
+								//sentenciaPtr = crearNodo("Sentencia", &arbol,NULL,NULL);
+							}
 	| buscarYreemplazar
 	| aplicarDescuento
 	;
@@ -310,22 +311,22 @@ declaraciones:
 	declaraciones variables DOS_PUNT TIPO_DATO {
 			updateTipoDatoSymbolInit(yytext);
 			printf("\tdeclaraciones -> declaraciones variables : TipoDato\n");
-			uniqueIdMain++;
-			if(variablesPtrAux != NULL){
-				declaracionesPtr = crearNodo("init", &arbol, declaracionesPtr, variablesPtr);
-				uniqueIdMain++;
-				declaracionesPtr = crearNodo("init", &arbol, declaracionesPtr, crearHoja(VAL_INIT(yytext)));
-			}
-			else {
-				declaracionesPtr = crearNodo("init", &arbol, variablesPtr, crearHoja(VAL_INIT(yytext)));
-			}
-			variablesPtrAux = NULL;
+			//uniqueIdMain++;
+			//if(variablesPtrAux != NULL){
+			//	declaracionesPtr = crearNodo("init", &arbol, declaracionesPtr, variablesPtr);
+			//	uniqueIdMain++;
+			//	declaracionesPtr = crearNodo("init", &arbol, declaracionesPtr, crearHoja(VAL_INIT(yytext)));
+			//}
+			//else {
+			//	declaracionesPtr = crearNodo("init", &arbol, variablesPtr, crearHoja(VAL_INIT(yytext)));
+			//}
+			//variablesPtrAux = NULL;
 		}
 	| variables DOS_PUNT TIPO_DATO {
 			updateTipoDatoSymbolInit(yytext);
 			printf("\tdeclaraciones -> variables : TipoDato\n");
-			declaracionesPtr = crearNodo("init", &arbol, variablesPtr, crearHoja(VAL_INIT(yytext)));
-			variablesPtrAux = declaracionesPtr;
+			//declaracionesPtr = crearNodo("init", &arbol, variablesPtr, crearHoja(VAL_INIT(yytext)));
+			//variablesPtrAux = declaracionesPtr;
 		}
 	;
 
@@ -339,7 +340,7 @@ variables:
 			allPosInit[posInit]=pos;
 			posInit++;
 			printf("\tvariable-> id \n");
-			variablesPtr = crearHoja(yytext);
+			//variablesPtr = crearHoja(yytext);
 		}
 
 	| variables COMA ID {
@@ -351,8 +352,8 @@ variables:
 							allPosInit[posInit]=pos;
 							posInit++;
 							printf("\tvariable-> variable , id \n");
-							variablesPtr = crearNodo("=", &arbol,crearHoja(yytext), variablesPtr);
-							uniqueIdMain++;
+							//variablesPtr = crearNodo("=", &arbol,crearHoja(yytext), variablesPtr);
+							//uniqueIdMain++;
 						}
 	;
 %%
