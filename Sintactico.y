@@ -84,7 +84,7 @@ bloqueInterno:
 			}
 	| bloqueInterno sentencia {printf("\t BloqueInterno -> sentencia es bloque\n");
 						uniqueIdMain++;
-						bloqueInternoPtr = crearNodo("Bloque",&arbol, bloqueInternoPtr, sentenciaPtr);
+						bloqueInternoPtr = crearNodo("BloqueI",&arbol, bloqueInternoPtr, sentenciaPtr);
 						}
 	;
 	
@@ -96,10 +96,17 @@ sentencia:
 	            	uniqueIdMain++;
 	            	sentenciaPtr = crearNodo("Sentencia", &arbol,iteracionPtr,NULL);
 	            }
-	| seleccion {	printf("\tsentencia -> seleccion\n");
+	| seleccionSi {	printf("\tsentencia -> seleccion\n");
 	              	uniqueIdMain++;
-	             	sentenciaPtr = crearNodo("Seleccion",&arbol, seleccionPtr, NULL);
+					condicionPtr = desapilarDinamica(&pilaCondicion);
+	             	sentenciaPtr = crearNodo("if",&arbol, condicionPtr, crearNodo("CUERPO", &arbol, desapilarDinamica(&pilaBloqueInterno), NULL));
 				}
+	| seleccionSi seleccionSino { printf("\tsentencia -> seleccionSino\n");
+	   					uniqueIdMain++;
+					   condicionPtr = desapilarDinamica(&pilaCondicion);
+					   sinoPtr = crearNodo("else", &arbol, desapilarDinamica(&pilaBloqueInterno), NULL);
+					   sentenciaPtr = crearNodo("if",&arbol, condicionPtr, crearNodo("CUERPO", &arbol, desapilarDinamica(&pilaBloqueInterno), sinoPtr));
+	   }
 	| ESCRIBIR PARENTE_I CADENA
 								{
 									strcpy(auxCadVal,yytext);
@@ -191,31 +198,24 @@ asignable:
 		}
 	;
 
-seleccion:
-	SI PARENTE_I condicion PARENTE_D LLAVE_I bloqueInterno LLAVE_D {
+seleccionSi:
+	SI PARENTE_I condicion {apilarDinamica(&pilaCondicion, condicionPtr);} PARENTE_D LLAVE_I bloqueInterno LLAVE_D {
 				uniqueIdMain++;
-				sinoPtr = crearHoja("ELSE");
-				bloqueInternoPtr = crearNodo("CUERPO",&arbol,bloqueInternoPtr,sinoPtr);
-				seleccionPtr = crearNodo("IF",&arbol,condicionPtr,bloqueInternoPtr);
+				apilarDinamica(&pilaBloqueInterno, bloqueInternoPtr);
 				}
+seleccionSino:
 	SINO LLAVE_I bloqueInterno LLAVE_D
 	      {printf("\tseleccion -> SI (condicion) {bloque} sino {bloque}\n");
 	       	uniqueIdMain++;
-			sinoPtr = asignarHijosNodo(sinoPtr,&arbol,bloqueInternoPtr, NULL );
+			apilarDinamica(&pilaBloqueInterno, bloqueInternoPtr);
 			}
-	| SI PARENTE_I condicion PARENTE_D LLAVE_I bloqueInterno LLAVE_D{
-                 printf("\tseleccion -> SI (condicion) {bloque}\n");
-                 uniqueIdMain++;
-				 bloqueInternoPtr = crearNodo("CUERPO",&arbol,bloqueInternoPtr,NULL);
-                 seleccionPtr = crearNodo("IF",&arbol,condicionPtr,bloqueInternoPtr);
-                }
 	;
 iteracion:
-	MIENTRAS PARENTE_I condicion {apilarDinamica(&pilaMientras, condicionPtr);} PARENTE_D LLAVE_I bloqueInterno LLAVE_D {
+	MIENTRAS PARENTE_I condicion {apilarDinamica(&pilaCondicion, condicionPtr);} PARENTE_D LLAVE_I bloqueInterno LLAVE_D {
 	    printf("\tmientras (condicion) bloque = iteracion\n");
 	    uniqueIdMain++;
 		bloqueInternoPtr = crearNodo("CUERPO",&arbol,bloqueInternoPtr,NULL);
-	    iteracionPtr = crearNodo("WHILE",&arbol,desapilarDinamica(&pilaMientras),bloqueInternoPtr);
+	    iteracionPtr = crearNodo("WHILE",&arbol,desapilarDinamica(&pilaCondicion),bloqueInternoPtr);
 	    }
 	;
 compuertas:

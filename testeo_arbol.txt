@@ -5,7 +5,7 @@ init {
 
 a := 1
 b := 1
-
+*-
 mientras(a>b){
     escribir("entra while")
     mientras(c>b){
@@ -14,13 +14,18 @@ mientras(a>b){
     }
     a := a + 1
 }
+-*
 
-*-
 si(a>b){
-    escribir("entra primer if")
+     a :=b
     si(c<b){
-        escribir("entra segundo if")
+        a :=b
+    }
+    sino{
+    b := c
     }
 }
+sino{
+    a := c
+}
 cad := "Salimo"
--*
