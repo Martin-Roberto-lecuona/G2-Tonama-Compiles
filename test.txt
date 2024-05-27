@@ -1,6 +1,7 @@
 *- and.txt -*
 init{
     a,b,c: Int
+    base:Float
 }
 a := -1
 c := 2
@@ -92,7 +93,6 @@ init{
 }
 escribir("ewr")  *- “ewr” es una cte string -*
 escribir(var1)  *- var1 es una variable numérica definida previamente -*
-
 *- Casos mas extremos -*
 
 *- Condiciones -*
@@ -101,10 +101,10 @@ escribir(var1)  *- var1 es una variable numérica definida previamente -*
 si(a>b)
 {
     mientras(a > b){
-        a := a - 1
         mientras (b>c){
           b := b - 1  
         }
+        a := a - 1
         escribir("cadena")
     }
     a := a + 1
@@ -112,10 +112,10 @@ si(a>b)
 sino
 {
     mientras(a > b){
-        a := a - 1
         mientras (b>c){
           b := b - 1  
         }
+        a := a - 1
         escribir("cadena else")
     }
     a := a + 1
@@ -125,36 +125,26 @@ sino
     *-hijo
     2 * 3 - 1  
 -*
-*- buscoYReemplazo -*
-init{
-    buscar, en, reemplazo: String
-    resultado: Int
-}
-buscar = "buscar"
-en = "Hola, quiero buscar una palabra y reemplazarla en este texto."
-reemplazo = "reemplazo"
-
-resultado = buscoYReemplazo(buscar, en, reemplazo)
-
-*- aplicarDescuento -*
-aplicarDescuento(50.0, [1,23,3], 1) 
 
 *- Temas especiales -*
 
 *- Busco y reemplazo -*
-
+*-
 buscar = "buscar"
 en = "Hola, quiero buscar una palabra y reemplazarla en este texto."
 reemplazo = "reemplazo"
-
 resultado = buscoYReemplazo(buscar, en, reemplazo)
-
+-*
 *- Aplicar descuento -*
-
+*-
 aplicarDescuento(27.5, [500, 305, 79.4, 10], 3)
+-*
+*- pruebas que fallan 
 
-*- pruebas que fallan -*
-
+*- asignacion vacia -*
+*-
+    a := 
+-*
 *- asignacion vacia -*
 *-
     a := 

@@ -79,10 +79,10 @@ bloque:
 	;
 bloqueInterno:
 	sentencia {
-				printf("\t BloqueInterno -> sentencia\n"); 
+				printf("\tBloqueInterno -> sentencia\n"); 
 				bloqueInternoPtr = sentenciaPtr; 
 			}
-	| bloqueInterno sentencia {printf("\t BloqueInterno -> sentencia es bloque\n");
+	| bloqueInterno sentencia {printf("\tBloqueInterno -> sentencia es bloque\n");
 						uniqueIdMain++;
 						bloqueInternoPtr = crearNodo("BloqueI",&arbol, bloqueInternoPtr, sentenciaPtr);
 						}
@@ -99,8 +99,8 @@ sentencia:
 	| seleccionSi {	printf("\tsentencia -> seleccion\n");
 	              	uniqueIdMain++;
 					condicionPtr = desapilarDinamica(&pilaCondicion);
-	             	sentenciaPtr = crearNodo("if",&arbol, condicionPtr, crearNodo("CUERPO", &arbol, desapilarDinamica(&pilaBloqueInterno), NULL));
-				}
+	             	sentenciaPtr = crearNodo("if",&arbol, condicionPtr, crearNodo("CUERPO", &arbol, desapilarDinamica(&pilaBloqueInterno), NULL));				
+					}
 	| seleccionSi seleccionSino { printf("\tsentencia -> seleccionSino\n");
 	   					uniqueIdMain++;
 					   condicionPtr = desapilarDinamica(&pilaCondicion);
@@ -116,14 +116,34 @@ sentencia:
 		uniqueIdMain++;
 	    sentenciaPtr = crearNodo("PUT", &arbol,crearHoja("STDOUT"),crearHoja(trimComillas(auxCadVal)));
 		}
-	| ESCRIBIR PARENTE_I ID PARENTE_D
-	| LEER PARENTE_I ID PARENTE_D
+	| ESCRIBIR PARENTE_I ID {
+								strcpy(auxCadVal,yytext);
+							} 
+	PARENTE_D{
+		printf("\tsentencia -> escribir ( ID )\n");
+		uniqueIdMain++;
+	    sentenciaPtr = crearNodo("PUT", &arbol,crearHoja("STDOUT"),crearHoja(trimComillas(auxCadVal)));
+	}
+	| LEER PARENTE_I ID {
+							pos = findSymbol(yytext);
+							if (pos==-1) {
+								printf("Error: %s no declarado\n", yytext);
+								exit(-1);
+							}
+							strcpy(auxCadVal,yytext);
+						} PARENTE_D {
+							printf("\tsentencia -> leer ( ID )\n");
+							uniqueIdMain++;
+							sentenciaPtr = crearNodo("GET", &arbol,crearHoja("STDIN"),crearHoja(auxCadVal)); 
+						} 
 	| INIT LLAVE_I declaraciones LLAVE_D {
 								printf("\tsentencia -> init { declaraciones }\n");
 								uniqueIdMain++;
 								sentenciaPtr = crearNodo("Sentencia", &arbol,declaracionesPtr,NULL);
 								 }
-	| INIT LLAVE_I LLAVE_D
+	| INIT LLAVE_I LLAVE_D {printf("\tsentencia -> init {}\n");
+								uniqueIdMain++;
+								sentenciaPtr = crearNodo("Sentencia", &arbol,NULL,NULL);}
 	| buscarYreemplazar
 	| aplicarDescuento
 	;
@@ -142,27 +162,27 @@ buscarYreemplazar:
 factorString:
 	ID {printf("\tfactorString -> ID \n");}
 	| CADENA {
-		printf("\nCADENA es factorString\n");
+		printf("\nfactorString -> CADENA\n");
 		saveSymbolCadena(yytext);}
 	;
 factorFlotante:
-	ID {printf("\tID es factorFlotante \n");}
+	ID {printf("\tfactorFlotante -> ID \n");}
 	| FLOT {
-		printf("\tFlotante es factorFlotante\n");
+		printf("\tfactorFlotante -> Flotante\n");
 		saveSymbolFloat(yytext);
 		}
 	;
 factorCte:
-	ID {printf("\tID es factorCte \n");}
+	ID {printf("\tfactorCte -> ID\n");}
 	| CTE {
-		printf("\tCTE es factorCte\n");
+		printf("\tfactorCte -> CTE\n");
 		saveSymbolCte(yytext);
 		}
 	;
 factorTodoFloat:
 	factorFlotante
 	| CTE {
-		printf("\tCTE es factorTodoFloat\n");
+		printf("\tfactorTodoFloat -> CTE\n");
 		saveSymbolCte(yytext);
 		}
 	;
@@ -176,7 +196,7 @@ asignacion:
 		strcpy(auxIdName,yytext);
 	}
 	OP_ASIG asignable{
-					printf("\tasignacion -> = asignable\n");
+					printf("\tasignacion -> ID = asignable\n");
 					uniqueIdMain++;
 					asignablePtr = crearNodo("=",&arbol, crearHoja(auxIdName), asignablePtr);
 					asignacionPtr = asignablePtr;
@@ -185,15 +205,15 @@ asignacion:
 	;
 
 asignable:
-	expresion {printf("\tExpresion es ASIGNABLE\n"); asignablePtr = expresionPtr;}
+	expresion {printf("\tASIGNABLE -> Expresion\n"); asignablePtr = expresionPtr;}
 	| CADENA {
-		printf("\tID = CADENA es ASIGNABLE\n");
+		printf("\tASIGNABLE -> ID\n");
 		saveSymbolCadena(yytext);
 		updateTipoDatoSymbol(pos,STR);
 		asignablePtr = crearHoja(trimComillas(yytext));
 		}
 	| buscarYreemplazar {
-		printf("\tbuscarYreemplazar es ASIGNABLE\n");
+		printf("\tASIGNABLE -> buscarYreemplazar\n");
 		updateTipoDatoSymbol(pos,INT);
 		}
 	;
@@ -212,7 +232,7 @@ seleccionSino:
 	;
 iteracion:
 	MIENTRAS PARENTE_I condicion {apilarDinamica(&pilaCondicion, condicionPtr);} PARENTE_D LLAVE_I bloqueInterno LLAVE_D {
-	    printf("\tmientras (condicion) bloque = iteracion\n");
+	    printf("\titeracion -> mientras (condicion) {bloque}\n");
 	    uniqueIdMain++;
 		bloqueInternoPtr = crearNodo("CUERPO",&arbol,bloqueInternoPtr,NULL);
 	    iteracionPtr = crearNodo("WHILE",&arbol,desapilarDinamica(&pilaCondicion),bloqueInternoPtr);
@@ -231,16 +251,16 @@ comparador:
 	;
 
 condicion:
-	comparacion {printf("\t condicion -> comparacion\n"); condicionPtr = comparacionPtr;}
+	comparacion {printf("\tcondicion -> comparacion\n"); condicionPtr = comparacionPtr;}
 	|comparacion compuertas comparacion {
-		printf("\t condicion -> condicion compuerta comparacion\n");
+		printf("\tcondicion -> condicion compuerta comparacion\n");
 		condicionPtr = crearNodo(compuertasPtr->info, &arbol, desapilarDinamica(&pila), desapilarDinamica(&pila));
 		}
 	| NOT comparacion {condicionPtr = crearNodo("NOT", &arbol, comparacionPtr , NULL);}
 	;
 comparacion:
 	factor comparador factor {
-				printf("\t comparacion -> expresion comparador expresion\n");
+				printf("\tcomparacion -> expresion comparador expresion\n");
 				uniqueIdMain++;
 				comparacionPtr = crearNodo(comparadorPtr->info, &arbol,  desapilarDinamica(&pila), desapilarDinamica(&pila));
 				apilarDinamica(&pila, comparacionPtr);
@@ -260,30 +280,30 @@ termino:
 	;
 
 factor:
-	ID {printf("\tID es Factor \n");
+	ID {printf("\tFactor -> ID\n");
 		factorPtr = crearHoja(yytext);
 		apilarDinamica(&pila, factorPtr);
 		}
 	| CTE {
-		printf("\tCTE es Factor\n");
+		printf("\tFactor -> CTE\n");
 		saveSymbolCte(yytext);
 		updateTipoDatoSymbol(pos,INT);
 		factorPtr = crearHoja(yytext);
 		}
 	| OP_REST CTE {
-		printf("\t-CTE es Factor\n");
+		printf("\tFactor -> -CTE\n");
 		char symbol[12] = "-";
 		strcat(symbol, yytext);
 		saveSymbolCte(symbol);
 		updateTipoDatoSymbol(pos,INT);
 		factorPtr = crearHoja(symbol);
 		}
-	| FLOT {printf("\tFLOT es Factor\n");
+	| FLOT {printf("\tFactor -> FLOT\n");
 		saveSymbolFloat(yytext);
 		updateTipoDatoSymbol(pos,FLOAT);
 		factorPtr = crearHoja(yytext);
 		}
-	| PARENTE_I expresion PARENTE_D {printf("\t(exp_logica) es Factor\n");}
+	| PARENTE_I expresion PARENTE_D {printf("\tFactor -> (exp_logica)\n");}
 	;
 
 declaraciones:
