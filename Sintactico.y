@@ -211,11 +211,11 @@ seleccion:
                 }
 	;
 iteracion:
-	MIENTRAS PARENTE_I condicion PARENTE_D LLAVE_I bloqueInterno LLAVE_D {
+	MIENTRAS PARENTE_I condicion {apilarDinamica(&pilaMientras, condicionPtr);} PARENTE_D LLAVE_I bloqueInterno LLAVE_D {
 	    printf("\tmientras (condicion) bloque = iteracion\n");
 	    uniqueIdMain++;
 		bloqueInternoPtr = crearNodo("CUERPO",&arbol,bloqueInternoPtr,NULL);
-	    iteracionPtr = crearNodo("WHILE",&arbol,condicionPtr,bloqueInternoPtr);
+	    iteracionPtr = crearNodo("WHILE",&arbol,desapilarDinamica(&pilaMientras),bloqueInternoPtr);
 	    }
 	;
 compuertas:
@@ -338,13 +338,7 @@ variables:
 %%
 
 int main(int argc, char *argv[]) {
-  asignacionPtr = (tNodoArbol *) malloc(sizeof(tNodoArbol));
-  expresionPtr = (tNodoArbol *) malloc(sizeof(tNodoArbol));
-  terminoPtr = (tNodoArbol *) malloc(sizeof(tNodoArbol));
-  factorPtr = (tNodoArbol *) malloc(sizeof(tNodoArbol));
-  asignablePtr = (tNodoArbol *) malloc(sizeof(tNodoArbol));
-  bloquePtr = (tNodoArbol *) malloc(sizeof(tNodoArbol));
-  sentenciaPtr = (tNodoArbol *) malloc(sizeof(tNodoArbol));
+
 
   crearArbol(&arbol);
   createSymbolTableInFile();

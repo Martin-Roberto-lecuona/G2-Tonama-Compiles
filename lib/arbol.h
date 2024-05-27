@@ -70,6 +70,7 @@ tNodoArbol *iteracionPtr;
 
 t_arbol arbol;
 t_pila pila;
+t_pila pilaMientras;
 int uniqueIdMain = 0;
 
 #endif
