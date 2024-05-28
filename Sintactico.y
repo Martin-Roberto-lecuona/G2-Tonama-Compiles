@@ -65,7 +65,8 @@ char* trimComillas(char* cad);
 
 %%
 proyecto :
-	bloque {printf("\tFIN\n"); }
+	| INIT LLAVE_I declaraciones LLAVE_D bloque { printf("\tproyecto -> init { declaraciones } bloque FIN\n");}
+	| INIT LLAVE_I LLAVE_D bloque {printf("\tproyecto -> init {} bloque FIN\n");}
 	;
 bloque:
 	sentencia {
@@ -136,15 +137,6 @@ sentencia:
 							uniqueIdMain++;
 							sentenciaPtr = crearNodo("GET", &arbol,crearHoja("STDIN"),crearHoja(auxCadVal)); 
 						} 
-	| INIT LLAVE_I declaraciones LLAVE_D {
-								printf("\tsentencia -> init { declaraciones }\n");
-								//uniqueIdMain++;
-								//sentenciaPtr = crearNodo("Sentencia", &arbol,declaracionesPtr,NULL);
-								 }
-	| INIT LLAVE_I LLAVE_D {printf("\tsentencia -> init {}\n");
-								//uniqueIdMain++;
-								//sentenciaPtr = crearNodo("Sentencia", &arbol,NULL,NULL);
-							}
 	| buscarYreemplazar
 	| aplicarDescuento
 	;
@@ -270,26 +262,39 @@ comparacion:
 
 expresion:
 	termino {printf("\tExpresion -> Termino\n"); expresionPtr = terminoPtr;}
-	|expresion OP_SUMA termino {printf("\tExpresion -> Expresion + Termino \n");expresionPtr = crearNodo("+",&arbol,expresionPtr, terminoPtr);}
-	|expresion OP_REST termino {printf("\tExpresion -> Expresion - Termino \n");expresionPtr = crearNodo("-",&arbol,expresionPtr, terminoPtr);}
+	|expresion OP_SUMA termino {printf("\tExpresion -> Expresion + Termino \n");
+								expresionPtr = crearNodo("+",&arbol,expresionPtr, terminoPtr);
+								desapilarDinamica(&pilaExpresion);}
+	|expresion OP_REST termino {printf("\tExpresion -> Expresion - Termino \n");
+								expresionPtr = crearNodo("-",&arbol,expresionPtr, terminoPtr);
+								desapilarDinamica(&pilaExpresion);}
 	;
 
 termino:
 	factor {printf("\tTermino -> Factor\n"); terminoPtr = factorPtr; }
-	|termino OP_MULT factor {printf("\tTermino -> Termino * Factor\n");terminoPtr = crearNodo("*",&arbol,terminoPtr, factorPtr);}
-	|termino OP_DIVI factor {printf("\tTermino -> Termino / Factor\n");terminoPtr = crearNodo("/",&arbol,terminoPtr, factorPtr);}
+	|termino OP_MULT factor {printf("\tTermino -> Termino * Factor\n");
+							terminoPtr = crearNodo("*",&arbol,terminoPtr, factorPtr); 
+							desapilarDinamica(&pilaExpresion);
+							}
+	|termino OP_DIVI factor {printf("\tTermino -> Termino / Factor\n");
+							terminoPtr = crearNodo("/",&arbol,terminoPtr, factorPtr);
+							desapilarDinamica(&pilaExpresion);
+							}
 	;
 
 factor:
 	ID {printf("\tFactor -> ID\n");
 		factorPtr = crearHoja(yytext);
 		apilarDinamica(&pila, factorPtr);
+		apilarDinamica(&pilaExpresion,factorPtr);
 		}
 	| CTE {
 		printf("\tFactor -> CTE\n");
 		saveSymbolCte(yytext);
 		updateTipoDatoSymbol(pos,INT);
 		factorPtr = crearHoja(yytext);
+		apilarDinamica(&pila, factorPtr);
+		apilarDinamica(&pilaExpresion,factorPtr);
 		}
 	| OP_REST CTE {
 		printf("\tFactor -> -CTE\n");
@@ -304,29 +309,22 @@ factor:
 		updateTipoDatoSymbol(pos,FLOAT);
 		factorPtr = crearHoja(yytext);
 		}
-	| PARENTE_I expresion PARENTE_D {printf("\tFactor -> (exp_logica)\n");}
+	| PARENTE_I expresion PARENTE_D {	printf("\tFactor -> (exp_logica)\n");
+										desapilarDinamica(&pilaExpresion);
+										uniqueIdMain++;
+										factorPtr = expresionPtr;
+										terminoPtr = crearHoja((desapilarDinamica(&pilaExpresion))->info);
+										}
 	;
 
 declaraciones:
 	declaraciones variables DOS_PUNT TIPO_DATO {
 			updateTipoDatoSymbolInit(yytext);
 			printf("\tdeclaraciones -> declaraciones variables : TipoDato\n");
-			//uniqueIdMain++;
-			//if(variablesPtrAux != NULL){
-			//	declaracionesPtr = crearNodo("init", &arbol, declaracionesPtr, variablesPtr);
-			//	uniqueIdMain++;
-			//	declaracionesPtr = crearNodo("init", &arbol, declaracionesPtr, crearHoja(VAL_INIT(yytext)));
-			//}
-			//else {
-			//	declaracionesPtr = crearNodo("init", &arbol, variablesPtr, crearHoja(VAL_INIT(yytext)));
-			//}
-			//variablesPtrAux = NULL;
 		}
 	| variables DOS_PUNT TIPO_DATO {
 			updateTipoDatoSymbolInit(yytext);
 			printf("\tdeclaraciones -> variables : TipoDato\n");
-			//declaracionesPtr = crearNodo("init", &arbol, variablesPtr, crearHoja(VAL_INIT(yytext)));
-			//variablesPtrAux = declaracionesPtr;
 		}
 	;
 
@@ -340,7 +338,6 @@ variables:
 			allPosInit[posInit]=pos;
 			posInit++;
 			printf("\tvariable-> id \n");
-			//variablesPtr = crearHoja(yytext);
 		}
 
 	| variables COMA ID {
@@ -352,8 +349,6 @@ variables:
 							allPosInit[posInit]=pos;
 							posInit++;
 							printf("\tvariable-> variable , id \n");
-							//variablesPtr = crearNodo("=", &arbol,crearHoja(yytext), variablesPtr);
-							//uniqueIdMain++;
 						}
 	;
 %%

@@ -72,6 +72,7 @@ t_arbol arbol;
 t_pila pila;
 t_pila pilaCondicion;
 t_pila pilaBloqueInterno;
+t_pila pilaExpresion;
 int uniqueIdMain = 0;
 
 #endif
