@@ -1,0 +1,14 @@
+*- and.txt -*
+init{
+    a: Float
+}
+
+a:=79.4
+aplicarDescuento(27.5, [500, 305, a, 10], 3)
+
+if (a > 1.0){
+    escribir("entra")
+}
+sino {
+    escribir("else")
+}

@@ -10,6 +10,8 @@
 #include <string.h>
 
 #define TAM_ID 31
+#define MAX_CAD 100
+
 
 #define VAL_INIT(x) (strcmp(x, "String") == 0 ? "($)" : "0")
 
@@ -20,7 +22,10 @@ int yylex();
 char *yytext;
 extern char lastID[31];
 char auxIdName[TAM_ID];
+char auxCadVal[MAX_CAD];
 void clearString(char* cad, int tam);
+char* trimComillas(char* cad);
+int tamListaDesc = 0;
 
 %}
 
@@ -61,41 +66,112 @@ void clearString(char* cad, int tam);
 
 %%
 proyecto :
-	bloque {printf("\tFIN\n"); }
+	| INIT LLAVE_I declaraciones LLAVE_D bloque { printf("\tproyecto -> init { declaraciones } bloque FIN\n");}
+	| INIT LLAVE_I LLAVE_D bloque {printf("\tproyecto -> init {} bloque FIN\n");}
 	;
 bloque:
-	sentencia {printf("\nBloque -> sentencia\n"); bloquePtr = sentenciaPtr; }
+	sentencia {
+				printf("\nBloque -> sentencia\n"); 
+				bloquePtr = sentenciaPtr; 
+			}
 	| bloque sentencia {printf("\tBloque -> sentencia es bloque\n");
 						uniqueIdMain++;
 						bloquePtr = crearNodo("Bloque",&arbol, bloquePtr, sentenciaPtr);
 						}
 	;
-
+bloqueInterno:
+	sentencia {
+				printf("\tBloqueInterno -> sentencia\n"); 
+				bloqueInternoPtr = sentenciaPtr; 
+			}
+	| bloqueInterno sentencia {printf("\tBloqueInterno -> sentencia es bloque\n");
+						uniqueIdMain++;
+						bloqueInternoPtr = crearNodo("BloqueI",&arbol, bloqueInternoPtr, sentenciaPtr);
+						}
+	;
+	
 sentencia:
-	asignacion {printf("\tsentencia -> asignacion\n");
-				sentenciaPtr = crearNodo("Sentencia",&arbol, asignacionPtr, NULL);
+	asignacion {	printf("\tsentencia -> asignacion\n");
+					sentenciaPtr = crearNodo("Sentencia",&arbol, asignacionPtr, NULL);
 				}
-	| iteracion {printf("\tsentencia -> iteracion\n");}
-	| seleccion {printf("\tsentencia -> seleccion\n");}
-	| ESCRIBIR PARENTE_I CADENA PARENTE_D {printf("\tsentencia -> escribir ( cadena )\n");}
-	| ESCRIBIR PARENTE_I ID PARENTE_D
-	| LEER PARENTE_I ID PARENTE_D
-	| INIT LLAVE_I declaraciones LLAVE_D {
-								printf("\tsentencia -> init { declaraciones }\n");
-								uniqueIdMain++;
-								sentenciaPtr = crearNodo("init", &arbol,declaracionesPtr,NULL);
-								 }
-	| INIT LLAVE_I LLAVE_D
-	| buscarYreemplazar
-	| aplicarDescuento
+	| iteracion {	printf("\tsentencia -> iteracion\n");
+	            	uniqueIdMain++;
+	            	sentenciaPtr = crearNodo("Sentencia", &arbol,iteracionPtr,NULL);
+	            }
+	| seleccionSi {	printf("\tsentencia -> seleccion\n");
+	              	uniqueIdMain++;
+					condicionPtr = desapilarDinamica(&pilaCondicion);
+	             	sentenciaPtr = crearNodo("if",&arbol, condicionPtr, crearNodo("CUERPO", &arbol, desapilarDinamica(&pilaBloqueInterno), NULL));				
+					}
+	| seleccionSi seleccionSino { printf("\tsentencia -> seleccionSino\n");
+	   					uniqueIdMain++;
+					   condicionPtr = desapilarDinamica(&pilaCondicion);
+					   sinoPtr = crearNodo("else", &arbol, desapilarDinamica(&pilaBloqueInterno), NULL);
+					   sentenciaPtr = crearNodo("if",&arbol, condicionPtr, crearNodo("CUERPO", &arbol, desapilarDinamica(&pilaBloqueInterno), sinoPtr));
+	   }
+	| ESCRIBIR PARENTE_I CADENA
+								{
+									strcpy(auxCadVal,yytext);
+								} 
+	PARENTE_D {
+		printf("\tsentencia -> escribir ( cadena )\n");
+		uniqueIdMain++;
+	    sentenciaPtr = crearNodo("PUT", &arbol,crearHoja("STDOUT"),crearHoja(trimComillas(auxCadVal)));
+		}
+	| ESCRIBIR PARENTE_I ID {
+								strcpy(auxCadVal,yytext);
+							} 
+	PARENTE_D{
+		printf("\tsentencia -> escribir ( ID )\n");
+		uniqueIdMain++;
+	    sentenciaPtr = crearNodo("PUT", &arbol,crearHoja("STDOUT"),crearHoja(trimComillas(auxCadVal)));
+	}
+	| LEER PARENTE_I ID {
+							pos = findSymbol(yytext);
+							if (pos==-1) {
+								printf("Error: %s no declarado\n", yytext);
+								exit(-1);
+							}
+							strcpy(auxCadVal,yytext);
+						} PARENTE_D {
+							printf("\tsentencia -> leer ( ID )\n");
+							uniqueIdMain++;
+							sentenciaPtr = crearNodo("GET", &arbol,crearHoja("STDIN"),crearHoja(auxCadVal)); 
+						} 
+	| buscarYreemplazar 
+	| aplicarDescuento {sentenciaPtr = descuentoPtr;}
 	;
 aplicarDescuento:
-	APLIC_DESC PARENTE_I factorFlotante COMA CORCH_I listaNum CORCH_D COMA factorCte PARENTE_D
+	APLIC_DESC {	uniqueIdMain++;
+					descuentoPtr=crearNodo("=", &arbol, crearHoja("@res"), crearHoja("0"));
+					uniqueIdMain++;
+	} PARENTE_I factorFlotante {
+					if (atof(yytext)>100.0){
+						printf("Error: el monto en aplicarDescuento debe ser menor a 100.0");
+						exit (-1);
+					}
+					factorFlotantePtr=crearNodo("=", &arbol, crearHoja("@mon"), crearHoja(yytext));
+					uniqueIdMain++;
+	}COMA CORCH_I listaNum CORCH_D COMA factorCte {
+					if (atoi(yytext) <= tamListaDesc){
+						printf("Error: el indice debe ser menor al tamaño de la lista");
+						exit (-1);
+					}
+					factorCtePtr=crearNodo("=", &arbol, crearHoja("@aux"), crearHoja(yytext));
+					uniqueIdMain++;
+					tamListaDesc = 0;
+	} PARENTE_D {
+					factorFlotantePtr = crearNodo("Sentencia", &arbol, factorFlotantePtr, factorCtePtr);
+					uniqueIdMain++;
+					descuentoPtr = crearNodo("Sentencia", &arbol, descuentoPtr, factorFlotantePtr);
+					uniqueIdMain++;
+					descuentoPtr= crearNodo("Sentencia", &arbol, descuentoPtr, listaNumPtr);
+	}
 	;
 
 listaNum:
-	listaNum COMA factorTodoFloat
-	| factorTodoFloat
+	listaNum COMA factorTodoFloat {listaNumPtr = crearNodo("Bloque", &arbol, listaNumPtr,aplicarDescuentoItem(yytext));uniqueIdMain++;}
+	| factorTodoFloat {tamListaDesc = 1; listaNumPtr = aplicarDescuentoItem(yytext);uniqueIdMain++;}
 	;
 buscarYreemplazar:
 	BUSC_Y_REMP PARENTE_I factorString COMA factorString COMA factorString PARENTE_D
@@ -104,27 +180,27 @@ buscarYreemplazar:
 factorString:
 	ID {printf("\tfactorString -> ID \n");}
 	| CADENA {
-		printf("\nCADENA es factorString\n");
+		printf("\nfactorString -> CADENA\n");
 		saveSymbolCadena(yytext);}
 	;
 factorFlotante:
-	ID {printf("\tID es factorFlotante \n");}
+	ID {printf("\tfactorFlotante -> ID \n");}
 	| FLOT {
-		printf("\tFlotante es factorFlotante\n");
+		printf("\tfactorFlotante -> Flotante\n");
 		saveSymbolFloat(yytext);
 		}
 	;
 factorCte:
-	ID {printf("\tID es factorCte \n");}
+	ID {printf("\tfactorCte -> ID\n");}
 	| CTE {
-		printf("\tCTE es factorCte\n");
+		printf("\tfactorCte -> CTE\n");
 		saveSymbolCte(yytext);
 		}
 	;
 factorTodoFloat:
 	factorFlotante
 	| CTE {
-		printf("\tCTE es factorTodoFloat\n");
+		printf("\tfactorTodoFloat -> CTE\n");
 		saveSymbolCte(yytext);
 		}
 	;
@@ -138,7 +214,7 @@ asignacion:
 		strcpy(auxIdName,yytext);
 	}
 	OP_ASIG asignable{
-					printf("\tasignacion -> = asignable\n");
+					printf("\tasignacion -> ID = asignable\n");
 					uniqueIdMain++;
 					asignablePtr = crearNodo("=",&arbol, crearHoja(auxIdName), asignablePtr);
 					asignacionPtr = asignablePtr;
@@ -147,116 +223,133 @@ asignacion:
 	;
 
 asignable:
-	expresion {printf("\tExpresion es ASIGNABLE\n"); asignablePtr = expresionPtr;}
+	expresion {printf("\tASIGNABLE -> Expresion\n"); asignablePtr = expresionPtr;}
 	| CADENA {
-		printf("\tID = CADENA es ASIGNABLE\n");
+		printf("\tASIGNABLE -> ID\n");
 		saveSymbolCadena(yytext);
 		updateTipoDatoSymbol(pos,STR);
-		// borrar ultimo y primero
-		char cadena[100] ;
-		strcpy(cadena,yytext);
-		cadena[0] = '(';
-		cadena[strlen(cadena)-1] = ')';
-		cadena[strlen(cadena)] = '\0';
-		// asignablePtr = crearNodo("CAD =",&arbol,crearHoja(cadena), asignablePtr);
-		asignablePtr = crearHoja(cadena);
+		asignablePtr = crearHoja(trimComillas(yytext));
 		}
 	| buscarYreemplazar {
-		printf("\tbuscarYreemplazar es ASIGNABLE\n");
+		printf("\tASIGNABLE -> buscarYreemplazar\n");
 		updateTipoDatoSymbol(pos,INT);
 		}
 	;
 
-seleccion:
-	SI PARENTE_I condicion PARENTE_D LLAVE_I bloque LLAVE_D SINO LLAVE_I bloque LLAVE_D {printf("\tSI (condicion) bloque sino bloque = seleccion\n");}
-	| SI PARENTE_I condicion PARENTE_D LLAVE_I bloque LLAVE_D {printf("\tSI (condicion) bloque = seleccion\n");}
+seleccionSi:
+	SI PARENTE_I condicion {apilarDinamica(&pilaCondicion, condicionPtr);} PARENTE_D LLAVE_I bloqueInterno LLAVE_D {
+				uniqueIdMain++;
+				apilarDinamica(&pilaBloqueInterno, bloqueInternoPtr);
+				}
+seleccionSino:
+	SINO LLAVE_I bloqueInterno LLAVE_D
+	      {printf("\tseleccion -> SI (condicion) {bloque} sino {bloque}\n");
+	       	uniqueIdMain++;
+			apilarDinamica(&pilaBloqueInterno, bloqueInternoPtr);
+			}
 	;
 iteracion:
-	MIENTRAS PARENTE_I condicion PARENTE_D LLAVE_I bloque LLAVE_D {printf("\tmientras (condicion) bloque = iteracion\n");}
+	MIENTRAS PARENTE_I condicion {apilarDinamica(&pilaCondicion, condicionPtr);} PARENTE_D LLAVE_I bloqueInterno LLAVE_D {
+	    printf("\titeracion -> mientras (condicion) {bloque}\n");
+	    uniqueIdMain++;
+		bloqueInternoPtr = crearNodo("CUERPO",&arbol,bloqueInternoPtr,NULL);
+	    iteracionPtr = crearNodo("WHILE",&arbol,desapilarDinamica(&pilaCondicion),bloqueInternoPtr);
+	    }
 	;
 compuertas:
-	AND {printf("\tcompuertas -> AND\n");}
-	|OR {printf("\tcompuertas -> OR\n");}
+	AND {printf("\tcompuertas -> AND\n"); compuertasPtr = crearHoja("AND");}
+	|OR {printf("\tcompuertas -> OR\n"); compuertasPtr = crearHoja("OR");}
 	;
 comparador:
-	OP_MAYOR
-	| OP_MENOR
-	| OP_MAYOR_IGUAL
-	| OP_MENOR_IGUAL
-	| OP_IGUAL
+	OP_MAYOR { comparadorPtr = crearHoja(">");}
+	| OP_MENOR { comparadorPtr = crearHoja("<");}
+	| OP_MAYOR_IGUAL { comparadorPtr = crearHoja(">=");}
+	| OP_MENOR_IGUAL { comparadorPtr = crearHoja("<=");}
+	| OP_IGUAL { comparadorPtr = crearHoja("==");}
 	;
 
 condicion:
-	comparacion {printf("\tcomparacion = condicion\n");}
-	|condicion compuertas comparacion {printf("\tcondicion compuerta comparacion = condicion\n");}
+	comparacion {printf("\tcondicion -> comparacion\n"); condicionPtr = comparacionPtr;}
+	|comparacion compuertas comparacion {
+		printf("\tcondicion -> condicion compuerta comparacion\n");
+		condicionPtr = crearNodo(compuertasPtr->info, &arbol, desapilarDinamica(&pila), desapilarDinamica(&pila));
+		}
+	| NOT comparacion {condicionPtr = crearNodo("NOT", &arbol, comparacionPtr , NULL);}
 	;
 comparacion:
-	comparacion comparador factor {printf("\texpresion comparador expresion = comparacion\n");}
-	| NOT factor {printf("\tNOT comparacion = comparacion\n");}
-	| PARENTE_I comparacion comparador factor PARENTE_D {printf("\t(comparacion) = comparacion\n");}
-	| factor {printf("\tfactor = comparacion\n");}
+	factor comparador factor {
+				printf("\tcomparacion -> expresion comparador expresion\n");
+				uniqueIdMain++;
+				comparacionPtr = crearNodo(comparadorPtr->info, &arbol,  desapilarDinamica(&pila), desapilarDinamica(&pila));
+				apilarDinamica(&pila, comparacionPtr);
+	}
 	;
 
 expresion:
-	termino {printf("\tTermino es Expresion\n"); expresionPtr = terminoPtr;}
-	|expresion OP_SUMA termino {printf("\tExpresion+Termino es Expresion\n");expresionPtr = crearNodo("+",&arbol,expresionPtr, terminoPtr);}
-	|expresion OP_REST termino {printf("\tExpresion-Termino es Expresion\n");expresionPtr = crearNodo("-",&arbol,expresionPtr, terminoPtr);}
+	termino {printf("\tExpresion -> Termino\n"); expresionPtr = terminoPtr;}
+	|expresion OP_SUMA termino {printf("\tExpresion -> Expresion + Termino \n");
+								expresionPtr = crearNodo("+",&arbol,expresionPtr, terminoPtr);
+								desapilarDinamica(&pilaExpresion);}
+	|expresion OP_REST termino {printf("\tExpresion -> Expresion - Termino \n");
+								expresionPtr = crearNodo("-",&arbol,expresionPtr, terminoPtr);
+								desapilarDinamica(&pilaExpresion);}
 	;
 
 termino:
-	factor {printf("\tFactor es Termino\n"); terminoPtr = factorPtr; }
-	|termino OP_MULT factor {printf("\tTermino*Factor es Termino\n");terminoPtr = crearNodo("*",&arbol,terminoPtr, factorPtr);}
-	|termino OP_DIVI factor {printf("\tTermino/Factor es Termino\n");terminoPtr = crearNodo("/",&arbol,terminoPtr, factorPtr);}
+	factor {printf("\tTermino -> Factor\n"); terminoPtr = factorPtr; }
+	|termino OP_MULT factor {printf("\tTermino -> Termino * Factor\n");
+							terminoPtr = crearNodo("*",&arbol,terminoPtr, factorPtr); 
+							desapilarDinamica(&pilaExpresion);
+							}
+	|termino OP_DIVI factor {printf("\tTermino -> Termino / Factor\n");
+							terminoPtr = crearNodo("/",&arbol,terminoPtr, factorPtr);
+							desapilarDinamica(&pilaExpresion);
+							}
 	;
 
 factor:
-	ID {printf("\tID es Factor \n");
+	ID {printf("\tFactor -> ID\n");
 		factorPtr = crearHoja(yytext);
+		apilarDinamica(&pila, factorPtr);
+		apilarDinamica(&pilaExpresion,factorPtr);
 		}
 	| CTE {
-		printf("\tCTE es Factor\n");
+		printf("\tFactor -> CTE\n");
 		saveSymbolCte(yytext);
 		updateTipoDatoSymbol(pos,INT);
 		factorPtr = crearHoja(yytext);
+		apilarDinamica(&pila, factorPtr);
+		apilarDinamica(&pilaExpresion,factorPtr);
 		}
 	| OP_REST CTE {
-		printf("\t-CTE es Factor\n");
+		printf("\tFactor -> -CTE\n");
 		char symbol[12] = "-";
 		strcat(symbol, yytext);
 		saveSymbolCte(symbol);
 		updateTipoDatoSymbol(pos,INT);
 		factorPtr = crearHoja(symbol);
 		}
-	| FLOT {printf("\tFLOT es Factor\n");
+	| FLOT {printf("\tFactor -> FLOT\n");
 		saveSymbolFloat(yytext);
 		updateTipoDatoSymbol(pos,FLOAT);
 		factorPtr = crearHoja(yytext);
 		}
-	| PARENTE_I expresion PARENTE_D {printf("\t(exp_logica) es Factor\n");}
+	| PARENTE_I expresion PARENTE_D {	printf("\tFactor -> (exp_logica)\n");
+										desapilarDinamica(&pilaExpresion);
+										uniqueIdMain++;
+										factorPtr = expresionPtr;
+										terminoPtr = crearHoja((desapilarDinamica(&pilaExpresion))->info);
+										}
 	;
 
 declaraciones:
 	declaraciones variables DOS_PUNT TIPO_DATO {
 			updateTipoDatoSymbolInit(yytext);
 			printf("\tdeclaraciones -> declaraciones variables : TipoDato\n");
-			uniqueIdMain++;
-			if(variablesPtrAux != NULL){
-				declaracionesPtr = crearNodo("init", &arbol, declaracionesPtr, variablesPtr);
-				uniqueIdMain++;
-				declaracionesPtr = crearNodo("init", &arbol, declaracionesPtr, crearHoja(VAL_INIT(yytext)));
-			}
-			else {
-				declaracionesPtr = crearNodo("init", &arbol, variablesPtr, crearHoja(VAL_INIT(yytext)));
-			}
-			variablesPtrAux = NULL;
 		}
 	| variables DOS_PUNT TIPO_DATO {
 			updateTipoDatoSymbolInit(yytext);
 			printf("\tdeclaraciones -> variables : TipoDato\n");
-			// uniqueIdMain++;
-			declaracionesPtr = crearNodo("init", &arbol, variablesPtr, crearHoja(VAL_INIT(yytext)));
-			variablesPtrAux = declaracionesPtr;
-			// declaracionesPtr = crearNodo("init", &arbol,declaracionesPtr,NULL);
 		}
 	;
 
@@ -270,7 +363,6 @@ variables:
 			allPosInit[posInit]=pos;
 			posInit++;
 			printf("\tvariable-> id \n");
-			variablesPtr = crearHoja(yytext);
 		}
 
 	| variables COMA ID {
@@ -282,20 +374,12 @@ variables:
 							allPosInit[posInit]=pos;
 							posInit++;
 							printf("\tvariable-> variable , id \n");
-							variablesPtr = crearNodo("=", &arbol,crearHoja(yytext), variablesPtr);
-							uniqueIdMain++;
 						}
 	;
 %%
 
 int main(int argc, char *argv[]) {
-  asignacionPtr = (tNodoArbol *) malloc(sizeof(tNodoArbol));
-  expresionPtr = (tNodoArbol *) malloc(sizeof(tNodoArbol));
-  terminoPtr = (tNodoArbol *) malloc(sizeof(tNodoArbol));
-  factorPtr = (tNodoArbol *) malloc(sizeof(tNodoArbol));
-  asignablePtr = (tNodoArbol *) malloc(sizeof(tNodoArbol));
-  bloquePtr = (tNodoArbol *) malloc(sizeof(tNodoArbol));
-  sentenciaPtr = (tNodoArbol *) malloc(sizeof(tNodoArbol));
+
 
   crearArbol(&arbol);
   createSymbolTableInFile();
@@ -317,4 +401,15 @@ int yyerror(void) {
 
 void clearString(char *cad, int tam) {
   memset(cad, 0, tam);
+}
+char* trimComillas(char* cad){
+	char* cadena = malloc(strlen(cad) + 1);
+	if(cadena == NULL) {
+		return NULL;
+	}
+	strcpy(cadena,cad);
+	cadena[0] = '(';
+	cadena[strlen(cadena)-1] = ')';
+	cadena[strlen(cadena)] = '\0';
+	return cadena;
 }
