@@ -25,6 +25,7 @@ char auxIdName[TAM_ID];
 char auxCadVal[MAX_CAD];
 void clearString(char* cad, int tam);
 char* trimComillas(char* cad);
+int tamListaDesc = 0;
 
 %}
 
@@ -141,19 +142,36 @@ sentencia:
 	| aplicarDescuento {sentenciaPtr = descuentoPtr;}
 	;
 aplicarDescuento:
-	APLIC_DESC {uniqueIdMain++;descuentoPtr=crearNodo("=", &arbol, crearHoja("@res"), crearHoja("0"));uniqueIdMain++;} PARENTE_I factorFlotante {factorFlotantePtr=crearNodo("=", &arbol, crearHoja("@mon"), crearHoja(yytext));uniqueIdMain++;} COMA CORCH_I listaNum CORCH_D COMA factorCte {factorCtePtr=crearNodo("=", &arbol, crearHoja("@aux"), crearHoja(yytext));uniqueIdMain++;} PARENTE_D
-	{
-		factorFlotantePtr = crearNodo("Sentencia", &arbol, factorFlotantePtr, factorCtePtr);
-		uniqueIdMain++;
-		descuentoPtr = crearNodo("Sentencia", &arbol, descuentoPtr, factorFlotantePtr);
-		uniqueIdMain++;
-		descuentoPtr= crearNodo("Sentencia", &arbol, descuentoPtr, listaNumPtr);
+	APLIC_DESC {	uniqueIdMain++;
+					descuentoPtr=crearNodo("=", &arbol, crearHoja("@res"), crearHoja("0"));
+					uniqueIdMain++;
+	} PARENTE_I factorFlotante {
+					if (atof(yytext)>100.0){
+						printf("Error: el monto en aplicarDescuento debe ser menor a 100.0");
+						exit (-1);
+					}
+					factorFlotantePtr=crearNodo("=", &arbol, crearHoja("@mon"), crearHoja(yytext));
+					uniqueIdMain++;
+	}COMA CORCH_I listaNum CORCH_D COMA factorCte {
+					if (atoi(yytext) <= tamListaDesc){
+						printf("Error: el indice debe ser menor al tamaño de la lista");
+						exit (-1);
+					}
+					factorCtePtr=crearNodo("=", &arbol, crearHoja("@aux"), crearHoja(yytext));
+					uniqueIdMain++;
+					tamListaDesc = 0;
+	} PARENTE_D {
+					factorFlotantePtr = crearNodo("Sentencia", &arbol, factorFlotantePtr, factorCtePtr);
+					uniqueIdMain++;
+					descuentoPtr = crearNodo("Sentencia", &arbol, descuentoPtr, factorFlotantePtr);
+					uniqueIdMain++;
+					descuentoPtr= crearNodo("Sentencia", &arbol, descuentoPtr, listaNumPtr);
 	}
 	;
 
 listaNum:
 	listaNum COMA factorTodoFloat {listaNumPtr = crearNodo("Bloque", &arbol, listaNumPtr,aplicarDescuentoItem(yytext));uniqueIdMain++;}
-	| factorTodoFloat {listaNumPtr = aplicarDescuentoItem(yytext);uniqueIdMain++;}
+	| factorTodoFloat {tamListaDesc = 1; listaNumPtr = aplicarDescuentoItem(yytext);uniqueIdMain++;}
 	;
 buscarYreemplazar:
 	BUSC_Y_REMP PARENTE_I factorString COMA factorString COMA factorString PARENTE_D

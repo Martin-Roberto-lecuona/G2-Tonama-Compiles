@@ -116,9 +116,12 @@ tNodoArbol *aplicarDescuentoItem(char *item){
   uniqueIdMain++;
   tNodoArbol *itemSubstractPtr = crearNodo("-", &arbol, crearHoja(item), crearHoja("@mon"));
   uniqueIdMain++;
-  tNodoArbol *sPtr = crearNodo("S", &arbol, crearNodo("CONCAT", &arbol, crearHoja("@res"), itemSubstractPtr), crearNodo("=", &arbol, crearHoja("@aux"),auxDecPtr));
+  tNodoArbol *auxIgual = crearNodo("=", &arbol, crearHoja("@res"), itemSubstractPtr);
   uniqueIdMain++;
-  tNodoArbol *elsePtr = crearNodo("CONCAT", &arbol, crearHoja("@res"), crearNodo("/", &arbol, crearNodo("*", &arbol, crearHoja(item), crearHoja("@mon")), crearHoja("100")));
+  tNodoArbol *sPtr = crearNodo("S", &arbol, auxIgual, crearNodo("=", &arbol, crearHoja("@aux"),auxDecPtr));
+  uniqueIdMain++;
+  tNodoArbol *elsePtr = crearNodo("=", &arbol, crearHoja("@res"), crearNodo("/", &arbol, crearNodo("*", &arbol, crearHoja(item), crearHoja("@mon")), crearHoja("100")));
+  elsePtr = crearNodo("else", &arbol, elsePtr, NULL );
   uniqueIdMain++;
   tNodoArbol *cuerpoPtr = crearNodo("CUERPO", &arbol, sPtr,elsePtr);
   return crearNodo("IF", &arbol, crearNodo(">", &arbol, crearHoja("@aux"), crearHoja("0")), cuerpoPtr);
