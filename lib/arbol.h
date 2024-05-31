@@ -48,6 +48,8 @@ void mostrarRelacion(t_arbol *p, FILE *treeFile);
 int apilarDinamica(t_pila *PP, tNodoArbol* pd);
 tNodoArbol * desapilarDinamica(t_pila *pp);
 
+tNodoArbol *aplicarDescuentoItem(char *item);
+
 tNodoArbol *asignacionPtr;
 tNodoArbol *expresionPtr;
 tNodoArbol *terminoPtr;
@@ -67,6 +69,10 @@ tNodoArbol *comparacionPtr;
 tNodoArbol *seleccionPtr;
 tNodoArbol *sinoPtr;
 tNodoArbol *iteracionPtr;
+tNodoArbol *descuentoPtr;
+tNodoArbol *factorFlotantePtr;
+tNodoArbol *factorCtePtr;
+tNodoArbol *listaNumPtr;
 
 t_arbol arbol;
 t_pila pila;

@@ -110,3 +110,16 @@ tNodoArbol *asignarHijosNodo(tNodoArbol *Padre,
   /* printf("FIN crearNodo\n"); */
   return Padre;
 }
+
+tNodoArbol *aplicarDescuentoItem(char *item){
+  tNodoArbol *auxDecPtr = crearNodo("-", &arbol, crearHoja("@aux"), crearHoja("1"));
+  uniqueIdMain++;
+  tNodoArbol *itemSubstractPtr = crearNodo("-", &arbol, crearHoja(item), crearHoja("@mon"));
+  uniqueIdMain++;
+  tNodoArbol *sPtr = crearNodo("S", &arbol, crearNodo("CONCAT", &arbol, crearHoja("@res"), itemSubstractPtr), crearNodo("=", &arbol, crearHoja("@aux"),auxDecPtr));
+  uniqueIdMain++;
+  tNodoArbol *elsePtr = crearNodo("CONCAT", &arbol, crearHoja("@res"), crearNodo("/", &arbol, crearNodo("*", &arbol, crearHoja(item), crearHoja("@mon")), crearHoja("100")));
+  uniqueIdMain++;
+  tNodoArbol *cuerpoPtr = crearNodo("CUERPO", &arbol, sPtr,elsePtr);
+  return crearNodo("IF", &arbol, crearNodo(">", &arbol, crearHoja("@aux"), crearHoja("0")), cuerpoPtr);
+}

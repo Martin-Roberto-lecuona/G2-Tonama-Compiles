@@ -137,16 +137,23 @@ sentencia:
 							uniqueIdMain++;
 							sentenciaPtr = crearNodo("GET", &arbol,crearHoja("STDIN"),crearHoja(auxCadVal)); 
 						} 
-	| buscarYreemplazar
-	| aplicarDescuento
+	| buscarYreemplazar 
+	| aplicarDescuento {sentenciaPtr = descuentoPtr;}
 	;
 aplicarDescuento:
-	APLIC_DESC PARENTE_I factorFlotante COMA CORCH_I listaNum CORCH_D COMA factorCte PARENTE_D
+	APLIC_DESC {uniqueIdMain++;descuentoPtr=crearNodo("=", &arbol, crearHoja("@res"), crearHoja("0"));uniqueIdMain++;} PARENTE_I factorFlotante {factorFlotantePtr=crearNodo("=", &arbol, crearHoja("@mon"), crearHoja(yytext));uniqueIdMain++;} COMA CORCH_I listaNum CORCH_D COMA factorCte {factorCtePtr=crearNodo("=", &arbol, crearHoja("@aux"), crearHoja(yytext));uniqueIdMain++;} PARENTE_D
+	{
+		factorFlotantePtr = crearNodo("Sentencia", &arbol, factorFlotantePtr, factorCtePtr);
+		uniqueIdMain++;
+		descuentoPtr = crearNodo("Sentencia", &arbol, descuentoPtr, factorFlotantePtr);
+		uniqueIdMain++;
+		descuentoPtr= crearNodo("Sentencia", &arbol, descuentoPtr, listaNumPtr);
+	}
 	;
 
 listaNum:
-	listaNum COMA factorTodoFloat
-	| factorTodoFloat
+	listaNum COMA factorTodoFloat {listaNumPtr = crearNodo("Bloque", &arbol, listaNumPtr,aplicarDescuentoItem(yytext));uniqueIdMain++;}
+	| factorTodoFloat {listaNumPtr = aplicarDescuentoItem(yytext);uniqueIdMain++;}
 	;
 buscarYreemplazar:
 	BUSC_Y_REMP PARENTE_I factorString COMA factorString COMA factorString PARENTE_D
