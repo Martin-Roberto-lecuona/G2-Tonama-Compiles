@@ -1,4 +1,3 @@
-*- and.txt -*
 init{
     a,b,c: Int
     base:Float
@@ -11,7 +10,7 @@ init{
     buscar, en, reemplazo : String
     resultado : Int
 }
-
+*- and.txt -*
 a := -1
 c := 2
 b := a*(c-21)/4
@@ -88,7 +87,7 @@ si(a>b)
 {
     mientras(a > b){
         mientras (b>c){
-          b := b - 1  
+          b := b - 1
         }
         a := a - 1
         escribir("cadena")
@@ -99,7 +98,7 @@ sino
 {
     mientras(a > b){
         mientras (b>c){
-          b := b - 1  
+          b := b - 1
         }
         a := a - 1
         escribir("cadena else")
@@ -108,7 +107,7 @@ sino
 }
 *- Comentario
     *-hijo
-    2 * 3 - 1  
+    2 * 3 - 1
 -*
 *- Temas especiales -*
 
