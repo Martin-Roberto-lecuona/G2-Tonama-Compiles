@@ -153,8 +153,8 @@ aplicarDescuento:
 					factorFlotantePtr=crearNodo("=", &arbol, crearHoja("@mon"), crearHoja(yytext));
 					uniqueIdMain++;
 	}COMA CORCH_I listaNum CORCH_D COMA factorCte {
-					if (atoi(yytext) <= tamListaDesc){
-						printf("Error: el indice debe ser menor al tamaño de la lista");
+					if (atoi(yytext) > tamListaDesc){
+						printf("Error semantico: el indice debe ser menor o igual al tamaño de la lista. Indice %d TamLista %d",atoi(yytext),tamListaDesc);
 						exit (-1);
 					}
 					factorCtePtr=crearNodo("=", &arbol, crearHoja("@aux"), crearHoja(yytext));
@@ -170,8 +170,8 @@ aplicarDescuento:
 	;
 
 listaNum:
-	listaNum COMA factorTodoFloat {listaNumPtr = crearNodo("Bloque", &arbol, listaNumPtr,aplicarDescuentoItem(yytext));uniqueIdMain++;}
-	| factorTodoFloat {tamListaDesc = 1; listaNumPtr = aplicarDescuentoItem(yytext);uniqueIdMain++;}
+	listaNum COMA factorTodoFloat {listaNumPtr = crearNodo("Bloque", &arbol, listaNumPtr,aplicarDescuentoItem(yytext));uniqueIdMain++;tamListaDesc += 1;}
+	| factorTodoFloat {tamListaDesc += 1; listaNumPtr = aplicarDescuentoItem(yytext);uniqueIdMain++;}
 	;
 buscarYreemplazar:
 	BUSC_Y_REMP PARENTE_I factorString COMA factorString COMA factorString PARENTE_D

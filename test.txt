@@ -172,11 +172,16 @@ aplicarDescuento(27.5, [500, 305, 79.4, 10], 3)
 
 *- aplicarDescuento lista vacia -*
 *-
-    aplicarDescuento(50, [], 1)
+    aplicarDescuento(50.0, [], 1)
 -*
 
 *- aplicarDescuento con cadena -*
 *-
     aplicarDescuento("50", [1,23,3], 1) 
+-*
+
+*- aplicarDescuento con indice mayor a lista -*
+*-
+    aplicarDescuento(50.1, [100, 200, 300], 4)
 -*
 
