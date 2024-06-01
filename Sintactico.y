@@ -124,7 +124,7 @@ sentencia:
 	PARENTE_D{
 		printf("\tsentencia -> escribir ( ID )\n");
 		uniqueIdMain++;
-	    sentenciaPtr = crearNodo("PUT", &arbol,crearHoja("STDOUT"),crearHoja(trimComillas(auxCadVal)));
+	    sentenciaPtr = crearNodo("PUT", &arbol,crearHoja("STDOUT"),crearHoja(auxCadVal));
 	}
 	| LEER PARENTE_I ID {
 							pos = findSymbol(yytext);

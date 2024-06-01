@@ -5,7 +5,7 @@ init{
     g: Float
     h: String
     y: String
-    variable1 : Int
+    var1 : Int
     a1, b1 : Float
     p1, p2, p3 : String
 }
