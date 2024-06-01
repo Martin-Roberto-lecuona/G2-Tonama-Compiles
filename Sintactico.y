@@ -138,8 +138,8 @@ sentencia:
 							uniqueIdMain++;
 							sentenciaPtr = crearNodo("GET", &arbol,crearHoja("STDIN"),crearHoja(auxCadVal)); 
 						} 
-	| buscarYreemplazar 
-	| aplicarDescuento {sentenciaPtr = descuentoPtr;}
+	| buscarYreemplazar {sentenciaPtr = crearHoja("buscarYReemplazar(TODO)");}
+	| aplicarDescuento {sentenciaPtr = crearNodo("AplicarDescuento", &arbol,descuentoPtr,NULL);}
 	;
 aplicarDescuento:
 	APLIC_DESC {	uniqueIdMain++;
@@ -233,6 +233,7 @@ asignable:
 	| buscarYreemplazar {
 		printf("\tASIGNABLE -> buscarYreemplazar\n");
 		updateTipoDatoSymbol(pos,INT);
+		asignablePtr = crearHoja("buscarYReemplazar(TODO)");
 		}
 	;
 
