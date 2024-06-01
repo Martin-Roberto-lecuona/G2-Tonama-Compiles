@@ -1,7 +1,7 @@
 #include "arbol.h"
 
 void saveArbolFile(t_arbol *p) {
-  FILE *treeFile = fopen("tree.dot", "w");
+  FILE *treeFile = fopen("intermediate-code.dot", "w");
   if (treeFile == NULL) {
     perror("Error al abrir el archivo");
     exit(1);
