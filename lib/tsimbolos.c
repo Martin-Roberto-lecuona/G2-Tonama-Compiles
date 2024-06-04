@@ -25,6 +25,8 @@ void saveSymbolTableFile() {
           "LONGITUD");
   fprintf(file,
           "-------------------------------------------------------------------------------------------------------------------------\n");
+  fprintf(file,"%-49s|%-30s|%-30s|%-30s\n","@aux",INT,"0","" );
+  fprintf(file,"%-49s|%-30s|%-30s|%-30s\n","@res",FLOAT,"0","" );
 
   for (int i = 0; i < sizeof(filas) / sizeof(filas[0]); i++) {
     if (strlen(filas[i].nombre) == 0)

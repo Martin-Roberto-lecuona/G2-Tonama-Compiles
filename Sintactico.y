@@ -26,6 +26,7 @@ char auxCadVal[MAX_CAD];
 void clearString(char* cad, int tam);
 char* trimComillas(char* cad);
 int tamListaDesc = 0;
+int banderaAsignacionInt = 0;
 
 %}
 
@@ -211,6 +212,11 @@ asignacion:
 			printf("Error: %s no declarado\n", yytext);
 			exit(-1);
 		}
+		if (strcmp(filas[pos].tipoDato, INT) == 0)
+			banderaAsignacionInt = 1;
+		else 
+			banderaAsignacionInt = 0;
+		
 		strcpy(auxIdName,yytext);
 	}
 	OP_ASIG asignable{
@@ -313,6 +319,10 @@ factor:
 		factorPtr = crearHoja(yytext);
 		apilarDinamica(&pila, factorPtr);
 		apilarDinamica(&pilaExpresion,factorPtr);
+		if (banderaAsignacionInt == 1 && strcmp(filas[findSymbol(yytext)].tipoDato, FLOAT) == 0 ){
+			printf("\tError: No se puede asignar un flotante a un entero\n");
+			exit(-1);
+		}
 		}
 	| CTE {
 		printf("\tFactor -> CTE\n");
@@ -334,6 +344,10 @@ factor:
 		saveSymbolFloat(yytext);
 		updateTipoDatoSymbol(pos,FLOAT);
 		factorPtr = crearHoja(yytext);
+		if (banderaAsignacionInt == 1){
+			printf("\tError: No se puede asignar un flotante a un entero\n");
+			exit(-1);
+		}
 		}
 	| PARENTE_I expresion PARENTE_D {	printf("\tFactor -> (exp_logica)\n");
 										desapilarDinamica(&pilaExpresion);

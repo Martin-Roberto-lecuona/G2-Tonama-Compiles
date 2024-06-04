@@ -1,0 +1,9 @@
+init{
+    a, rta, matar:Int
+    b, b2, anda:Float
+}
+
+a = 1
+b = 1.5
+b2 = 0.5
+anda = a
