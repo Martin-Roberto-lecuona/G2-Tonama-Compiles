@@ -168,6 +168,10 @@ aplicarDescuento:
 					uniqueIdMain++;
 					descuentoPtr= crearNodo("Sentencia", &arbol, descuentoPtr, listaNumPtr);
 	}
+	| APLIC_DESC PARENTE_I factorFlotante COMA CORCH_I CORCH_D COMA factorCte PARENTE_D { 
+						printf ("Error: no se acepta lista vacia en aplicarDescuento");
+						exit(-1);
+						}
 	;
 
 listaNum:
