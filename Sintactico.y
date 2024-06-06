@@ -28,6 +28,10 @@ char* trimComillas(char* cad);
 int tamListaDesc = 0;
 int banderaAsignacionInt = 0;
 
+char BusyRem_bus[MAX_CAD];
+char BusyRem_cad[MAX_CAD];
+char BusyRem_rem[MAX_CAD];
+
 %}
 
 %token CTE
@@ -139,7 +143,7 @@ sentencia:
 							uniqueIdMain++;
 							sentenciaPtr = crearNodo("GET", &arbol,crearHoja("STDIN"),crearHoja(auxCadVal)); 
 						} 
-	| buscarYreemplazar {sentenciaPtr = crearHoja("buscarYReemplazar(TODO)");}
+	| buscarYreemplazar {sentenciaPtr = buscarYreemplazarPtr;}
 	| aplicarDescuento {sentenciaPtr = crearNodo("AplicarDescuento", &arbol,descuentoPtr,NULL);}
 	;
 aplicarDescuento:
@@ -179,7 +183,14 @@ listaNum:
 	| factorTodoFloat {tamListaDesc += 1; listaNumPtr = aplicarDescuentoItem(yytext);uniqueIdMain++;}
 	;
 buscarYreemplazar:
-	BUSC_Y_REMP PARENTE_I factorString COMA factorString COMA factorString PARENTE_D
+	BUSC_Y_REMP PARENTE_I factorString {strcpy(BusyRem_bus,yytext);} 
+					COMA factorString {strcpy(BusyRem_cad,yytext);} 
+					COMA factorString {strcpy(BusyRem_rem,yytext);} 
+				PARENTE_D {	buscarYreemplazarPtr = buscarYReemplazar(BusyRem_bus,BusyRem_cad,BusyRem_rem);
+							clearString(BusyRem_bus,MAX_CAD);
+							clearString(BusyRem_cad,MAX_CAD);
+							clearString(BusyRem_rem,MAX_CAD);
+						}
 	;
 
 factorString:
@@ -243,7 +254,7 @@ asignable:
 	| buscarYreemplazar {
 		printf("\tASIGNABLE -> buscarYreemplazar\n");
 		updateTipoDatoSymbol(pos,INT);
-		asignablePtr = crearHoja("buscarYReemplazar(TODO)");
+		asignablePtr = buscarYreemplazarPtr;
 		}
 	;
 
