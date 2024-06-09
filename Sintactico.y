@@ -3,6 +3,8 @@
 %{
 #include "lib/arbol.c"
 #include "lib/tsimbolos.c"
+#include "lib/assembler.c"
+
 #include "y.tab.h"
 
 #include <stdio.h>
