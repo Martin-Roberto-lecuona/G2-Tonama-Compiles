@@ -50,6 +50,8 @@ tNodoArbol * desapilarDinamica(t_pila *pp);
 
 tNodoArbol *aplicarDescuentoItem(char *item);
 
+tNodoArbol *buscarYReemplazar(char *bus,char *cad,char *rem);
+
 tNodoArbol *asignacionPtr;
 tNodoArbol *expresionPtr;
 tNodoArbol *terminoPtr;
@@ -73,6 +75,7 @@ tNodoArbol *descuentoPtr;
 tNodoArbol *factorFlotantePtr;
 tNodoArbol *factorCtePtr;
 tNodoArbol *listaNumPtr;
+tNodoArbol *buscarYreemplazarPtr;
 
 t_arbol arbol;
 t_pila pila;
