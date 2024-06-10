@@ -145,7 +145,14 @@ sentencia:
 						} 
 	| buscarYreemplazar {sentenciaPtr = buscarYreemplazarPtr;}
 	| aplicarDescuento {sentenciaPtr = crearNodo("AplicarDescuento", &arbol,descuentoPtr,NULL);}
+	// | aplicarDescuentoVacio no hay manera que no me de desplazamiento(s)/reducción(ones). 
+	// tampoco funciona si le pongo un or a la regla aplicarDescuento. 
+	/* nada de esto anda:APLIC_DESC PARENTE_I factorFlotante COMA CORCH_I CORCH_D COMA factorCte PARENTE_D { 
+						printf ("Error: no se acepta lista vacia en aplicarDescuento");
+						exit(-1);
+						} */
 	;
+
 aplicarDescuento:
 	APLIC_DESC {	uniqueIdMain++;
 					descuentoPtr=crearNodo("=", &arbol, crearHoja("@res"), crearHoja("0"));
@@ -172,14 +179,13 @@ aplicarDescuento:
 					uniqueIdMain++;
 					descuentoPtr= crearNodo("Sentencia", &arbol, descuentoPtr, listaNumPtr);
 	}
-	| APLIC_DESC PARENTE_I factorFlotante COMA CORCH_I CORCH_D COMA factorCte PARENTE_D { 
-						printf ("Error: no se acepta lista vacia en aplicarDescuento");
-						exit(-1);
-						}
 	;
 
 listaNum:
-	listaNum COMA factorTodoFloat {listaNumPtr = crearNodo("Bloque", &arbol, listaNumPtr,aplicarDescuentoItem(yytext));uniqueIdMain++;tamListaDesc += 1;}
+	listaNum COMA factorTodoFloat {	listaNumPtr = crearNodo("Bloque", &arbol, listaNumPtr,aplicarDescuentoItem(yytext));
+									uniqueIdMain++;
+									tamListaDesc += 1;
+									}
 	| factorTodoFloat {tamListaDesc += 1; listaNumPtr = aplicarDescuentoItem(yytext);uniqueIdMain++;}
 	;
 buscarYreemplazar:
