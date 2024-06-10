@@ -1,0 +1,9 @@
+init{
+    buscar,en,reemplazo:String
+    resultado: Int
+}
+
+buscar = "buscar"
+en = "Hola, quiero buscar una palabra y reemplazarla en este texto."
+reemplazo = "reemplazo"
+resultado = buscoYReemplazo(buscar, en, reemplazo)
