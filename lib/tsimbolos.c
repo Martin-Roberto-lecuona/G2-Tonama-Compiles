@@ -12,7 +12,7 @@ void createSymbolTableInFile() {
 
 void saveSymbolTableFile() {
 
-  FILE *file = fopen("symbol-table.txt", "w+");
+  FILE *file = fopen(SIMBOL_FILE_NAME, "w+");
   if (file == NULL) {
     perror("Error al abrir el archivo");
     exit(1);
@@ -101,9 +101,15 @@ void saveSymbolCte(const char *valor) {
 
 void saveSymbolFloat(const char *valor) {
   char symbol[100];
+  char val[strlen(valor)];
   strcpy(symbol, "_");
   strcat(symbol, valor);
-  saveSymbol(symbol, "FLOTANTE", valor, "");
+  strcpy(val, valor);
+  char *punto = strchr(val, '#');
+  if (punto != NULL) {
+    *punto = '.'; // Reemplazar el # por .
+  }
+  saveSymbol(symbol, "FLOTANTE", val, "");
 }
 
 void saveSymbolCadena(const char *valor) {

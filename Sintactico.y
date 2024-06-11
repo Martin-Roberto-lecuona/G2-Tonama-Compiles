@@ -3,6 +3,7 @@
 %{
 #include "lib/arbol.c"
 #include "lib/tsimbolos.c"
+#include "lib/assembler.c"
 #include "y.tab.h"
 
 #include <stdio.h>
@@ -362,6 +363,10 @@ factor:
 		factorPtr = crearHoja(symbol);
 		}
 	| FLOT {printf("\tFactor -> FLOT\n");
+		char *punto = strchr(yytext, '.');
+		if (punto != NULL) {
+			*punto = '#'; // Reemplazar el punto por '#'
+		}
 		saveSymbolFloat(yytext);
 		updateTipoDatoSymbol(pos,FLOAT);
 		factorPtr = crearHoja(yytext);
@@ -426,6 +431,7 @@ int main(int argc, char *argv[]) {
   }
   saveSymbolTableFile();
   saveArbolFile(&arbol);
+  saveAssemblerFile(&arbol);
   fclose(yyin);
   return 0;
 }

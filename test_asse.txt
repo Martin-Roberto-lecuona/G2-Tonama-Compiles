@@ -1,0 +1,15 @@
+init{
+    a,b,c: Int
+    d:Float
+}
+*- and.txt -*
+a := -1
+c := 2
+d := 1.45
+*-
+b := a*(c-21)/4
+if (a > b AND c > b)
+{
+    escribir("a es mas grande que b y c es mas grande que b")
+}
+-*
