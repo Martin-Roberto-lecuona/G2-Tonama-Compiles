@@ -73,7 +73,7 @@ char BusyRem_rem[MAX_CAD];
 
 %%
 proyecto :
-	| INIT LLAVE_I declaraciones LLAVE_D bloque { printf("\tproyecto -> init { declaraciones } bloque FIN\n");}
+	| INIT LLAVE_I declaraciones LLAVE_D bloque { printf("\tproyecto -> init { declaraciones } bloque FIN\n"); generarAssembler(arbol);}
 	| INIT LLAVE_I LLAVE_D bloque {printf("\tproyecto -> init {} bloque FIN\n");}
 	;
 bloque:
