@@ -1,2 +1,6 @@
-fld +
+fld a
+fld 1
+fadd
+fstp @aux1
+fld @aux1
 fistp a

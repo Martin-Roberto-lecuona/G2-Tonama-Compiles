@@ -2,6 +2,7 @@
 #define ASSEMBLER_H
 #include "arbol.h"
 
+int escribirInstruccionesEnASM(FILE* fpFinal, char * nameFile);
 void operacion(FILE * fp, tNodoArbol* raiz);
 int pedirAux(char* tipo);
 char* obtenerInstruccionAritmetica(const char *operador);

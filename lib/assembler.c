@@ -1,8 +1,23 @@
 #include "assembler.h"
 
+int escribirInstruccionesEnASM(FILE* fpFinal, char * nameFile){
+  FILE * file = fopen( nameFile, "r");
+  char buffer[100];
+  if (file == NULL) {
+    printf("Error al abrir el archivo %s", nameFile);
+    return 1;
+  }
+
+  while(fgets(buffer, sizeof(buffer), file)) {
+    fprintf(fpFinal, "%s", buffer);
+  }
+
+  fclose(file);
+}
+
 void operacion(FILE * fp, tNodoArbol* raiz){
 
-  printf("info arbol: %s",raiz->info);
+  printf("info arbol: %s\n",raiz->info);
   if(esAritmetica(raiz->info)){
     if(strcmp(raiz->info, "=")==0){
 /*
@@ -25,7 +40,7 @@ void operacion(FILE * fp, tNodoArbol* raiz){
       fprintf(fp, "fstp @aux%d\n", pedirAux(raiz->info));
 
       // Guardo en el arbol el dato del resultado, si uso un aux
-      //sprintf(raiz->dato, "@aux%d", cantAux);
+      sprintf(raiz->info, "@aux%d", cantAux);
 
     }
   }
@@ -76,6 +91,11 @@ void  recorrerArbolParaAssembler(FILE * fp, tNodoArbol* raiz){
 
   if(esHoja(raiz->izq) && esHoja(raiz->der)){
     operacion(fp, raiz);
+
+    free(raiz->izq);
+    free(raiz->der);
+    raiz->izq = NULL;
+    raiz->der = NULL;
   }
 
 }
@@ -100,7 +120,26 @@ void generarAssembler(tNodoArbol* raiz){
   }
   fprintf(fp,"include macros2.asm\n");
   fprintf(fp,"include number.asm\n\n");
-  fprintf(fp,".MODEL LARGE\n.386\n.STACK 200h\n\nMAXTEXTSIZE equ 100\n\n.DATA\n\n");
+  fprintf(fp,".MODEL LARGE\n");
+  fprintf(fp,".386\n");
+  fprintf(fp,".STACK 200h\n");
+  //fprintf(fp,"MAXTEXTSIZE equ 100\n");
+  fprintf(fp,".DATA\n\n");
+
+
+  fprintf(fp,".CODE\n");
+  fprintf(fp, "MOV DS,AX\n");
+  fprintf(fp, "MOV es,ax\n");
+  fprintf(fp, "FINIT\n");
+  fprintf(fp, "FFREE\n\n");
 
   generarInstruccionesAssembler(raiz);
+  escribirInstruccionesEnASM(fp, "instruccionesAssembler.txt");
+
+  fprintf(fp, "\n\nffree\n");
+  fprintf(fp,"mov ax, 4c00h\n");
+  fprintf(fp,"int 21h\n");
+  fprintf(fp,"end");
+
+
 }
