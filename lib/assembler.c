@@ -91,7 +91,7 @@ void  recorrerArbolParaAssembler(FILE * fp, tNodoArbol* raiz){
 
   if(esHoja(raiz->izq) && esHoja(raiz->der)){
     operacion(fp, raiz);
-
+    
     free(raiz->izq);
     free(raiz->der);
     raiz->izq = NULL;
@@ -101,18 +101,18 @@ void  recorrerArbolParaAssembler(FILE * fp, tNodoArbol* raiz){
 }
 
 int generarInstruccionesAssembler(tNodoArbol* raiz){
-  FILE * fp = fopen("instruccionesAssembler.txt", "wt+");
+  FILE * fp = fopen(ASM_FILE_CODE, "wt+");
   if (fp == NULL) {
     printf("Error al abrir el archivo instrucciones");
     return 1;
   }
-  recorrerArbolParaAssembler(fp, raiz->izq);
+  recorrerArbolParaAssembler(fp, raiz);
   fclose(fp);
   return 0;
 }
 
 void generarAssembler(tNodoArbol* raiz){
-  FILE *fp = fopen("Final.asm", "w");
+  FILE *fp = fopen(ASM_FILE, "w");
   if(!fp)
   {
     printf("Error al guardar el archivo assembler.\n");
@@ -137,7 +137,7 @@ void generarAssembler(tNodoArbol* raiz){
   fprintf(fp, "FFREE\n\n");
 
 
-  escribirInstruccionesEnASM(fp, "instruccionesAssembler.txt");
+  escribirInstruccionesEnASM(fp, ASM_FILE_CODE);
 
   fprintf(fp, "\n\nffree\n");
   fprintf(fp,"mov ax, 4c00h\n");

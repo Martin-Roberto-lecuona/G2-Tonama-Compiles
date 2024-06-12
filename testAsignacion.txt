@@ -1,5 +1,7 @@
 init{
     a: Int
+    b: Float
 }
 
 a := a + 1
+b := 4.12

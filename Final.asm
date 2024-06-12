@@ -9,7 +9,9 @@ include number.asm
 @aux dd 0
 @res dd 0
 a dd ?
-_1 dd 1
+b dd ?
+_1 dd 
+_4#12 dd ,ùe4.12
 @aux1 dd 0
 
 

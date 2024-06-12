@@ -93,17 +93,23 @@ void saveSymbol(const char *nombre,
 }
 
 void saveSymbolCte(const char *valor) {
-  char symbol[100];
-  strcpy(symbol, "_");
-  strcat(symbol, valor);
-  saveSymbol(symbol, "ENTERO", valor, "");
+  char real_val[100];
+  strcpy(real_val, valor+1);
+  saveSymbol(valor, "ENTERO", real_val, "");
 }
 
 void saveSymbolFloat(const char *valor) {
-  char symbol[100];
-  strcpy(symbol, "_");
-  strcat(symbol, valor);
-  saveSymbol(symbol, "FLOTANTE", valor, "");
+  char val[strlen(valor)];
+
+  char real_val[100];
+  strcpy(real_val, valor+1);
+
+  strcpy(val, real_val);
+  char *punto = strchr(val, '@');
+  if (punto != NULL) {
+    *punto = '.'; // Reemplazar el @ por .
+  }
+  saveSymbol(valor, "FLOTANTE", val, "");
 }
 
 void saveSymbolCadena(const char *valor) {

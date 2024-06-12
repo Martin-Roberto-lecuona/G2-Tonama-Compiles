@@ -27,12 +27,15 @@ char auxIdName[TAM_ID];
 char auxCadVal[MAX_CAD];
 void clearString(char* cad, int tam);
 char* trimComillas(char* cad);
+void agregarGuionBajo(char* cad,char* res);
+
 int tamListaDesc = 0;
 int banderaAsignacionInt = 0;
 
 char BusyRem_bus[MAX_CAD];
 char BusyRem_cad[MAX_CAD];
 char BusyRem_rem[MAX_CAD];
+
 
 %}
 
@@ -349,9 +352,11 @@ factor:
 		}
 	| CTE {
 		printf("\tFactor -> CTE\n");
-		saveSymbolCte(yytext);
+		char new_yytext[100];
+		agregarGuionBajo(yytext, new_yytext);
+		saveSymbolCte(new_yytext);
 		updateTipoDatoSymbol(pos,INT);
-		factorPtr = crearHoja(yytext);
+		factorPtr = crearHoja(new_yytext);
 		apilarDinamica(&pila, factorPtr);
 		apilarDinamica(&pilaExpresion,factorPtr);
 		}
@@ -364,9 +369,16 @@ factor:
 		factorPtr = crearHoja(symbol);
 		}
 	| FLOT {printf("\tFactor -> FLOT\n");
-		saveSymbolFloat(yytext);
+		char *punto = strchr(yytext, '.');
+		if (punto != NULL) {
+			*punto = '@'; // Reemplazar el punto por '#'
+		}
+
+		char new_yytext[100];
+		agregarGuionBajo(yytext,new_yytext);
+		saveSymbolFloat(new_yytext);
 		updateTipoDatoSymbol(pos,FLOAT);
-		factorPtr = crearHoja(yytext);
+		factorPtr = crearHoja(new_yytext);
 		if (banderaAsignacionInt == 1){
 			printf("\tError: No se puede asignar un flotante a un entero\n");
 			exit(-1);
@@ -451,4 +463,8 @@ char* trimComillas(char* cad){
 	cadena[strlen(cadena)-1] = ')';
 	cadena[strlen(cadena)] = '\0';
 	return cadena;
+}
+void agregarGuionBajo(char* cad,char* res){
+  	strcpy(res, "_");
+  	strcat(res, cad);
 }

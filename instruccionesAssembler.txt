@@ -1,6 +1,8 @@
 fld a
-fld 1
+fld _1
 fadd
 fstp @aux1
 fld @aux1
 fistp a
+fld _4@12
+fistp b
