@@ -6,6 +6,13 @@ include number.asm
 .STACK 200h
 .DATA
 
+@aux dd 0
+@res dd 0
+a dd ?
+_1 dd 1
+@aux1 dd 0
+
+
 .CODE
 MOV DS,AX
 MOV es,ax
@@ -13,7 +20,7 @@ FINIT
 FFREE
 
 fld a
-fld 1
+fld _1
 fadd
 fstp @aux1
 fld @aux1

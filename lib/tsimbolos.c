@@ -1,7 +1,7 @@
 #include "tsimbolos.h"
 
 void createSymbolTableInFile() {
-  FILE *file = fopen("symbol-table.txt", "w");
+  FILE *file = fopen(SIMBOL_FILE_NAME, "w");
   if (file == NULL) {
     perror("Error al abrir el archivo");
     exit(1);
@@ -12,7 +12,7 @@ void createSymbolTableInFile() {
 
 void saveSymbolTableFile() {
 
-  FILE *file = fopen("symbol-table.txt", "w+");
+  FILE *file = fopen(SIMBOL_FILE_NAME, "w+");
   if (file == NULL) {
     perror("Error al abrir el archivo");
     exit(1);

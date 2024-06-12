@@ -73,7 +73,7 @@ char BusyRem_rem[MAX_CAD];
 
 %%
 proyecto :
-	| INIT LLAVE_I declaraciones LLAVE_D bloque { printf("\tproyecto -> init { declaraciones } bloque FIN\n"); generarAssembler(arbol);}
+	| INIT LLAVE_I declaraciones LLAVE_D bloque { printf("\tproyecto -> init { declaraciones } bloque FIN\n"); }
 	| INIT LLAVE_I LLAVE_D bloque {printf("\tproyecto -> init {} bloque FIN\n");}
 	;
 bloque:
@@ -428,6 +428,7 @@ int main(int argc, char *argv[]) {
   }
   saveSymbolTableFile();
   saveArbolFile(&arbol);
+  generarAssembler(arbol);
   fclose(yyin);
   return 0;
 }

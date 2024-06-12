@@ -118,6 +118,8 @@ void generarAssembler(tNodoArbol* raiz){
     printf("Error al guardar el archivo assembler.\n");
     exit(1);
   }
+  generarInstruccionesAssembler(raiz);
+
   fprintf(fp,"include macros2.asm\n");
   fprintf(fp,"include number.asm\n\n");
   fprintf(fp,".MODEL LARGE\n");
@@ -126,14 +128,15 @@ void generarAssembler(tNodoArbol* raiz){
   //fprintf(fp,"MAXTEXTSIZE equ 100\n");
   fprintf(fp,".DATA\n\n");
 
+  recorrerTablaSimbolos(fp);
 
-  fprintf(fp,".CODE\n");
+  fprintf(fp,"\n\n.CODE\n");
   fprintf(fp, "MOV DS,AX\n");
   fprintf(fp, "MOV es,ax\n");
   fprintf(fp, "FINIT\n");
   fprintf(fp, "FFREE\n\n");
 
-  generarInstruccionesAssembler(raiz);
+
   escribirInstruccionesEnASM(fp, "instruccionesAssembler.txt");
 
   fprintf(fp, "\n\nffree\n");
@@ -168,24 +171,26 @@ void getFila(char line[256], t_fila *fila){
 
 void recorrerTablaSimbolos(FILE *file){
   FILE *fileSimbol = fopen(SIMBOL_FILE_NAME, "r");
+  fseek(fileSimbol, 0, SEEK_SET);
   if (fileSimbol == NULL) {
     perror("Error al abrir el archivo");
     exit(1);
   }
-
   t_fila fila;
   char line[256];
 
   // Saltar las primeras dos líneas (encabezado y separador)
   fgets(line, sizeof(line), fileSimbol);
   fgets(line, sizeof(line), fileSimbol);
-
   while (fgets(line, sizeof(line), fileSimbol)) {
     getFila(line,&fila);
     if(strcmp(fila.valor, "_") == 0 )
       fprintf(file,"%s dd ?\n", fila.nombre);
     else
       fprintf(file,"%s dd %s\n", fila.nombre,fila.valor);
+  }
+  for(int i=1; i <= cantAux; i++){
+    fprintf(file,"@aux%d dd %s\n", i, "0");
   }
 
   fclose(fileSimbol);
