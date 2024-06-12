@@ -1,5 +1,36 @@
 #include "assembler.h"
 
+void operacion(FILE * fp, tNodoArbol* raiz){
+
+  printf("info arbol: %s",raiz->info);
+  if(esAritmetica(raiz->info)){
+    if(strcmp(raiz->info, "=")==0){
+/*
+      if(strcmp(raiz->tipo, "Cte_String")==0){
+        asignacionString = 1;
+        fprintf(fp, "MOV si, OFFSET   %s\n", raiz->hijoDer);
+        fprintf(fp, "MOV di, OFFSET  %s\n", raiz->hijoIzq);
+        fprintf(fp, "CALL asignString\n");
+      }else{
+
+        fprintf(fp, "f%sld %s\n", cargaEntero(raiz->hijoDer), raiz->hijoDer->dato);
+        fprintf(fp, "f%sstp %s\n", cargaEntero(raiz->hijoIzq), raiz->hijoIzq->dato);
+      }*/
+      fprintf(fp, "fld %s\n", raiz->der->info);
+      fprintf(fp, "fistp %s\n", raiz->izq->info);
+    } else{
+      fprintf(fp, "fld %s\n", raiz->izq->info);
+      fprintf(fp, "fld %s\n", raiz->der->info);
+      fprintf(fp, "%s\n", obtenerInstruccionAritmetica(raiz->info));
+      fprintf(fp, "fstp @aux%d\n", pedirAux(raiz->info));
+
+      // Guardo en el arbol el dato del resultado, si uso un aux
+      //sprintf(raiz->dato, "@aux%d", cantAux);
+
+    }
+  }
+}
+
 int esHoja(tNodoArbol* raiz) {
   if (raiz == NULL) {
     return 0;
@@ -38,33 +69,15 @@ char* obtenerInstruccionAritmetica(const char *operador) {
 }
 
 void  recorrerArbolParaAssembler(FILE * fp, tNodoArbol* raiz){
-  printf("info arbol: %s",raiz->info);
-  if(esAritmetica(raiz->info)){
-    if(strcmp(raiz->info, "=")==0){
-/*
-      if(strcmp(raiz->tipo, "Cte_String")==0){
-        asignacionString = 1;
-        fprintf(fp, "MOV si, OFFSET   %s\n", raiz->hijoDer);
-        fprintf(fp, "MOV di, OFFSET  %s\n", raiz->hijoIzq);
-        fprintf(fp, "CALL asignString\n");
-      }else{
+  if(raiz == NULL)
+    return;
+  recorrerArbolParaAssembler(fp, raiz->izq);
+  recorrerArbolParaAssembler(fp, raiz->der);
 
-        fprintf(fp, "f%sld %s\n", cargaEntero(raiz->hijoDer), raiz->hijoDer->dato);
-        fprintf(fp, "f%sstp %s\n", cargaEntero(raiz->hijoIzq), raiz->hijoIzq->dato);
-      }*/
-      fprintf(fp, "fld %s\n", raiz->der->info);
-      fprintf(fp, "fistp %s\n", raiz->izq->info);
-    } else{
-      fprintf(fp, "fld %s\n", raiz->izq->info);
-      fprintf(fp, "fld %s\n", raiz->der->info);
-      fprintf(fp, "%s\n", obtenerInstruccionAritmetica(raiz->info));
-      fprintf(fp, "fstp @aux%d\n", pedirAux(raiz->info));
-
-      // Guardo en el arbol el dato del resultado, si uso un aux
-      //sprintf(raiz->dato, "@aux%d", cantAux);
-
-    }
+  if(esHoja(raiz->izq) && esHoja(raiz->der)){
+    operacion(fp, raiz);
   }
+
 }
 
 int generarInstruccionesAssembler(tNodoArbol* raiz){
