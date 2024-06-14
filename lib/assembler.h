@@ -2,7 +2,7 @@
 #define ASSEMBLER_H
 #include "arbol.h"
 #include "tsimbolos.h"
-#define ASM_FILE "C:/DOS/Final.asm"
+#define ASM_FILE "Final.asm"
 #define ASM_FILE_CODE "instruccionesAssembler.txt"
 
 int escribirInstruccionesEnASM(FILE* fpFinal, char * nameFile);
