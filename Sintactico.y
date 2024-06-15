@@ -121,6 +121,13 @@ sentencia:
 	   }
 	| ESCRIBIR PARENTE_I CADENA
 								{
+									*(yytext + strlen(yytext)-1) = 0;
+  									yytext++;
+									pos = findSymbol(yytext);
+									printf("%s xxPOSxx: %d",yytext,pos);
+									if (pos==-1) {
+										saveSymbolCadena(yytext);
+									}
 									strcpy(auxCadVal,yytext);
 								} 
 	PARENTE_D {
@@ -129,6 +136,11 @@ sentencia:
 	    sentenciaPtr = crearNodo("PUT", &arbol,crearHoja("STDOUT"),crearHoja(trimComillas(auxCadVal)));
 		}
 	| ESCRIBIR PARENTE_I ID {
+								pos = findSymbol(yytext);
+								if (pos==-1) {
+									printf("Error: %s no declarado\n", yytext);
+									exit(-1);
+								}
 								strcpy(auxCadVal,yytext);
 							} 
 	PARENTE_D{
@@ -208,7 +220,13 @@ factorString:
 	ID {printf("\tfactorString -> ID \n");}
 	| CADENA {
 		printf("\nfactorString -> CADENA\n");
-		saveSymbolCadena(yytext);}
+		*(yytext + strlen(yytext)-1) = 0;
+		yytext++;
+		pos = findSymbol(yytext);
+		if (pos==-1) {
+			saveSymbolCadena(yytext);
+		}
+		}
 	;
 factorFlotante:
 	ID {printf("\tfactorFlotante -> ID \n");}
@@ -258,13 +276,16 @@ asignable:
 	expresion {printf("\tASIGNABLE -> Expresion\n"); asignablePtr = expresionPtr;}
 	| CADENA {
 		printf("\tASIGNABLE -> ID\n");
-		saveSymbolCadena(yytext);
-		updateTipoDatoSymbol(pos,STR);
+		*(yytext + strlen(yytext)-1) = 0;
+  		yytext++;
+		pos = findSymbol(yytext);
+		if (pos==-1) {
+			saveSymbolCadena(yytext);
+		}
 		asignablePtr = crearHoja(trimComillas(yytext));
 		}
 	| buscarYreemplazar {
 		printf("\tASIGNABLE -> buscarYreemplazar\n");
-		updateTipoDatoSymbol(pos,INT);
 		asignablePtr = buscarYreemplazarPtr;
 		}
 	;
@@ -454,14 +475,15 @@ void clearString(char *cad, int tam) {
   memset(cad, 0, tam);
 }
 char* trimComillas(char* cad){
-	char* cadena = malloc(strlen(cad) + 1);
+	char* cadena = malloc(strlen(cad) + 3);
 	if(cadena == NULL) {
 		return NULL;
 	}
-	strcpy(cadena,cad);
 	cadena[0] = '(';
-	cadena[strlen(cadena)-1] = ')';
-	cadena[strlen(cadena)] = '\0';
+	cadena[1] = 0;
+	strcat(cadena,cad);
+	strcat(cadena,")");
+	/* cadena[strlen(cad)+2] = 0; */
 	return cadena;
 }
 void agregarGuionBajo(char* cad,char* res){

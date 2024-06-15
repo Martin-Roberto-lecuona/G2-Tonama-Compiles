@@ -2,9 +2,10 @@
 #define ASSEMBLER_H
 #include "arbol.h"
 #include "tsimbolos.h"
-#define ASM_FILE "Final.asm"
+#define ASM_FILE "C:/DOS/Final.asm"
 #define ASM_FILE_CODE "instruccionesAssembler.txt"
-
+#define PUT_STR "PUT"
+#define GET_STR "GET"
 int escribirInstruccionesEnASM(FILE* fpFinal, char * nameFile);
 void operacion(FILE * fp, tNodoArbol* raiz);
 int pedirAux(char* tipo);

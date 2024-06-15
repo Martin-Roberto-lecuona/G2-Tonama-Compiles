@@ -35,7 +35,7 @@ void saveSymbol(const char *nombre,
                 const char *valor,
                 const char *longitud);
 void saveSymbolCte(const char *valor);
-void saveSymbolCadena(const char *valor);
+void saveSymbolCadena(char *valor);
 void saveSymbolFloat(const char *valor);
 
 

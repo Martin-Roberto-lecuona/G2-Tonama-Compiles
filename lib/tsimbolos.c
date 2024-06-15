@@ -42,8 +42,15 @@ void saveSymbolTableFile() {
 }
 
 int findSymbol(char *nombre) {
-  int pos = 0, i = 0, tam = sizeof(filas) / sizeof(filas[0]);
+  int pos = 0, 
+      i = 0, 
+      tam = sizeof(filas) / sizeof(filas[0]);
+  
   while (strcmp(filas[i].nombre, nombre) != 0 && i < tam) {
+    int index = strcspn(filas[i].nombre,"_");
+    if(index == 0 && strcmp(filas[i].nombre+1, nombre) == 0)
+      break;
+
     i++;
     pos = i;
   }
@@ -112,7 +119,7 @@ void saveSymbolFloat(const char *valor) {
   saveSymbol(valor, "FLOTANTE", val, "");
 }
 
-void saveSymbolCadena(const char *valor) {
+void saveSymbolCadena(char *valor) {
   char symbol[100];
   strcpy(symbol, "_");
   strcat(symbol, valor);

@@ -9,7 +9,7 @@ int escribirInstruccionesEnASM(FILE* fpFinal, char * nameFile){
   }
 
   while(fgets(buffer, sizeof(buffer), file)) {
-    fprintf(fpFinal, "%s", buffer);
+    fprintf(fpFinal, "\t%s", buffer);
   }
 
   fclose(file);
@@ -18,31 +18,30 @@ int escribirInstruccionesEnASM(FILE* fpFinal, char * nameFile){
 void operacion(FILE * fp, tNodoArbol* raiz){
 
   printf("info arbol: %s\n",raiz->info);
-  if(esAritmetica(raiz->info)){
-    if(strcmp(raiz->info, "=")==0){
+  if(strcmp(raiz->info, "=")==0){
 /*
-      if(strcmp(raiz->tipo, "Cte_String")==0){
-        asignacionString = 1;
-        fprintf(fp, "MOV si, OFFSET   %s\n", raiz->hijoDer);
-        fprintf(fp, "MOV di, OFFSET  %s\n", raiz->hijoIzq);
-        fprintf(fp, "CALL asignString\n");
-      }else{
+    if(strcmp(raiz->tipo, "Cte_String")==0){
+      asignacionString = 1;
+      fprintf(fp, "MOV si, OFFSET   %s\n", raiz->hijoDer);
+      fprintf(fp, "MOV di, OFFSET  %s\n", raiz->hijoIzq);
+      fprintf(fp, "CALL asignString\n");
+    }else{
 
-        fprintf(fp, "f%sld %s\n", cargaEntero(raiz->hijoDer), raiz->hijoDer->dato);
-        fprintf(fp, "f%sstp %s\n", cargaEntero(raiz->hijoIzq), raiz->hijoIzq->dato);
-      }*/
-      fprintf(fp, "fld %s\n", raiz->der->info);
-      fprintf(fp, "fistp %s\n", raiz->izq->info);
-    } else{
-      fprintf(fp, "fld %s\n", raiz->izq->info);
-      fprintf(fp, "fld %s\n", raiz->der->info);
-      fprintf(fp, "%s\n", obtenerInstruccionAritmetica(raiz->info));
-      fprintf(fp, "fstp @aux%d\n", pedirAux(raiz->info));
+      fprintf(fp, "f%sld %s\n", cargaEntero(raiz->hijoDer), raiz->hijoDer->dato);
+      fprintf(fp, "f%sstp %s\n", cargaEntero(raiz->hijoIzq), raiz->hijoIzq->dato);
+    }*/
+   /// falta saber como asignar strings
+    fprintf(fp, "fld %s\n", raiz->der->info);
+    fprintf(fp, "fistp %s\n", raiz->izq->info);
+  } else{
+    fprintf(fp, "fld %s\n", raiz->izq->info);
+    fprintf(fp, "fld %s\n", raiz->der->info);
+    fprintf(fp, "%s\n", obtenerInstruccionAritmetica(raiz->info));
+    fprintf(fp, "fstp @aux%d\n", pedirAux(raiz->info));
 
-      // Guardo en el arbol el dato del resultado, si uso un aux
-      sprintf(raiz->info, "@aux%d", cantAux);
+    // Guardo en el arbol el dato del resultado, si uso un aux
+    sprintf(raiz->info, "@aux%d", cantAux);
 
-    }
   }
 }
 
@@ -90,12 +89,26 @@ void  recorrerArbolParaAssembler(FILE * fp, tNodoArbol* raiz){
   recorrerArbolParaAssembler(fp, raiz->der);
 
   if(esHoja(raiz->izq) && esHoja(raiz->der)){
-    operacion(fp, raiz);
+    if(esAritmetica(raiz->info)){
+      operacion(fp, raiz);
+    }
+    else if (strcmp(raiz->info, PUT_STR) == 0)
+    {
+      char info[strlen(raiz->der->info)+1];
+      strcpy(info, raiz->der->info);
+      info[0]=' ';
+      info[strlen(raiz->der->info)-1] = 0;
+      fprintf(fp, "mov dx,OFFSET str_%s\n",info+1 );
+      fprintf(fp, "mov ah,9\nint 21h\nnewLine 1\n");
+    }
     
-    free(raiz->izq);
-    free(raiz->der);
-    raiz->izq = NULL;
-    raiz->der = NULL;
+    
+    
+      free(raiz->izq);
+      free(raiz->der);
+      raiz->izq = NULL;
+      raiz->der = NULL;
+    
   }
 
 }
@@ -119,30 +132,19 @@ void generarAssembler(tNodoArbol* raiz){
     exit(1);
   }
   generarInstruccionesAssembler(raiz);
-
-  fprintf(fp,"include macros2.asm\n");
-  fprintf(fp,"include number.asm\n\n");
-  fprintf(fp,".MODEL LARGE\n");
-  fprintf(fp,".386\n");
-  fprintf(fp,".STACK 200h\n");
-  //fprintf(fp,"MAXTEXTSIZE equ 100\n");
-  fprintf(fp,".DATA\n\n");
+  char header[]="include macros2.asm\ninclude number.asm\n.MODEL LARGE\n.386\n.STACK 200h\n.DATA\n\n";
+  fprintf(fp,header);
 
   recorrerTablaSimbolos(fp);
-
-  fprintf(fp,"\n\n.CODE\n");
-  fprintf(fp, "MOV DS,AX\n");
-  fprintf(fp, "MOV es,ax\n");
-  fprintf(fp, "FINIT\n");
-  fprintf(fp, "FFREE\n\n");
-
+  char iniCode[]=".CODE\n\nSTART:\n\tMOV AX,@DATA\n\tMOV DS,AX\n\tMOV ES,AX\n\tFINIT\n";
+  fprintf(fp, iniCode);
+  // fprintf(fp, "FFREE\n\n");
 
   escribirInstruccionesEnASM(fp, ASM_FILE_CODE);
 
-  fprintf(fp, "\n\nffree\n");
-  fprintf(fp,"mov ax, 4c00h\n");
-  fprintf(fp,"int 21h\n");
-  fprintf(fp,"end");
+  char finCode[]="END_PROG:\n\tmov ax, 4C00h\n\tint 21h\nEND START";
+  fprintf(fp,finCode);
+  // fprintf(fp, "\n\nffree\n");
 }
 
 
@@ -184,13 +186,16 @@ void recorrerTablaSimbolos(FILE *file){
   fgets(line, sizeof(line), fileSimbol);
   while (fgets(line, sizeof(line), fileSimbol)) {
     getFila(line,&fila);
-    if(strcmp(fila.valor, "_") == 0 )
-      fprintf(file,"%s dd ?\n", fila.nombre);
-    else
-      fprintf(file,"%s dd %s\n", fila.nombre,fila.valor);
+    if(strcmp(fila.valor, "_") != 0 && strcmp(fila.tipoDato, STR) == 0){
+        fprintf(file,"\tstr_%s db \"%s\",\"$\", %d dup(?) \n", fila.valor,fila.valor,strlen(fila.valor) );
+    }
+    else {
+       fprintf(file,"\t%s dd ?\n", fila.nombre);
+    }
+    
   }
   for(int i=1; i <= cantAux; i++){
-    fprintf(file,"@aux%d dd %s\n", i, "0");
+    fprintf(file,"\t@aux%d dd %s\n", i, "0");
   }
 
   fclose(fileSimbol);
