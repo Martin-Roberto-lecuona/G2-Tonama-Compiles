@@ -26,7 +26,7 @@ extern char lastID[31];
 char auxIdName[TAM_ID];
 char auxCadVal[MAX_CAD];
 void clearString(char* cad, int tam);
-char* trimComillas(char* cad);
+char* addParentesis(char* cad);
 void agregarGuionBajo(char* cad,char* res);
 
 int tamListaDesc = 0;
@@ -133,7 +133,7 @@ sentencia:
 	PARENTE_D {
 		printf("\tsentencia -> escribir ( cadena )\n");
 		uniqueIdMain++;
-	    sentenciaPtr = crearNodo("PUT", &arbol,crearHoja("STDOUT"),crearHoja(trimComillas(auxCadVal)));
+	    sentenciaPtr = crearNodo("PUT", &arbol,crearHoja("STDOUT"),crearHoja(addParentesis(auxCadVal)));
 		}
 	| ESCRIBIR PARENTE_I ID {
 								pos = findSymbol(yytext);
@@ -282,7 +282,7 @@ asignable:
 		if (pos==-1) {
 			saveSymbolCadena(yytext);
 		}
-		asignablePtr = crearHoja(trimComillas(yytext));
+		asignablePtr = crearHoja(addParentesis(yytext));
 		}
 	| buscarYreemplazar {
 		printf("\tASIGNABLE -> buscarYreemplazar\n");
@@ -474,7 +474,7 @@ int yyerror(void) {
 void clearString(char *cad, int tam) {
   memset(cad, 0, tam);
 }
-char* trimComillas(char* cad){
+char* addParentesis(char* cad){
 	char* cadena = malloc(strlen(cad) + 3);
 	if(cadena == NULL) {
 		return NULL;

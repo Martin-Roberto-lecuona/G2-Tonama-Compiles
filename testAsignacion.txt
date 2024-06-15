@@ -3,7 +3,8 @@ init{
     b: Float
     c: String
 }
-escribir("inicio\n\n\n\n\n")
+escribir("inicio")
+escribir("inicio")
 a := a + 1
 b := 4.12
 escribir("final")

@@ -101,14 +101,10 @@ void  recorrerArbolParaAssembler(FILE * fp, tNodoArbol* raiz){
       fprintf(fp, "mov dx,OFFSET str_%s\n",info+1 );
       fprintf(fp, "mov ah,9\nint 21h\nnewLine 1\n");
     }
-    
-    
-    
       free(raiz->izq);
       free(raiz->der);
       raiz->izq = NULL;
       raiz->der = NULL;
-    
   }
 
 }
