@@ -392,6 +392,8 @@ int main(int argc, char *argv[]) {
   saveSymbolTableFile();
   saveArbolFile(&arbol);
   fclose(yyin);
+  //Generate tree .png . It is neccesary to have Graphviz on your system.
+  system("dot intermediate-code.dot -Tpng -o intermediate-code.png");
   return 0;
 }
 

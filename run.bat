@@ -1,6 +1,6 @@
 :: Script para windows
 del resultado.txt
-
+del intermediate-code.png
 flex Lexico.l
 bison -dyv Sintactico.y
 
