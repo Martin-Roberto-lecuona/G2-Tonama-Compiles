@@ -1,20 +1,16 @@
-mov dx,OFFSET str_inicio
-mov ah,9
-int 21h
-newLine 1
-mov dx,OFFSET str_inicio
-mov ah,9
-int 21h
-newLine 1
-fld a
+fsld b
+fsld a
+fcom
+fstsw ax
+sahf
+JNBE BeginIf1
+fsld b
+fsld c
+fcom
+fstsw ax
+sahf
+JNA Endif1
+BeginIf1
 fld _1
-fadd
-fstp @aux1
-fld @aux1
 fistp a
-fld _4@12
-fistp b
-mov dx,OFFSET str_final
-mov ah,9
-int 21h
-newLine 1
+EndIf1

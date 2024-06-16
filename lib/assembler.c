@@ -37,7 +37,7 @@ void operacion(FILE * fp, tNodoArbol* raiz){
     fprintf(fp, "fld %s\n", raiz->izq->info);
     fprintf(fp, "fld %s\n", raiz->der->info);
     fprintf(fp, "%s\n", obtenerInstruccionAritmetica(raiz->info));
-    fprintf(fp, "fstp @aux%d\n", pedirAux(raiz->info));
+    fprintf(fp, "fstp @aux%d\n", pedirAux());
 
     // Guardo en el arbol el dato del resultado, si uso un aux
     sprintf(raiz->info, "@aux%d", cantAux);
@@ -52,13 +52,8 @@ int esHoja(tNodoArbol* raiz) {
   return raiz->izq == NULL && raiz->der == NULL;
 }
 
-int pedirAux(char* tipo) {
+int pedirAux() {
   cantAux++;
-  /*
-  char aux[15];
-  sprintf(aux, "@aux%d", cantAux);
-  armarTS(tipo, aux);
-  */
   return cantAux;
 }
 
@@ -82,31 +77,108 @@ char* obtenerInstruccionAritmetica(const char *operador) {
     return "fdiv";
 }
 
-void  recorrerArbolParaAssembler(FILE * fp, tNodoArbol* raiz){
-  if(raiz == NULL)
+void recorrerArbolParaAssembler(FILE *fp, tNodoArbol *raiz) {
+  if (raiz == NULL)
     return;
-  recorrerArbolParaAssembler(fp, raiz->izq);
-  recorrerArbolParaAssembler(fp, raiz->der);
 
-  if(esHoja(raiz->izq) && esHoja(raiz->der)){
-    if(esAritmetica(raiz->info)){
-      operacion(fp, raiz);
-    }
-    else if (strcmp(raiz->info, PUT_STR) == 0)
-    {
-      char info[strlen(raiz->der->info)+1];
-      strcpy(info, raiz->der->info);
-      info[0]=' ';
-      info[strlen(raiz->der->info)-1] = 0;
-      fprintf(fp, "mov dx,OFFSET str_%s\n",info+1 );
-      fprintf(fp, "mov ah,9\nint 21h\nnewLine 1\n");
-    }
-      free(raiz->izq);
-      free(raiz->der);
-      raiz->izq = NULL;
-      raiz->der = NULL;
+  if (strcmp(raiz->info, "if") == 0) {
+    ifCounter++;
+  } else if (strcmp(raiz->info, "OR") == 0) {
+    flagOR = 1;
+  }
+  recorrerArbolParaAssembler(fp, raiz->izq);
+
+  if (strcmp(raiz->info, "if") == 0) {
+    fprintf(fp, "BeginIf%d\n", ifCounter);
   }
 
+  recorrerArbolParaAssembler(fp, raiz->der);
+
+  if (strcmp(raiz->info, "if") == 0) {
+    fprintf(fp, "EndIf%d\n", ifCounter);
+  }
+  if (esHoja(raiz->izq) && esHoja(raiz->der)) {
+    if (esAritmetica(raiz->info)) {
+      operacion(fp, raiz);
+    } else if (strcmp(raiz->info, PUT_STR) == 0) {
+      char info[strlen(raiz->der->info) + 1];
+      strcpy(info, raiz->der->info);
+      info[0] = ' ';
+      info[strlen(raiz->der->info) - 1] = 0;
+      fprintf(fp, "mov dx,OFFSET str_%s\n", info + 1);
+      fprintf(fp, "mov ah,9\nint 21h\nnewLine 1\n");
+    } else if (esComparacion(raiz)) {
+      generarComparacion(fp, raiz);
+    }
+    free(raiz->izq);
+    free(raiz->der);
+    raiz->izq = NULL;
+    raiz->der = NULL;
+  }
+
+}
+
+int esComparacion(tNodoArbol* raiz){
+  return strcmp(raiz->info, ">") == 0 ||
+      strcmp(raiz->info, ">=") == 0 ||
+      strcmp(raiz->info, "<") == 0 ||
+      strcmp(raiz->info, "<=") == 0 ||
+      strcmp(raiz->info, "==") == 0 ||
+      strcmp(raiz->info, "<>") == 0;
+}
+
+void generarComparacion(FILE * fp, tNodoArbol* raiz){
+  fprintf(fp, "fsld %s\n", raiz->der->info);
+  fprintf(fp, "fsld %s\n", raiz->izq->info);
+  fprintf(fp, "fcom\n");
+  fprintf(fp, "fstsw ax\n");
+  fprintf(fp, "sahf\n");
+  generarSalto(fp, raiz->info);
+
+}
+
+void generarSalto(FILE *fp, char *comparador) {
+  char *salto = obtenerInstruccionComparacion(comparador);
+  char *destinoSalto;
+  if (flagOR) {
+    destinoSalto = "BeginIf";
+    flagOR = 0;
+  } else {
+    destinoSalto = "EndIf";
+  }
+  fprintf(fp, "%s %s%d\n", salto, destinoSalto, ifCounter);
+}
+
+
+char* obtenerInstruccionComparacion(const char *comparador) {
+
+  if(flagOR) {
+    if (strcmp(comparador, ">") == 0)
+      return "JNBE";
+    if (strcmp(comparador, ">=") == 0)
+      return "JNB";
+    if (strcmp(comparador, "<") == 0)
+      return "JNAE";
+    if (strcmp(comparador, "<=") == 0)
+      return "JNA";
+    if (strcmp(comparador, "==") == 0)
+      return "JE";
+    if (strcmp(comparador, "<>") == 0)
+      return "JNE";
+  } else {
+    if (strcmp(comparador, ">") == 0)
+      return "JNA";
+    if (strcmp(comparador, ">=") == 0)
+      return "JNAE";
+    if (strcmp(comparador, "<") == 0)
+      return "JNB";
+    if (strcmp(comparador, "<=") == 0)
+      return "JNBE";
+    if (strcmp(comparador, "==") == 0)
+      return "JNE";
+    if (strcmp(comparador, "<>") == 0)
+      return "JE";
+  }
 }
 
 int generarInstruccionesAssembler(tNodoArbol* raiz){
