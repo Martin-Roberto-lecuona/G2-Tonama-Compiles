@@ -89,13 +89,13 @@ void recorrerArbolParaAssembler(FILE *fp, tNodoArbol *raiz) {
   recorrerArbolParaAssembler(fp, raiz->izq);
 
   if (strcmp(raiz->info, "if") == 0) {
-    fprintf(fp, "BeginIf%d\n", ifCounter);
+    fprintf(fp, "BeginIf%d:\n", ifCounter);
   }
 
   recorrerArbolParaAssembler(fp, raiz->der);
 
   if (strcmp(raiz->info, "if") == 0) {
-    fprintf(fp, "EndIf%d\n", ifCounter);
+    fprintf(fp, "EndIf%d:\n", ifCounter);
   }
   if (esHoja(raiz->izq) && esHoja(raiz->der)) {
     if (esAritmetica(raiz->info)) {
@@ -128,8 +128,8 @@ int esComparacion(tNodoArbol* raiz){
 }
 
 void generarComparacion(FILE * fp, tNodoArbol* raiz){
-  fprintf(fp, "fsld %s\n", raiz->der->info);
-  fprintf(fp, "fsld %s\n", raiz->izq->info);
+  fprintf(fp, "fld %s\n", raiz->der->info);
+  fprintf(fp, "fld %s\n", raiz->izq->info);
   fprintf(fp, "fcom\n");
   fprintf(fp, "fstsw ax\n");
   fprintf(fp, "sahf\n");
