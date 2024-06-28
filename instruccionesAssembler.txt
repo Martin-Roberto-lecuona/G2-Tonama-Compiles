@@ -1,0 +1,20 @@
+mov dx,OFFSET str_inicio
+mov ah,9
+int 21h
+newLine 1
+mov dx,OFFSET str_inicio
+mov ah,9
+int 21h
+newLine 1
+fld a
+fld _1
+fadd
+fstp @aux1
+fld @aux1
+fistp a
+fld _4@12
+fistp b
+mov dx,OFFSET str_final
+mov ah,9
+int 21h
+newLine 1

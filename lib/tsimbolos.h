@@ -8,6 +8,7 @@
 #define INT "ENTERO"
 #define STR "CADENA"
 #define MAX_FILAS 1024
+#define SIMBOL_FILE_NAME "symbol-table.txt"
 
 int pos = -1;
 int allPosInit[50]={-1};
@@ -34,7 +35,7 @@ void saveSymbol(const char *nombre,
                 const char *valor,
                 const char *longitud);
 void saveSymbolCte(const char *valor);
-void saveSymbolCadena(const char *valor);
+void saveSymbolCadena(char *valor);
 void saveSymbolFloat(const char *valor);
 
 

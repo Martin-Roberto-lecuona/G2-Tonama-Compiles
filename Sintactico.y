@@ -3,6 +3,8 @@
 %{
 #include "lib/arbol.c"
 #include "lib/tsimbolos.c"
+#include "lib/assembler.c"
+
 #include "y.tab.h"
 
 #include <stdio.h>
@@ -24,13 +26,16 @@ extern char lastID[31];
 char auxIdName[TAM_ID];
 char auxCadVal[MAX_CAD];
 void clearString(char* cad, int tam);
-char* trimComillas(char* cad);
+char* addParentesis(char* cad);
+void agregarGuionBajo(char* cad,char* res);
+
 int tamListaDesc = 0;
 int banderaAsignacionInt = 0;
 
 char BusyRem_bus[MAX_CAD];
 char BusyRem_cad[MAX_CAD];
 char BusyRem_rem[MAX_CAD];
+
 
 %}
 
@@ -71,7 +76,7 @@ char BusyRem_rem[MAX_CAD];
 
 %%
 proyecto :
-	| INIT LLAVE_I declaraciones LLAVE_D bloque { printf("\tproyecto -> init { declaraciones } bloque FIN\n");}
+	| INIT LLAVE_I declaraciones LLAVE_D bloque { printf("\tproyecto -> init { declaraciones } bloque FIN\n"); }
 	| INIT LLAVE_I LLAVE_D bloque {printf("\tproyecto -> init {} bloque FIN\n");}
 	;
 bloque:
@@ -116,14 +121,26 @@ sentencia:
 	   }
 	| ESCRIBIR PARENTE_I CADENA
 								{
+									*(yytext + strlen(yytext)-1) = 0;
+  									yytext++;
+									pos = findSymbol(yytext);
+									printf("%s xxPOSxx: %d",yytext,pos);
+									if (pos==-1) {
+										saveSymbolCadena(yytext);
+									}
 									strcpy(auxCadVal,yytext);
 								} 
 	PARENTE_D {
 		printf("\tsentencia -> escribir ( cadena )\n");
 		uniqueIdMain++;
-	    sentenciaPtr = crearNodo("PUT", &arbol,crearHoja("STDOUT"),crearHoja(trimComillas(auxCadVal)));
+	    sentenciaPtr = crearNodo("PUT", &arbol,crearHoja("STDOUT"),crearHoja(addParentesis(auxCadVal)));
 		}
 	| ESCRIBIR PARENTE_I ID {
+								pos = findSymbol(yytext);
+								if (pos==-1) {
+									printf("Error: %s no declarado\n", yytext);
+									exit(-1);
+								}
 								strcpy(auxCadVal,yytext);
 							} 
 	PARENTE_D{
@@ -203,7 +220,13 @@ factorString:
 	ID {printf("\tfactorString -> ID \n");}
 	| CADENA {
 		printf("\nfactorString -> CADENA\n");
-		saveSymbolCadena(yytext);}
+		*(yytext + strlen(yytext)-1) = 0;
+		yytext++;
+		pos = findSymbol(yytext);
+		if (pos==-1) {
+			saveSymbolCadena(yytext);
+		}
+		}
 	;
 factorFlotante:
 	ID {printf("\tfactorFlotante -> ID \n");}
@@ -253,13 +276,16 @@ asignable:
 	expresion {printf("\tASIGNABLE -> Expresion\n"); asignablePtr = expresionPtr;}
 	| CADENA {
 		printf("\tASIGNABLE -> ID\n");
-		saveSymbolCadena(yytext);
-		updateTipoDatoSymbol(pos,STR);
-		asignablePtr = crearHoja(trimComillas(yytext));
+		*(yytext + strlen(yytext)-1) = 0;
+  		yytext++;
+		pos = findSymbol(yytext);
+		if (pos==-1) {
+			saveSymbolCadena(yytext);
+		}
+		asignablePtr = crearHoja(addParentesis(yytext));
 		}
 	| buscarYreemplazar {
 		printf("\tASIGNABLE -> buscarYreemplazar\n");
-		updateTipoDatoSymbol(pos,INT);
 		asignablePtr = buscarYreemplazarPtr;
 		}
 	;
@@ -347,9 +373,11 @@ factor:
 		}
 	| CTE {
 		printf("\tFactor -> CTE\n");
-		saveSymbolCte(yytext);
+		char new_yytext[100];
+		agregarGuionBajo(yytext, new_yytext);
+		saveSymbolCte(new_yytext);
 		updateTipoDatoSymbol(pos,INT);
-		factorPtr = crearHoja(yytext);
+		factorPtr = crearHoja(new_yytext);
 		apilarDinamica(&pila, factorPtr);
 		apilarDinamica(&pilaExpresion,factorPtr);
 		}
@@ -362,9 +390,16 @@ factor:
 		factorPtr = crearHoja(symbol);
 		}
 	| FLOT {printf("\tFactor -> FLOT\n");
-		saveSymbolFloat(yytext);
+		char *punto = strchr(yytext, '.');
+		if (punto != NULL) {
+			*punto = '@'; // Reemplazar el punto por '#'
+		}
+
+		char new_yytext[100];
+		agregarGuionBajo(yytext,new_yytext);
+		saveSymbolFloat(new_yytext);
 		updateTipoDatoSymbol(pos,FLOAT);
-		factorPtr = crearHoja(yytext);
+		factorPtr = crearHoja(new_yytext);
 		if (banderaAsignacionInt == 1){
 			printf("\tError: No se puede asignar un flotante a un entero\n");
 			exit(-1);
@@ -426,6 +461,7 @@ int main(int argc, char *argv[]) {
   }
   saveSymbolTableFile();
   saveArbolFile(&arbol);
+  generarAssembler(arbol);
   fclose(yyin);
   return 0;
 }
@@ -438,14 +474,19 @@ int yyerror(void) {
 void clearString(char *cad, int tam) {
   memset(cad, 0, tam);
 }
-char* trimComillas(char* cad){
-	char* cadena = malloc(strlen(cad) + 1);
+char* addParentesis(char* cad){
+	char* cadena = malloc(strlen(cad) + 3);
 	if(cadena == NULL) {
 		return NULL;
 	}
-	strcpy(cadena,cad);
 	cadena[0] = '(';
-	cadena[strlen(cadena)-1] = ')';
-	cadena[strlen(cadena)] = '\0';
+	cadena[1] = 0;
+	strcat(cadena,cad);
+	strcat(cadena,")");
+	/* cadena[strlen(cad)+2] = 0; */
 	return cadena;
+}
+void agregarGuionBajo(char* cad,char* res){
+  	strcpy(res, "_");
+  	strcat(res, cad);
 }

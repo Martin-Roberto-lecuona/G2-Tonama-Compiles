@@ -1,7 +1,7 @@
 #include "tsimbolos.h"
 
 void createSymbolTableInFile() {
-  FILE *file = fopen("symbol-table.txt", "w");
+  FILE *file = fopen(SIMBOL_FILE_NAME, "w");
   if (file == NULL) {
     perror("Error al abrir el archivo");
     exit(1);
@@ -12,7 +12,7 @@ void createSymbolTableInFile() {
 
 void saveSymbolTableFile() {
 
-  FILE *file = fopen("symbol-table.txt", "w+");
+  FILE *file = fopen(SIMBOL_FILE_NAME, "w+");
   if (file == NULL) {
     perror("Error al abrir el archivo");
     exit(1);
@@ -42,8 +42,15 @@ void saveSymbolTableFile() {
 }
 
 int findSymbol(char *nombre) {
-  int pos = 0, i = 0, tam = sizeof(filas) / sizeof(filas[0]);
+  int pos = 0, 
+      i = 0, 
+      tam = sizeof(filas) / sizeof(filas[0]);
+  
   while (strcmp(filas[i].nombre, nombre) != 0 && i < tam) {
+    int index = strcspn(filas[i].nombre,"_");
+    if(index == 0 && strcmp(filas[i].nombre+1, nombre) == 0)
+      break;
+
     i++;
     pos = i;
   }
@@ -93,20 +100,26 @@ void saveSymbol(const char *nombre,
 }
 
 void saveSymbolCte(const char *valor) {
-  char symbol[100];
-  strcpy(symbol, "_");
-  strcat(symbol, valor);
-  saveSymbol(symbol, "ENTERO", valor, "");
+  char real_val[100];
+  strcpy(real_val, valor+1);
+  saveSymbol(valor, "ENTERO", real_val, "");
 }
 
 void saveSymbolFloat(const char *valor) {
-  char symbol[100];
-  strcpy(symbol, "_");
-  strcat(symbol, valor);
-  saveSymbol(symbol, "FLOTANTE", valor, "");
+  char val[strlen(valor)];
+
+  char real_val[100];
+  strcpy(real_val, valor+1);
+
+  strcpy(val, real_val);
+  char *punto = strchr(val, '@');
+  if (punto != NULL) {
+    *punto = '.'; // Reemplazar el @ por .
+  }
+  saveSymbol(valor, "FLOTANTE", val, "");
 }
 
-void saveSymbolCadena(const char *valor) {
+void saveSymbolCadena(char *valor) {
   char symbol[100];
   strcpy(symbol, "_");
   strcat(symbol, valor);
