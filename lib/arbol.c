@@ -1,4 +1,5 @@
 #include "arbol.h"
+#include "tsimbolos.h"
 
 void saveArbolFile(t_arbol *p) {
   FILE *treeFile = fopen("intermediate-code.dot", "w");
@@ -39,7 +40,7 @@ void recorrer(t_arbol *p, FILE *treeFile) {
 }
 
 
-tNodoArbol *crearHoja(char *terminal) {
+tNodoArbol *crearHoja(char *terminal,char* tipoDato) {
   /* printf("crearHoja new: %s \n", terminal); */
   tNodoArbol *nuevo = (tNodoArbol *) malloc(sizeof(tNodoArbol));
   nuevo->info = malloc(strlen(terminal) + 1);
@@ -47,6 +48,7 @@ tNodoArbol *crearHoja(char *terminal) {
   nuevo->der = NULL;
   nuevo->izq = NULL;
   nuevo->uniqueId = uniqueIdMain;
+  memcpy(nuevo->tipoDato, tipoDato, strlen(tipoDato) + 1); 
   /* printf("FIN crearHoja\n"); */
   return nuevo;
 }
@@ -112,19 +114,19 @@ tNodoArbol *asignarHijosNodo(tNodoArbol *Padre,
 }
 
 tNodoArbol *aplicarDescuentoItem(char *item){
-  tNodoArbol *auxDecPtr = crearNodo("-", &arbol, crearHoja("@aux"), crearHoja("1"));
+  tNodoArbol *auxDecPtr = crearNodo("-", &arbol, crearHoja("@aux",INT), crearHoja("1",INT));
   uniqueIdMain++;
-  tNodoArbol *itemSubstractPtr = crearNodo("-", &arbol, crearHoja(item), crearHoja("@mon"));
+  tNodoArbol *itemSubstractPtr = crearNodo("-", &arbol, crearHoja(item,FLOAT), crearHoja("@mon",FLOAT));
   uniqueIdMain++;
-  tNodoArbol *auxIgual = crearNodo("=", &arbol, crearHoja("@res"), itemSubstractPtr);
+  tNodoArbol *auxIgual = crearNodo("=", &arbol, crearHoja("@res",FLOAT), itemSubstractPtr);
   uniqueIdMain++;
-  tNodoArbol *sPtr = crearNodo("S", &arbol, auxIgual, crearNodo("=", &arbol, crearHoja("@aux"),auxDecPtr));
+  tNodoArbol *sPtr = crearNodo("S", &arbol, auxIgual, crearNodo("=", &arbol, crearHoja("@aux",FLOAT),auxDecPtr));
   uniqueIdMain++;
-  tNodoArbol *elsePtr = crearNodo("=", &arbol, crearHoja("@res"), crearNodo("/", &arbol, crearNodo("*", &arbol, crearHoja(item), crearHoja("@mon")), crearHoja("100")));
+  tNodoArbol *elsePtr = crearNodo("=", &arbol, crearHoja("@res",FLOAT), crearNodo("/", &arbol, crearNodo("*", &arbol, crearHoja(item,FLOAT), crearHoja("@mon",FLOAT)), crearHoja("100",FLOAT)));
   elsePtr = crearNodo("else", &arbol, elsePtr, NULL );
   uniqueIdMain++;
   tNodoArbol *cuerpoPtr = crearNodo("CUERPO", &arbol, sPtr,elsePtr);
-  return crearNodo("IF", &arbol, crearNodo(">", &arbol, crearHoja("@aux"), crearHoja("0")), cuerpoPtr);
+  return crearNodo("IF", &arbol, crearNodo(">", &arbol, crearHoja("@aux",FLOAT), crearHoja("0",FLOAT)), cuerpoPtr);
 }
 
 
@@ -169,52 +171,52 @@ tNodoArbol *aplicarDescuentoItem(char *item){
 tNodoArbol *buscarYReemplazar(char *bus,char *cad,char *rem){
   tNodoArbol *aux;
 
-  tNodoArbol *inicial = crearHoja("S");
+  tNodoArbol *inicial = crearHoja("S",NULL);
 
-  tNodoArbol *buscar =  crearNodo("=",&arbol,crearHoja("@bus"),crearHoja(bus));
+  tNodoArbol *buscar =  crearNodo("=",&arbol,crearHoja("@bus",STR),crearHoja(bus,STR));
   uniqueIdMain++;
-  tNodoArbol *cadena =  crearNodo("=",&arbol,crearHoja("@cad"),crearHoja(cad));
+  tNodoArbol *cadena =  crearNodo("=",&arbol,crearHoja("@cad",STR),crearHoja(cad,STR));
   uniqueIdMain++;
   asignarHijosNodo(inicial,&arbol,buscar,cadena);
 
-  tNodoArbol *reempl =  crearNodo("=",&arbol,crearHoja("@rem"),crearHoja(rem));
+  tNodoArbol *reempl =  crearNodo("=",&arbol,crearHoja("@rem",STR),crearHoja(rem,STR));
   uniqueIdMain++;
   inicial =  crearNodo("S",&arbol,inicial,reempl);
 
-  tNodoArbol *lenBus = crearNodo("=", &arbol, crearHoja("@lenBus"), crearNodo("strlen",&arbol,crearHoja("@bus"),NULL));
+  tNodoArbol *lenBus = crearNodo("=", &arbol, crearHoja("@lenBus",INT), crearNodo("strlen",&arbol,crearHoja("@bus",STR),NULL));
   uniqueIdMain++;
   inicial =  crearNodo("S",&arbol,inicial,lenBus);
 
-  tNodoArbol *lenRem = crearNodo("=", &arbol, crearHoja("@lenRem"), crearNodo("strlen",&arbol,crearHoja("@rem"),NULL));
+  tNodoArbol *lenRem = crearNodo("=", &arbol, crearHoja("@lenRem",INT), crearNodo("strlen",&arbol,crearHoja("@rem",STR),NULL));
   uniqueIdMain++;
   inicial =  crearNodo("S",&arbol,inicial,lenRem);
 
 
-  tNodoArbol *lenCad = crearNodo("=", &arbol, crearHoja("@lenCad"), crearNodo("strlen",&arbol,crearHoja("@cad"),NULL));
+  tNodoArbol *lenCad = crearNodo("=", &arbol, crearHoja("@lenCad",INT), crearNodo("strlen",&arbol,crearHoja("@cad",STR),NULL));
   uniqueIdMain++;
   inicial =  crearNodo("S",&arbol,inicial,lenCad);
 
-  tNodoArbol *i      = crearNodo("=", &arbol, crearHoja("@i"), crearHoja("0"));
+  tNodoArbol *i      = crearNodo("=", &arbol, crearHoja("@i",INT), crearHoja("0",INT));
   uniqueIdMain++;
   inicial =  crearNodo("S",&arbol,inicial,i);
 
-  tNodoArbol *j      = crearNodo("=", &arbol, crearHoja("@j"), crearHoja("0"));
+  tNodoArbol *j      = crearNodo("=", &arbol, crearHoja("@j",INT), crearHoja("0",INT));
   uniqueIdMain++;
   inicial =  crearNodo("S",&arbol,inicial,j);
 
-  tNodoArbol *k      = crearNodo("=", &arbol, crearHoja("@k"), crearHoja("0"));
+  tNodoArbol *k      = crearNodo("=", &arbol, crearHoja("@k",INT), crearHoja("0",INT));
   uniqueIdMain++;
   inicial =  crearNodo("S",&arbol,inicial,k);
 
-  tNodoArbol *temp   = crearHoja("@temp[1000]");
+  tNodoArbol *temp   = crearHoja("@temp[1000]",INT);
   uniqueIdMain++;
   inicial =  crearNodo("S",&arbol,inicial,temp);
   uniqueIdMain++;
 
 
-  tNodoArbol *param1 = crearNodo("+", &arbol, crearHoja("@cad"), crearHoja("@i"));
-  tNodoArbol *param2 = crearHoja("@bus");
-  tNodoArbol *param3 = crearHoja("@lenBus");
+  tNodoArbol *param1 = crearNodo("+", &arbol, crearHoja("@cad",STR), crearHoja("@i",INT));
+  tNodoArbol *param2 = crearHoja("@bus",STR);
+  tNodoArbol *param3 = crearHoja("@lenBus",INT);
   tNodoArbol *allParam = crearNodo("S", &arbol, param1,param2 );
   uniqueIdMain++;
   allParam = crearNodo("S", &arbol, allParam, param3);
@@ -222,66 +224,66 @@ tNodoArbol *buscarYReemplazar(char *bus,char *cad,char *rem){
   tNodoArbol *strncmp_nodo = crearNodo("strncmp", &arbol, allParam, NULL);
   uniqueIdMain++;
   
-  tNodoArbol *condicionIf = crearNodo("==", &arbol, strncmp_nodo, crearHoja("0"));
+  tNodoArbol *condicionIf = crearNodo("==", &arbol, strncmp_nodo, crearHoja("0",INT));
   uniqueIdMain++;
 
-  tNodoArbol *cuerpoIf = crearNodo("=", &arbol, crearHoja("@j"), crearHoja("0"));
+  tNodoArbol *cuerpoIf = crearNodo("=", &arbol, crearHoja("@j",INT), crearHoja("0",INT));
   uniqueIdMain++;
   
   
-  tNodoArbol * cuerpoMientrasInterno = crearNodo("=",&arbol, crearHoja("@temp[k]"), crearHoja("@rem[j]"));
+  tNodoArbol * cuerpoMientrasInterno = crearNodo("=",&arbol, crearHoja("@temp[k]",STR), crearHoja("@rem[j]",STR));
   uniqueIdMain++;
 
-  aux = crearHoja("@j");
+  aux = crearHoja("@j",INT);
   uniqueIdMain++;
   cuerpoMientrasInterno = crearNodo("S",&arbol, cuerpoMientrasInterno,
                                     crearNodo("=",&arbol, aux, 
-                                              crearNodo("+",&arbol, crearHoja("@j"),crearHoja("1"))
+                                              crearNodo("+",&arbol, crearHoja("@j",INT),crearHoja("1",INT))
                                             )
                                   );
   uniqueIdMain++;
-  aux = crearHoja("@k");
+  aux = crearHoja("@k",INT);
   uniqueIdMain++;
   cuerpoMientrasInterno = crearNodo("S",&arbol, cuerpoMientrasInterno,
                                     crearNodo("=",&arbol, aux, 
-                                              crearNodo("+",&arbol, crearHoja("@k"),crearHoja("1"))
+                                              crearNodo("+",&arbol, crearHoja("@k",INT),crearHoja("1",INT))
                                             )
                                   );
   uniqueIdMain++;
   cuerpoMientrasInterno = crearNodo("CUERPO", &arbol,cuerpoMientrasInterno,NULL);
   tNodoArbol *mientrasInterno = crearNodo("WHILE",&arbol, 
-                                          crearNodo("<", &arbol, crearHoja("@j"), crearHoja("@lenRes")), 
+                                          crearNodo("<", &arbol, crearHoja("@j",INT), crearHoja("@lenRes",INT)), 
                                           cuerpoMientrasInterno);
   uniqueIdMain++;
   
   cuerpoIf = crearNodo("S", &arbol ,cuerpoIf,mientrasInterno);
   uniqueIdMain++;
 
-  aux = crearHoja("@i");
+  aux = crearHoja("@i",INT);
   uniqueIdMain++;
   cuerpoIf = crearNodo("S", &arbol ,cuerpoIf,
                       crearNodo("=",&arbol, aux, 
-                                crearNodo("+",&arbol, crearHoja("@i"),crearHoja("@lenBus"))
+                                crearNodo("+",&arbol, crearHoja("@i",INT),crearHoja("@lenBus",INT))
                               ) 
                       );
   uniqueIdMain++;
 
-  tNodoArbol* cuerpoElse = crearNodo("=",&arbol, crearHoja("@temp[k]"), crearHoja("@cad[j]"));
+  tNodoArbol* cuerpoElse = crearNodo("=",&arbol, crearHoja("@temp[k]",INT), crearHoja("@cad[j]",INT));
   uniqueIdMain++;
-  aux = crearHoja("@k");
+  aux = crearHoja("@k",INT);
   uniqueIdMain++;
   cuerpoElse = crearNodo("S",&arbol, cuerpoElse,
                                     crearNodo("=",&arbol, aux, 
-                                              crearNodo("+",&arbol, crearHoja("@k"),crearHoja("1"))
+                                              crearNodo("+",&arbol, crearHoja("@k",INT),crearHoja("1",INT))
                                             )
                                   );
   uniqueIdMain++;
 
-  aux = crearHoja("@i");
+  aux = crearHoja("@i",INT);
   uniqueIdMain++;
   cuerpoElse = crearNodo("S",&arbol, cuerpoElse,
                                     crearNodo("=",&arbol, aux, 
-                                              crearNodo("+",&arbol, crearHoja("@i"),crearHoja("1"))
+                                              crearNodo("+",&arbol, crearHoja("@i",INT),crearHoja("1",INT))
                                             )
                                   );
   uniqueIdMain++;
@@ -294,13 +296,13 @@ tNodoArbol *buscarYReemplazar(char *bus,char *cad,char *rem){
   uniqueIdMain++;
 
   tNodoArbol *mientras = crearNodo("WHILE", &arbol, 
-                                  crearNodo("<", &arbol, crearHoja("@i"), crearHoja("@lenCad"))
+                                  crearNodo("<", &arbol, crearHoja("@i",INT), crearHoja("@lenCad",INT))
                                   , cuerpoMientras);
 
-  tNodoArbol *final = crearNodo("=",&arbol, crearHoja("@temp[k]"), crearHoja("0"));
+  tNodoArbol *final = crearNodo("=",&arbol, crearHoja("@temp[k]",INT), crearHoja("0",INT));
   uniqueIdMain++;
   final = crearNodo("S",&arbol, final,
-                   crearNodo("strcpy",&arbol, crearHoja("@cad"), crearHoja("@temp"))
+                   crearNodo("strcpy",&arbol, crearHoja("@cad",STR), crearHoja("@temp",STR))
                    ); 
   uniqueIdMain++;
   tNodoArbol *funcion = crearNodo("S",&arbol, inicial, mientras);

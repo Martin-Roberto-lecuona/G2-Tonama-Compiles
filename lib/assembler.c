@@ -31,8 +31,19 @@ void operacion(FILE * fp, tNodoArbol* raiz){
       fprintf(fp, "f%sstp %s\n", cargaEntero(raiz->hijoIzq), raiz->hijoIzq->dato);
     }*/
    /// falta saber como asignar strings
-    fprintf(fp, "fld %s\n", raiz->der->info);
-    fprintf(fp, "fistp %s\n", raiz->izq->info);
+    if ( strcmp( raiz->der->tipoDato, STR) == 0){
+      fprintf(fp,"
+      LEA SI, str_
+      LEA DI, c
+      MOV CX, strlen
+      REP MOVSB");
+      // hacer que funcione esto de asignar str
+
+      
+    }else{
+      fprintf(fp, "fld %s\n", raiz->der->info);
+      fprintf(fp, "fistp %s\n", raiz->izq->info);
+    }
   } else{
     fprintf(fp, "fld %s\n", raiz->izq->info);
     fprintf(fp, "fld %s\n", raiz->der->info);
@@ -101,7 +112,7 @@ void recorrerArbolParaAssembler(FILE *fp, tNodoArbol *raiz) {
 
   recorrerArbolParaAssembler(fp, raiz->der);
 
-   if (strcmp(raiz->info, "else") == 0) {
+  if (strcmp(raiz->info, "else") == 0) {
     fprintf(fp, "EndIf%d:\n", ifCounter);
     elseCounter++;
   }

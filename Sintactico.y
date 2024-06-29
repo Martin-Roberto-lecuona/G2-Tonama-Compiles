@@ -117,9 +117,9 @@ sentencia:
 					}
 	| seleccionSi seleccionSino { printf("\tsentencia -> seleccionSino\n");
 	   					uniqueIdMain++;
-					   condicionPtr = desapilarDinamica(&pilaCondicion);
-					   sinoPtr = crearNodo("else", &arbol, NULL, desapilarDinamica(&pilaBloqueInterno));
-					   sentenciaPtr = crearNodo("if",&arbol, condicionPtr, crearNodo("CUERPO", &arbol, desapilarDinamica(&pilaBloqueInterno), sinoPtr));
+						condicionPtr = desapilarDinamica(&pilaCondicion);
+						sinoPtr = crearNodo("else", &arbol, NULL, desapilarDinamica(&pilaBloqueInterno));
+						sentenciaPtr = crearNodo("if",&arbol, condicionPtr, crearNodo("CUERPO", &arbol, desapilarDinamica(&pilaBloqueInterno), sinoPtr));
 	   }
 	| ESCRIBIR PARENTE_I CADENA
 								{
@@ -136,7 +136,7 @@ sentencia:
 	PARENTE_D {
 		printf("\tsentencia -> escribir ( cadena )\n");
 		uniqueIdMain++;
-	    sentenciaPtr = crearNodo("PUT", &arbol,crearHoja("STDOUT"),crearHoja(addParentesis(auxCadVal)));
+	    sentenciaPtr = crearNodo("PUT", &arbol,crearHoja("STDOUT",NULL),crearHoja(addParentesis(auxCadVal),NULL));
 		}
 	| ESCRIBIR PARENTE_I ID {
 								pos = findSymbol(yytext);
@@ -149,7 +149,7 @@ sentencia:
 	PARENTE_D{
 		printf("\tsentencia -> escribir ( ID )\n");
 		uniqueIdMain++;
-	    sentenciaPtr = crearNodo("PUT", &arbol,crearHoja("STDOUT"),crearHoja(auxCadVal));
+	    sentenciaPtr = crearNodo("PUT", &arbol,crearHoja("STDOUT",NULL),crearHoja(auxCadVal,NULL));
 	}
 	| LEER PARENTE_I ID {
 							pos = findSymbol(yytext);
@@ -161,7 +161,7 @@ sentencia:
 						} PARENTE_D {
 							printf("\tsentencia -> leer ( ID )\n");
 							uniqueIdMain++;
-							sentenciaPtr = crearNodo("GET", &arbol,crearHoja("STDIN"),crearHoja(auxCadVal)); 
+							sentenciaPtr = crearNodo("GET", &arbol,crearHoja("STDIN",NULL),crearHoja(auxCadVal,NULL)); 
 						} 
 	| buscarYreemplazar {sentenciaPtr = buscarYreemplazarPtr;}
 	| aplicarDescuento {sentenciaPtr = crearNodo("AplicarDescuento", &arbol,descuentoPtr,NULL);}
@@ -175,21 +175,21 @@ sentencia:
 
 aplicarDescuento:
 	APLIC_DESC {	uniqueIdMain++;
-					descuentoPtr=crearNodo("=", &arbol, crearHoja("@res"), crearHoja("0"));
+					descuentoPtr=crearNodo("=", &arbol, crearHoja("@res",INT), crearHoja("0",INT));
 					uniqueIdMain++;
 	} PARENTE_I factorFlotante {
 					if (atof(yytext)>100.0){
 						printf("Error: el monto en aplicarDescuento debe ser menor a 100.0");
 						exit (-1);
 					}
-					factorFlotantePtr=crearNodo("=", &arbol, crearHoja("@mon"), crearHoja(yytext));
+					factorFlotantePtr=crearNodo("=", &arbol, crearHoja("@mon",FLOAT), crearHoja(yytext,FLOAT));
 					uniqueIdMain++;
 	}COMA CORCH_I listaNum CORCH_D COMA factorCte {
 					if (atoi(yytext) > tamListaDesc){
 						printf("Error semantico: el indice debe ser menor o igual al tamaño de la lista. Indice %d TamLista %d",atoi(yytext),tamListaDesc);
 						exit (-1);
 					}
-					factorCtePtr=crearNodo("=", &arbol, crearHoja("@aux"), crearHoja(yytext));
+					factorCtePtr=crearNodo("=", &arbol, crearHoja("@aux",INT), crearHoja(yytext,INT));
 					uniqueIdMain++;
 					tamListaDesc = 0;
 	} PARENTE_D {
@@ -266,7 +266,7 @@ asignacion:
 	OP_ASIG asignable{
 					printf("\tasignacion -> ID = asignable\n");
 					uniqueIdMain++;
-					asignablePtr = crearNodo("=",&arbol, crearHoja(auxIdName), asignablePtr);
+					asignablePtr = crearNodo("=",&arbol, crearHoja(auxIdName,filas[pos].tipoDato), asignablePtr);
 					asignacionPtr = asignablePtr;
 					clearString(auxIdName, TAM_ID);
 					}
@@ -291,7 +291,7 @@ asignable:
 		if (pos==-1) {
 			saveSymbolCadena(yytext);
 		}
-		asignablePtr = crearHoja(addParentesis(yytext));
+		asignablePtr = crearHoja(addParentesis(yytext),STR);
 		}
 	| buscarYreemplazar {
 		printf("\tASIGNABLE -> buscarYreemplazar\n");
@@ -320,15 +320,15 @@ iteracion:
 	    }
 	;
 compuertas:
-	AND {printf("\tcompuertas -> AND\n"); compuertasPtr = crearHoja("AND");}
-	|OR {printf("\tcompuertas -> OR\n"); compuertasPtr = crearHoja("OR");}
+	AND {printf("\tcompuertas -> AND\n"); compuertasPtr = crearHoja("AND",NULL);}
+	|OR {printf("\tcompuertas -> OR\n"); compuertasPtr = crearHoja("OR",NULL);}
 	;
 comparador:
-	OP_MAYOR { comparadorPtr = crearHoja(">");}
-	| OP_MENOR { comparadorPtr = crearHoja("<");}
-	| OP_MAYOR_IGUAL { comparadorPtr = crearHoja(">=");}
-	| OP_MENOR_IGUAL { comparadorPtr = crearHoja("<=");}
-	| OP_IGUAL { comparadorPtr = crearHoja("==");}
+	OP_MAYOR { comparadorPtr = crearHoja(">",NULL);}
+	| OP_MENOR { comparadorPtr = crearHoja("<",NULL);}
+	| OP_MAYOR_IGUAL { comparadorPtr = crearHoja(">=",NULL);}
+	| OP_MENOR_IGUAL { comparadorPtr = crearHoja("<=",NULL);}
+	| OP_IGUAL { comparadorPtr = crearHoja("==",NULL);}
 	;
 
 condicion:
@@ -372,15 +372,15 @@ termino:
 
 factor:
 	ID {printf("\tFactor -> ID\n");
-		factorPtr = crearHoja(yytext);
 		pos = findSymbol(yytext);
 		if (pos==-1) {
 			printf("Error: Variable %s no declarada\n", yytext);
 			exit(-1);
 		}
+		factorPtr = crearHoja(yytext,filas[pos].tipoDato);
 		apilarDinamica(&pila, factorPtr);
 		apilarDinamica(&pilaExpresion,factorPtr);
-		if ( strcmp(filas[findSymbol(yytext)].tipoDato, FLOAT) == 0 ){
+		if ( strcmp(filas[pos].tipoDato, FLOAT) == 0 ){
 			strcpy(tipoDatoExpr,FLOAT);
 		}
 		}
@@ -392,7 +392,7 @@ factor:
 		agregarGuionBajo(yytext, new_yytext);
 		saveSymbolCte(new_yytext);
 		updateTipoDatoSymbol(pos,INT);
-		factorPtr = crearHoja(new_yytext);
+		factorPtr = crearHoja(new_yytext,INT);
 		apilarDinamica(&pila, factorPtr);
 		apilarDinamica(&pilaExpresion,factorPtr);
 		}
@@ -404,7 +404,7 @@ factor:
 		strcat(symbol, yytext);
 		saveSymbolCte(symbol);
 		updateTipoDatoSymbol(pos,INT);
-		factorPtr = crearHoja(symbol);
+		factorPtr = crearHoja(symbol, INT);
 		}
 	| FLOT {printf("\tFactor -> FLOT\n");
 		strcpy(tipoDatoExpr,FLOAT);
@@ -416,13 +416,13 @@ factor:
 		agregarGuionBajo(yytext,new_yytext);
 		saveSymbolFloat(new_yytext);
 		updateTipoDatoSymbol(pos,FLOAT);
-		factorPtr = crearHoja(new_yytext);
+		factorPtr = crearHoja(new_yytext,FLOAT);
 		}
 	| PARENTE_I expresion PARENTE_D {	printf("\tFactor -> (exp_logica)\n");
 										desapilarDinamica(&pilaExpresion);
 										uniqueIdMain++;
 										factorPtr = expresionPtr;
-										terminoPtr = crearHoja((desapilarDinamica(&pilaExpresion))->info);
+										terminoPtr = crearHoja((desapilarDinamica(&pilaExpresion))->info, (desapilarDinamica(&pilaExpresion))->tipoDato);
 										}
 	;
 

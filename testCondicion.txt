@@ -6,11 +6,13 @@ escribir("inicio")
 
 a := 1
 b := 4
+c := "hola"
 
 si (a > b){
     escribir("a MAY b")
 }
 sino {
    escribir("a MEN b")
+   a := 80
 }
 escribir("final")

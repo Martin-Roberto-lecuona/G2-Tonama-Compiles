@@ -11,6 +11,7 @@ typedef struct s_nodo {
   struct s_nodo *izq;
   struct s_nodo *der;
   int uniqueId;
+  char* tipoDato;
 } tNodoArbol;
 
 typedef tNodoArbol *t_arbol;
@@ -27,7 +28,7 @@ void crearArbol(t_arbol *pa);
 
 void saveArbolFile(t_arbol *p);
 
-tNodoArbol *crearHoja(char *terminal);
+tNodoArbol *crearHoja(char *terminal, char* tipoDato);
 
 tNodoArbol *crearHojaStr(char *terminal);
 
