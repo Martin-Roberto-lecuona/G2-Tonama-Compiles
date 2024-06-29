@@ -7,4 +7,5 @@ escribir("inicio")
 escribir("inicio")
 a := a + 1
 b := 4.12
+c := "hola"
 escribir("final")

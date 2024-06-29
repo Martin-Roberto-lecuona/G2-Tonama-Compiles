@@ -31,7 +31,8 @@ void agregarGuionBajo(char* cad,char* res);
 void borrarEspacios(char symbol[]);
 
 int tamListaDesc = 0;
-int banderaAsignacionInt = 0;
+char tipoDatoAsig[15];
+char tipoDatoExpr[15];
 
 char BusyRem_bus[MAX_CAD];
 char BusyRem_cad[MAX_CAD];
@@ -258,10 +259,7 @@ asignacion:
 			printf("Error: %s no declarado\n", yytext);
 			exit(-1);
 		}
-		if (strcmp(filas[pos].tipoDato, INT) == 0)
-			banderaAsignacionInt = 1;
-		else 
-			banderaAsignacionInt = 0;
+		strcpy(tipoDatoAsig,filas[pos].tipoDato);
 		
 		strcpy(auxIdName,yytext);
 	}
@@ -275,9 +273,18 @@ asignacion:
 	;
 
 asignable:
-	expresion {printf("\tASIGNABLE -> Expresion\n"); asignablePtr = expresionPtr;}
+	expresion {printf("\tASIGNABLE -> Expresion\n"); asignablePtr = expresionPtr; 
+				if (strcmp(tipoDatoAsig,tipoDatoExpr) != 0){
+					printf("Error: de asignacion de tipos\n");
+					exit(-1);
+				}
+				strcpy(tipoDatoExpr," ");}
 	| CADENA {
 		printf("\tASIGNABLE -> ID\n");
+		if (strcmp(tipoDatoAsig,STR) != 0){
+			printf("Error: de asignacion de tipos\n");
+			exit(-1);
+		}
 		*(yytext + strlen(yytext)-1) = 0;
   		yytext++;
 		pos = findSymbol(yytext);
@@ -368,13 +375,14 @@ factor:
 		factorPtr = crearHoja(yytext);
 		apilarDinamica(&pila, factorPtr);
 		apilarDinamica(&pilaExpresion,factorPtr);
-		if (banderaAsignacionInt == 1 && strcmp(filas[findSymbol(yytext)].tipoDato, FLOAT) == 0 ){
-			printf("\tError: No se puede asignar un flotante a un entero\n");
-			exit(-1);
+		if ( strcmp(filas[findSymbol(yytext)].tipoDato, FLOAT) == 0 ){
+			strcpy(tipoDatoExpr,FLOAT);
 		}
 		}
 	| CTE {
 		printf("\tFactor -> CTE\n");
+		if( strcmp(tipoDatoExpr,FLOAT) != 0)
+			strcpy(tipoDatoExpr,INT);
 		char new_yytext[100];
 		agregarGuionBajo(yytext, new_yytext);
 		saveSymbolCte(new_yytext);
@@ -385,6 +393,8 @@ factor:
 		}
 	| OP_REST CTE {
 		printf("\tFactor -> -CTE\n");
+		if( strcmp(tipoDatoExpr,FLOAT) != 0)
+			strcpy(tipoDatoExpr,INT);
 		char symbol[12] = "-";
 		strcat(symbol, yytext);
 		saveSymbolCte(symbol);
@@ -392,20 +402,16 @@ factor:
 		factorPtr = crearHoja(symbol);
 		}
 	| FLOT {printf("\tFactor -> FLOT\n");
+		strcpy(tipoDatoExpr,FLOAT);
 		char *punto = strchr(yytext, '.');
 		if (punto != NULL) {
 			*punto = '@'; // Reemplazar el punto por '#'
 		}
-
 		char new_yytext[100];
 		agregarGuionBajo(yytext,new_yytext);
 		saveSymbolFloat(new_yytext);
 		updateTipoDatoSymbol(pos,FLOAT);
 		factorPtr = crearHoja(new_yytext);
-		if (banderaAsignacionInt == 1){
-			printf("\tError: No se puede asignar un flotante a un entero\n");
-			exit(-1);
-		}
 		}
 	| PARENTE_I expresion PARENTE_D {	printf("\tFactor -> (exp_logica)\n");
 										desapilarDinamica(&pilaExpresion);
@@ -429,10 +435,12 @@ declaraciones:
 variables:
 	ID {
 			pos = findSymbol(yytext);
-			if (pos==-1) {
-				saveSymbol(yytext,"","_","");
-				pos = filaActual-1;
+			if (pos!=-1) {
+				printf("\tError: %s ya fue declarada\n", yytext);
+				exit(-1);
 			}
+			saveSymbol(yytext,"","_","");
+			pos = filaActual-1;
 			allPosInit[posInit]=pos;
 			posInit++;
 			printf("\tvariable-> id \n");
@@ -440,10 +448,12 @@ variables:
 
 	| variables COMA ID {
 							pos = findSymbol(yytext);
-								if (pos==-1) {
-									saveSymbol(yytext,"","_","");
-									pos = filaActual-1;
-								}
+							if (pos!=-1) {
+								printf("\tError: %s ya fue declarada\n", yytext);
+								exit(-1);
+							}
+							saveSymbol(yytext,"","_","");
+							pos = filaActual-1;
 							allPosInit[posInit]=pos;
 							posInit++;
 							printf("\tvariable-> variable , id \n");
