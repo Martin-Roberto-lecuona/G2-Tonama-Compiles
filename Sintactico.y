@@ -373,6 +373,11 @@ termino:
 factor:
 	ID {printf("\tFactor -> ID\n");
 		factorPtr = crearHoja(yytext);
+		pos = findSymbol(yytext);
+		if (pos==-1) {
+			printf("Error: Variable %s no declarada\n", yytext);
+			exit(-1);
+		}
 		apilarDinamica(&pila, factorPtr);
 		apilarDinamica(&pilaExpresion,factorPtr);
 		if ( strcmp(filas[findSymbol(yytext)].tipoDato, FLOAT) == 0 ){

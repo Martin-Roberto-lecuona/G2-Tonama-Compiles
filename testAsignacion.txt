@@ -8,4 +8,7 @@ escribir("inicio")
 a := a + 1
 b := 4.12
 c := "hola"
+si (h>0){
+    escribir("h may 0")
+}
 escribir("final")
