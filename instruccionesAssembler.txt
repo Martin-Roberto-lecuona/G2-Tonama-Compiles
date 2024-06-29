@@ -1,16 +1,33 @@
-fsld b
-fsld a
-fcom
-fstsw ax
-sahf
-JNBE BeginIf1
-fsld b
-fsld c
-fcom
-fstsw ax
-sahf
-JNA Endif1
-BeginIf1
-fld _1
+mov dx,OFFSET str_inicio
+mov ah,9
+int 21h
+newLine 1
+fld _10
 fistp a
-EndIf1
+fld _4
+fistp b
+; Comparacion
+fld b
+fld a
+fcomp
+fstsw ax
+sahf
+; fin Comparacion
+; Salto
+JNA EndIf1
+BeginIf1:
+mov dx,OFFSET str_ES_MAYOR
+mov ah,9
+int 21h
+newLine 1
+	JMP EndIf2
+	EndIf1:
+mov dx,OFFSET str_ES_MENOR
+mov ah,9
+int 21h
+newLine 1
+EndIf2:
+mov dx,OFFSET str_final
+mov ah,9
+int 21h
+newLine 1

@@ -85,18 +85,27 @@ void recorrerArbolParaAssembler(FILE *fp, tNodoArbol *raiz) {
     ifCounter++;
   } else if (strcmp(raiz->info, "OR") == 0) {
     flagOR = 1;
+  }else if(strcmp(raiz->info, "else") == 0){
+      elseCounter++;
   }
   recorrerArbolParaAssembler(fp, raiz->izq);
 
   if (strcmp(raiz->info, "if") == 0) {
     fprintf(fp, "BeginIf%d:\n", ifCounter);
   }
+  else if (strcmp(raiz->info, "else") == 0) {
+    fprintf(fp, "\tJMP EndIf%d\n", ifCounter+1);
+    fprintf(fp, "\tEndIf%d:\n", ifCounter);
+    ifCounter++;
+  }
 
   recorrerArbolParaAssembler(fp, raiz->der);
 
-  if (strcmp(raiz->info, "if") == 0) {
+   if (strcmp(raiz->info, "else") == 0) {
     fprintf(fp, "EndIf%d:\n", ifCounter);
+    elseCounter++;
   }
+  printf("elseCounter = %d\n",elseCounter);
   if (esHoja(raiz->izq) && esHoja(raiz->der)) {
     if (esAritmetica(raiz->info)) {
       operacion(fp, raiz);
@@ -128,24 +137,35 @@ int esComparacion(tNodoArbol* raiz){
 }
 
 void generarComparacion(FILE * fp, tNodoArbol* raiz){
+  fprintf(fp, "; Comparacion\n");
   fprintf(fp, "fld %s\n", raiz->der->info);
   fprintf(fp, "fld %s\n", raiz->izq->info);
-  fprintf(fp, "fcom\n");
+  fprintf(fp, "fcomp\n");
   fprintf(fp, "fstsw ax\n");
   fprintf(fp, "sahf\n");
+  // fprintf(fp, "and ah, 45h  ; Mantener solo los bits relevantes\n");
+  fprintf(fp, "; fin Comparacion\n");
+
   generarSalto(fp, raiz->info);
 
 }
 
 void generarSalto(FILE *fp, char *comparador) {
   char *salto = obtenerInstruccionComparacion(comparador);
-  char *destinoSalto;
+  char destinoSalto[50];
   if (flagOR) {
-    destinoSalto = "BeginIf";
+    strcpy(destinoSalto,"BeginIf");
     flagOR = 0;
-  } else {
-    destinoSalto = "EndIf";
+  } 
+  printf("elseCounter = %d",elseCounter);
+  if(elseCounter >= 1) {
+    elseCounter--;
+    strcpy(destinoSalto,"BeginElse");
   }
+  else {
+    strcpy(destinoSalto,"EndIf");
+  }
+  fprintf(fp, "; Salto\n");
   fprintf(fp, "%s %s%d\n", salto, destinoSalto, ifCounter);
 }
 
@@ -235,7 +255,7 @@ void getFila(char line[256], t_fila *fila){
 
   fila->nombre[strcspn(fila->nombre, " ")] = '\0';
   fila->tipoDato[strcspn(fila->tipoDato, " ")] = '\0';
-  fila->valor[strcspn(fila->valor, " ")] = '\0';
+  fila->valor[strcspn(fila->nombre, " ")] = '\0';
   fila->longitud[strcspn(fila->longitud, " ")] = '\0';
 }
 
@@ -255,10 +275,13 @@ void recorrerTablaSimbolos(FILE *file){
   while (fgets(line, sizeof(line), fileSimbol)) {
     getFila(line,&fila);
     if(strcmp(fila.valor, "_") != 0 && strcmp(fila.tipoDato, STR) == 0){
-        fprintf(file,"\tstr_%s db \"%s\",\"$\", %d dup(?) \n", fila.valor,fila.valor,strlen(fila.valor) );
+        fprintf(file,"\tstr%s db \"%s\",\"$\", %d dup(?) \n", fila.nombre,fila.valor,strlen(fila.valor) );
+    }
+    else if(strcmp(fila.valor, "_") != 0){
+       fprintf(file,"\t%s dd %s\n", fila.nombre,fila.valor);
     }
     else {
-       fprintf(file,"\t%s dd ?\n", fila.nombre);
+        fprintf(file,"\t%s dd ?\n", fila.nombre);
     }
     
   }

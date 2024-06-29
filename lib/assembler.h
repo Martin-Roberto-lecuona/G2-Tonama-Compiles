@@ -26,4 +26,5 @@ void recorrerTablaSimbolos(FILE *file);
 int ifCounter = 0;
 int cantAux=0;
 int flagOR = 0;
+int elseCounter = 0;
 #endif

@@ -1,0 +1,16 @@
+init{
+    a,b: Int
+    c: String
+}
+escribir("inicio")
+
+a := 10
+b := 4
+
+si (a > b){
+    escribir("ES MAYOR")
+}
+sino {
+    escribir("ES MENOR")
+}
+escribir("final")

@@ -28,6 +28,7 @@ char auxCadVal[MAX_CAD];
 void clearString(char* cad, int tam);
 char* addParentesis(char* cad);
 void agregarGuionBajo(char* cad,char* res);
+void borrarEspacios(char symbol[]);
 
 int tamListaDesc = 0;
 int banderaAsignacionInt = 0;
@@ -116,7 +117,7 @@ sentencia:
 	| seleccionSi seleccionSino { printf("\tsentencia -> seleccionSino\n");
 	   					uniqueIdMain++;
 					   condicionPtr = desapilarDinamica(&pilaCondicion);
-					   sinoPtr = crearNodo("else", &arbol, desapilarDinamica(&pilaBloqueInterno), NULL);
+					   sinoPtr = crearNodo("else", &arbol, NULL, desapilarDinamica(&pilaBloqueInterno));
 					   sentenciaPtr = crearNodo("if",&arbol, condicionPtr, crearNodo("CUERPO", &arbol, desapilarDinamica(&pilaBloqueInterno), sinoPtr));
 	   }
 	| ESCRIBIR PARENTE_I CADENA
@@ -128,6 +129,7 @@ sentencia:
 									if (pos==-1) {
 										saveSymbolCadena(yytext);
 									}
+									borrarEspacios(yytext);
 									strcpy(auxCadVal,yytext);
 								} 
 	PARENTE_D {
@@ -489,4 +491,12 @@ char* addParentesis(char* cad){
 void agregarGuionBajo(char* cad,char* res){
   	strcpy(res, "_");
   	strcat(res, cad);
+}
+void borrarEspacios(char symbol[]){
+	int i=0;
+	while (symbol[i]){
+		if (symbol[i]==' ') 
+			symbol[i]='_';
+		i++;
+	}
 }

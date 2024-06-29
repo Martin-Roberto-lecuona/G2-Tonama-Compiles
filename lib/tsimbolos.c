@@ -123,6 +123,14 @@ void saveSymbolCadena(char *valor) {
   char symbol[100];
   strcpy(symbol, "_");
   strcat(symbol, valor);
+
+  int i=0;
+  while (symbol[i]){
+    if (symbol[i]==' ') 
+        symbol[i]='_';
+    i++;
+  }
+
   char largo[10];
   sprintf(largo, "%d", strlen(valor));
   saveSymbol(symbol, "CADENA", valor, largo);
