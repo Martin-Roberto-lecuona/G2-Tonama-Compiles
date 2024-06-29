@@ -4,13 +4,13 @@ init{
 }
 escribir("inicio")
 
-a := 10
+a := 1
 b := 4
 
 si (a > b){
-    escribir("ES MAYOR")
+    escribir("a MAY b")
 }
 sino {
-    escribir("ES MENOR")
+   escribir("a MEN b")
 }
 escribir("final")

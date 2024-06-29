@@ -94,8 +94,8 @@ void recorrerArbolParaAssembler(FILE *fp, tNodoArbol *raiz) {
     fprintf(fp, "BeginIf%d:\n", ifCounter);
   }
   else if (strcmp(raiz->info, "else") == 0) {
-    fprintf(fp, "\tJMP EndIf%d\n", ifCounter+1);
-    fprintf(fp, "\tEndIf%d:\n", ifCounter);
+    fprintf(fp, "JMP EndIf%d\n", ifCounter+1);
+    fprintf(fp, "EndIf%d:\n", ifCounter);
     ifCounter++;
   }
 
@@ -138,8 +138,10 @@ int esComparacion(tNodoArbol* raiz){
 
 void generarComparacion(FILE * fp, tNodoArbol* raiz){
   fprintf(fp, "; Comparacion\n");
-  fprintf(fp, "fld %s\n", raiz->der->info);
+  fprintf(fp, "MOV AH, 0\n");
+  fprintf(fp, "sahf\n");
   fprintf(fp, "fld %s\n", raiz->izq->info);
+  fprintf(fp, "fld %s\n", raiz->der->info);
   fprintf(fp, "fcomp\n");
   fprintf(fp, "fstsw ax\n");
   fprintf(fp, "sahf\n");
@@ -230,7 +232,7 @@ void generarAssembler(tNodoArbol* raiz){
 
   escribirInstruccionesEnASM(fp, ASM_FILE_CODE);
 
-  char finCode[]="END_PROG:\n\tmov ax, 4C00h\n\tint 21h\nEND START";
+  char finCode[]="END_PROG:\n\tffree; Liberar registros de la FPU\n\tmov ax, 4C00h\n\tint 21h\nEND START";
   fprintf(fp,finCode);
   // fprintf(fp, "\n\nffree\n");
 }
