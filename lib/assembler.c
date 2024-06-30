@@ -95,6 +95,8 @@ void recorrerArbolParaAssembler(FILE *fp, tNodoArbol *raiz) {
     }
   } else if (strcmp(raiz->info, "OR") == 0) {
     listCond.list[listCond.tope].flagOr = 1;
+  }else if (strcmp(raiz->info, "NOT") == 0) {
+    listCond.list[listCond.tope].flagOr = 1; /// flagOr deberia ser flagInvertir
   }
   ///RECORRO IZQUIERDA
   recorrerArbolParaAssembler(fp, raiz->izq);
@@ -139,6 +141,8 @@ void recorrerArbolParaAssembler(FILE *fp, tNodoArbol *raiz) {
         fprintf(fp, "GetInteger %s\n", raiz->der->info); 
       }else if (strcmp(raiz->der->tipoDato,FLOAT) == 0){
         fprintf(fp, "GetFloat %s\n", raiz->der->info);
+      } else if (strcmp(raiz->der->tipoDato,STR) == 0){
+        fprintf(fp, "getString  %s\n", raiz->der->info);
       }
     }
     free(raiz->izq);
@@ -198,34 +202,12 @@ void generarSalto(FILE *fp, char *comparador) {
 
 
 char* obtenerInstruccionComparacion(const char *comparador) {
-
-  if(flagOR) {
-    if (strcmp(comparador, ">") == 0)
-      return "JNBE";
-    if (strcmp(comparador, ">=") == 0)
-      return "JNB";
-    if (strcmp(comparador, "<") == 0)
-      return "JNAE";
-    if (strcmp(comparador, "<=") == 0)
-      return "JNA";
-    if (strcmp(comparador, "==") == 0)
-      return "JE";
-    if (strcmp(comparador, "<>") == 0)
-      return "JNE";
-  } else {
-    if (strcmp(comparador, ">") == 0)
-      return "JNA";
-    if (strcmp(comparador, ">=") == 0)
-      return "JNAE";
-    if (strcmp(comparador, "<") == 0)
-      return "JNB";
-    if (strcmp(comparador, "<=") == 0)
-      return "JNBE";
-    if (strcmp(comparador, "==") == 0)
-      return "JNE";
-    if (strcmp(comparador, "<>") == 0)
-      return "JE";
-  }
+  for (int i = 0; i < sizeof(compYSalto) / sizeof(compYSalto[0]); i++) {
+        if (strcmp(compYSalto[i].comparador, comparador) == 0) {
+            return listCond.list[listCond.tope].flagOr ? compYSalto[i].operacion : compYSalto[i].invertido;
+        }
+    }
+  return "JMP";
 }
 
 int generarInstruccionesAssembler(tNodoArbol* raiz){

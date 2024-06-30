@@ -2,15 +2,15 @@ init{
     a: Int
     b: Float
     c: Int
-    lec: Float
+    lec: String
 }
 escribir("inicio")
 escribir("inicio")
 escribir("escriba algo")
 leer(lec)
-a := 9
+a := 5
 b := 4.5
-si (a < 6){
+si (NOT a < 6 ){
     escribir("Entro if")
     a := a + 2
 }else{
