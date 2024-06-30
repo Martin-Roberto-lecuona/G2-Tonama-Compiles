@@ -35,10 +35,9 @@ void operacion(FILE * fp, tNodoArbol* raiz){
       fprintf(fp,"LEA DI, %s\n",raiz->izq->info);
       fprintf(fp,"MOV CX, %d\n",strlen(raiz->der->info)+1);
       fprintf(fp,"REP MOVSB\n");
-      // hacer que funcione esto de asignar str
     }else{
       fprintf(fp, "fld %s\n", raiz->der->info);
-      fprintf(fp, "fistp %s\n", raiz->izq->info);
+      fprintf(fp, "fstp %s\n", raiz->izq->info);
     }
 
   } else{
