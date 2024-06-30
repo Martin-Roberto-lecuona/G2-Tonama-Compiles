@@ -32,11 +32,6 @@ void operacion(FILE * fp, tNodoArbol* raiz){
         raiz->der->info++;
         raiz->der->info[strlen(raiz->der->info)-1]=0;
       //
-    //   ; Limpiar c antes de copiar "chau"
-    // LEA DI, c
-    // MOV CX, 100
-    // XOR AL, AL
-    // REP STOSB
       fprintf(fp,"; Limpiar antes de copiar\n");
       fprintf(fp,"LEA DI, %s\n",raiz->izq->info);
       fprintf(fp,"MOV CX, 100\n");
