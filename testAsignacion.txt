@@ -2,7 +2,7 @@ init{
     a: Int
     b: Float
     c: Int
-    lec: Float
+    lec: String
 }
 escribir("inicio")
 escribir("inicio")

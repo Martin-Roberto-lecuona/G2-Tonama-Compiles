@@ -139,6 +139,8 @@ void recorrerArbolParaAssembler(FILE *fp, tNodoArbol *raiz) {
         fprintf(fp, "GetInteger %s\n", raiz->der->info); 
       }else if (strcmp(raiz->der->tipoDato,FLOAT) == 0){
         fprintf(fp, "GetFloat %s\n", raiz->der->info);
+      } else if (strcmp(raiz->der->tipoDato,STR) == 0){
+        fprintf(fp, "getString  %s\n", raiz->der->info);
       }
     }
     free(raiz->izq);
