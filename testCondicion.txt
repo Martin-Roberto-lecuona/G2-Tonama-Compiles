@@ -4,13 +4,13 @@ init{
 }
 escribir("INICIO")
 
-a := 1
+a := 1000
 b := 4
 c := "HOLA"
 
-c := "CHAU"
-
-escribir("C tiene")
-escribir(c)
+escribir("a tiene")
+escribir(a)
+escribir("b tiene")
+escribir(b)
 
 escribir("FIN")

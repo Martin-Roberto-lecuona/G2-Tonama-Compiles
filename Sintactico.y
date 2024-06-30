@@ -137,7 +137,7 @@ sentencia:
 		printf("\tsentencia -> escribir ( cadena )\n");
 		uniqueIdMain++;
 		printf("\tauxCadVal = |%s|\n",addParentesis(auxCadVal));
-	    sentenciaPtr = crearNodo("PUT", &arbol,crearHoja("STDOUT","NULL"),crearHoja(addParentesis(auxCadVal),"NULL"));
+	    sentenciaPtr = crearNodo("PUT", &arbol,crearHoja("STDOUT","NULL"),crearHoja(addParentesis(auxCadVal),STR));
 		}
 	| ESCRIBIR PARENTE_I ID {
 								pos = findSymbol(yytext);
@@ -145,12 +145,13 @@ sentencia:
 									printf("Error: %s no declarado\n", yytext);
 									exit(-1);
 								}
+								strcpy(tipoDatoAsig,filas[pos].tipoDato);
 								strcpy(auxCadVal,yytext);
 							} 
 	PARENTE_D{
 		printf("\tsentencia -> escribir ( ID )\n");
 		uniqueIdMain++;
-	    sentenciaPtr = crearNodo("PUT", &arbol,crearHoja("STDOUT","NULL"),crearHoja(auxCadVal,"NULL"));
+	    sentenciaPtr = crearNodo("PUT", &arbol,crearHoja("STDOUT","NULL"),crearHoja(auxCadVal,tipoDatoAsig));
 	}
 	| LEER PARENTE_I ID {
 							pos = findSymbol(yytext);
@@ -158,11 +159,12 @@ sentencia:
 								printf("Error: %s no declarado\n", yytext);
 								exit(-1);
 							}
+							strcpy(tipoDatoAsig,filas[pos].tipoDato);
 							strcpy(auxCadVal,yytext);
 						} PARENTE_D {
 							printf("\tsentencia -> leer ( ID )\n");
 							uniqueIdMain++;
-							sentenciaPtr = crearNodo("GET", &arbol,crearHoja("STDIN","NULL"),crearHoja(auxCadVal,"NULL")); 
+							sentenciaPtr = crearNodo("GET", &arbol,crearHoja("STDIN","NULL"),crearHoja(auxCadVal,tipoDatoAsig)); 
 						} 
 	| buscarYreemplazar {sentenciaPtr = buscarYreemplazarPtr;}
 	| aplicarDescuento {sentenciaPtr = crearNodo("AplicarDescuento", &arbol,descuentoPtr,NULL);}
@@ -267,6 +269,7 @@ asignacion:
 	OP_ASIG asignable{
 					printf("\tasignacion -> ID = asignable\n");
 					uniqueIdMain++;
+					
 					asignablePtr = crearNodo("=",&arbol, crearHoja(auxIdName,tipoDatoAsig), asignablePtr);
 					asignacionPtr = asignablePtr;
 					clearString(auxIdName, TAM_ID);
@@ -392,8 +395,11 @@ factor:
 			strcpy(tipoDatoExpr,INT);
 		char new_yytext[100];
 		agregarGuionBajo(yytext, new_yytext);
-		saveSymbolCte(new_yytext);
-		updateTipoDatoSymbol(pos,INT);
+		pos = findSymbol(new_yytext);
+		if (pos==-1) {
+			saveSymbolCte(new_yytext);
+			updateTipoDatoSymbol(pos,INT);
+		}
 		factorPtr = crearHoja(new_yytext,INT);
 		apilarDinamica(&pila, factorPtr);
 		apilarDinamica(&pilaExpresion,factorPtr);
