@@ -2,8 +2,11 @@ init{
     a: Int
     b: Float
     c: Int
+    lec: Float
 }
 escribir("inicio")
+escribir("escriba algo")
+leer(lec)
 a := 9
 b := 4.5
 si (a < 6){
@@ -22,5 +25,8 @@ escribir("c tiene")
 escribir(c)
 escribir("b tiene")
 escribir(b)
+escribir("lec tiene")
+escribir(lec)
+
 
 escribir("final")

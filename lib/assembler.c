@@ -116,7 +116,6 @@ void recorrerArbolParaAssembler(FILE *fp, tNodoArbol *raiz) {
     if (esAritmetica(raiz->info)) {
       operacion(fp, raiz);
     } else if (strcmp(raiz->info, PUT_STR) == 0) {
-      printf("\ttipo dato mostrar = %s",raiz->der->tipoDato );
       fprintf(fp,"xor dx, dx   ; Limpiar DX \nxor ax, ax  ; Limpiar AX\n");
       if(strcmp(raiz->der->tipoDato,STR) == 0){
         if(raiz->der->info[0] == '('){
@@ -132,10 +131,15 @@ void recorrerArbolParaAssembler(FILE *fp, tNodoArbol *raiz) {
       }else{
         fprintf(fp, "DisplayFloat %s,3\n", raiz->der->info);
       }
-      
       fprintf(fp, "newLine 1\n");
     } else if (esComparacion(raiz)) {
       generarComparacion(fp, raiz);
+    } else if (strcmp(raiz->info, GET_STR) == 0){
+      if (strcmp(raiz->der->tipoDato,INT) == 0){
+        fprintf(fp, "GetInteger %s\n", raiz->der->info); 
+      }else if (strcmp(raiz->der->tipoDato,FLOAT) == 0){
+        fprintf(fp, "GetFloat %s\n", raiz->der->info);
+      }
     }
     free(raiz->izq);
     free(raiz->der);
@@ -297,17 +301,17 @@ void recorrerTablaSimbolos(FILE *file){
   fgets(line, sizeof(line), fileSimbol);
   while (fgets(line, sizeof(line), fileSimbol)) {
     getFila(line,&fila);
-    if(strcmp(fila.valor, "_") != 0 && strcmp(fila.tipoDato, STR) == 0){
+    if(fila.valor[0]!='_' && strcmp(fila.tipoDato, STR) == 0){
       fprintf(file,"\tstr%s db \"%s\",\"$\", %d dup(?) \n", fila.nombre,fila.valor,strlen(fila.valor) );
     }
-    else if(strcmp(fila.valor, "_") != 0){
+    else if(fila.valor[0]!='_'){
       fprintf(file,"\t%s dd %s\n", fila.nombre,fila.valor);
     }
-    else if (strcmp(fila.tipoDato, STR) == 0){
+    else if (fila.valor[0]=='_' && strcmp(fila.tipoDato, STR) == 0){
       fprintf(file,"\t%s db 100 dup(?) \n", fila.nombre );
     }
     else {
-        fprintf(file,"\t%s dd ?\n", fila.nombre);
+      fprintf(file,"\t%s dd ?\n", fila.nombre);
     }
     
   }

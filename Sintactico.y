@@ -159,11 +159,12 @@ sentencia:
 								printf("Error: %s no declarado\n", yytext);
 								exit(-1);
 							}
+							strcpy(tipoDatoAsig,filas[pos].tipoDato);
 							strcpy(auxCadVal,yytext);
 						} PARENTE_D {
 							printf("\tsentencia -> leer ( ID )\n");
 							uniqueIdMain++;
-							sentenciaPtr = crearNodo("GET", &arbol,crearHoja("STDIN","NULL"),crearHoja(auxCadVal,"NULL")); 
+							sentenciaPtr = crearNodo("GET", &arbol,crearHoja("STDIN","NULL"),crearHoja(auxCadVal,tipoDatoAsig)); 
 						} 
 	| buscarYreemplazar {sentenciaPtr = buscarYreemplazarPtr;}
 	| aplicarDescuento {sentenciaPtr = crearNodo("AplicarDescuento", &arbol,descuentoPtr,NULL);}
