@@ -116,15 +116,23 @@ void recorrerArbolParaAssembler(FILE *fp, tNodoArbol *raiz) {
     if (esAritmetica(raiz->info)) {
       operacion(fp, raiz);
     } else if (strcmp(raiz->info, PUT_STR) == 0) {
+      printf("\ttipo dato mostrar = %s",raiz->der->tipoDato );
       fprintf(fp,"xor dx, dx   ; Limpiar DX \nxor ax, ax  ; Limpiar AX\n");
-      if(raiz->der->info[0] == '('){
+      if(strcmp(raiz->der->tipoDato,STR) == 0){
+        if(raiz->der->info[0] == '('){
         raiz->der->info++;
         raiz->der->info[strlen(raiz->der->info)-1]=0;
         fprintf(fp, "displayString str_%s\n", raiz->der->info);
+        }
+        else{
+          fprintf(fp, "displayString %s\n", raiz->der->info);
+        }
+      }else if (strcmp(raiz->der->tipoDato,INT) == 0){
+        fprintf(fp, "DisplayInteger %s\n", raiz->der->info); 
+      }else{
+        fprintf(fp, "DisplayFloat %s,3\n", raiz->der->info);
       }
-      else{
-        fprintf(fp, "displayString %s\n", raiz->der->info);
-      }
+      
       fprintf(fp, "newLine 1\n");
     } else if (esComparacion(raiz)) {
       generarComparacion(fp, raiz);
