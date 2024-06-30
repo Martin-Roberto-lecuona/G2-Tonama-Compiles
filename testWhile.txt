@@ -1,0 +1,17 @@
+init{
+    a: Int
+    b: Int
+    c: Int
+}
+escribir("inicio")
+a := 3
+b := 4
+while (a < 6){
+  while (b < 7){
+    b := b + 2
+    escribir("Ciclo2")
+  }
+  a := a + 1
+}
+
+escribir("final")

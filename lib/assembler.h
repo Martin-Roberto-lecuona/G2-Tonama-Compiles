@@ -39,5 +39,15 @@ typedef struct{
   int tope;
 }t_list_cond;
 
+typedef struct{
+  int flagOr;
+}t_iteracion;
+
+typedef struct{
+  t_iteracion list[10];
+  int tope;
+}t_list_iter;
+
+t_list_iter listIter = {{{0}}, -1};
 t_list_cond listCond = {{{0, 0}}, -1};
 #endif
