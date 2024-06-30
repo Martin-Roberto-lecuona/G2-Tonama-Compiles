@@ -18,16 +18,12 @@ int generarInstruccionesAssembler(tNodoArbol* raiz);
 void generarComparacion(FILE * fp, tNodoArbol* raiz);
 int esComparacion(tNodoArbol* raiz);
 void generarSalto(FILE * fp, char* comparador);
-char* obtenerInstruccionComparacion(const char *comparador);
+char* obtenerInstruccionComparacion(const char *comparador, int flagOR);
 
 void recorrerArbolAssembler(t_arbol *p, FILE *f);
 void recorrerTablaSimbolos(FILE *file);
 
-int ifCounter = 0;
 int cantAux=0;
-int flagOR = 0;
-int elseCounter = 0;
-int flagElse = 0;
 
 typedef struct{
   int flagOr;

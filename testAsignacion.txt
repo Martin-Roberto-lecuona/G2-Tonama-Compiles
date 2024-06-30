@@ -1,19 +1,26 @@
 init{
     a: Int
-    b: Int
+    b: Float
     c: Int
 }
 escribir("inicio")
-a := 3
-b := 4
-si (a < 6){
+escribir("inicio")
+escribir("escriba algo")
+a := 7
+b := 4.5
+si (a < 6 OR a > 9){
     escribir("Entro if")
     a := a + 2
-}else{
-  si (a < 7){
-    c := 10
-  }
-  c := 20
+}sino{
+  escribir("e lse")
+    si (a < 8){
+      c := 10
+    }
+    sino {
+      c := 20
+    }
 }
+
+
 
 escribir("final")

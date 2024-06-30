@@ -183,15 +183,18 @@ void generarComparacion(FILE * fp, tNodoArbol* raiz){
 }
 
 void generarSalto(FILE *fp, char *comparador) {
-  char *salto = obtenerInstruccionComparacion(comparador);
+  char *salto;
   char destinoSalto[50];
   if (listCond.tope != -1 && listCond.list[listCond.tope].flagOr == 1) {
     strcpy(destinoSalto,"BeginIf");
     listCond.list[listCond.tope].flagOr = 0;
+    salto = obtenerInstruccionComparacion(comparador, 1);
   } else if (listIter.tope != -1 && listIter.list[listIter.tope].flagOr == 1) {
     strcpy(destinoSalto,"BeginWhile");
     listCond.list[listCond.tope].flagOr = 0;
+    salto = obtenerInstruccionComparacion(comparador, 1);
   }else {
+    salto = obtenerInstruccionComparacion(comparador, 0);
     if(listCond.tope != -1 && listCond.list[listCond.tope].flagElse == 1) {
       strcpy(destinoSalto,"BeginElse");
     }else if (listCond.tope != -1) {
@@ -205,7 +208,7 @@ void generarSalto(FILE *fp, char *comparador) {
 }
 
 
-char* obtenerInstruccionComparacion(const char *comparador) {
+char* obtenerInstruccionComparacion(const char *comparador, int flagOR) {
 
   if(flagOR) {
     if (strcmp(comparador, ">") == 0)
