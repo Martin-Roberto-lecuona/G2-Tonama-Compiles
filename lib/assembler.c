@@ -19,14 +19,6 @@ void operacion(FILE * fp, tNodoArbol* raiz){
 
   printf("info arbol: %s\n",raiz->info);
   if(strcmp(raiz->info, "=")==0){
-/*
-    if(strcmp(raiz->tipo, "Cte_String")==0){
-      asignacionString = 1;
-      fprintf(fp, "MOV si, OFFSET   %s\n", raiz->hijoDer);
-      fprintf(fp, "MOV di, OFFSET  %s\n", raiz->hijoIzq);
-      fprintf(fp, "CALL asignString\n");
-    }*/
-
     if ( strcmp( raiz->izq->tipoDato, STR) == 0){
       // saca parentesis
         raiz->der->info++;
