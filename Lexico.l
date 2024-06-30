@@ -54,6 +54,8 @@ OP_MAYOR            ">"
 OP_MENOR_IGUAL      ">="
 OP_MAYOR_IGUAL      "<="
 OP_IGUAL            "=="
+OP_DISTINTO         "!="
+
 PARENTE_I			"("
 PARENTE_D			")"
 LLAVE_I             "{"
@@ -128,6 +130,7 @@ init                    {printf("\nInit : %s\n", yytext);return INIT;}
 {OP_MAYOR_IGUAL}		{printf("\nMayor igual: %s\n", yytext);return OP_MAYOR_IGUAL;}
 {OP_MENOR_IGUAL}		{printf("\nMenor igual: %s\n", yytext);return OP_MENOR_IGUAL;}
 {OP_IGUAL}		        {printf("\nIgual: %s\n", yytext);return OP_IGUAL;}
+{OP_DISTINTO}		        {printf("\nDistinto: %s\n", yytext);return OP_DISTINTO;}
 {PARENTE_I}			    {printf("\nParAbre: %s\n", yytext);return PARENTE_I;}
 {PARENTE_D}			    {printf("\nParCierra: %s\n", yytext);return PARENTE_D;}
 {LLAVE_I}			    {printf("\nLLaveAbre: %s\n", yytext);return LLAVE_I;}

@@ -60,6 +60,7 @@ char BusyRem_rem[MAX_CAD];
 %token OP_MAYOR_IGUAL
 %token OP_MENOR_IGUAL
 %token OP_IGUAL
+%token OP_DISTINTO
 %token LLAVE_I
 %token LLAVE_D
 %token CORCH_I
@@ -331,6 +332,7 @@ comparador:
 	| OP_MAYOR_IGUAL { comparadorPtr = crearHoja(">=","NULL");}
 	| OP_MENOR_IGUAL { comparadorPtr = crearHoja("<=","NULL");}
 	| OP_IGUAL { comparadorPtr = crearHoja("==","NULL");}
+	| OP_DISTINTO { comparadorPtr = crearHoja("!=","NULL");}
 	;
 
 condicion:
