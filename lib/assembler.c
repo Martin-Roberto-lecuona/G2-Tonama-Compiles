@@ -110,7 +110,7 @@ void recorrerArbolParaAssembler(FILE *fp, tNodoArbol *raiz) {
   }
   ///RECORRO DERECHA
   recorrerArbolParaAssembler(fp, raiz->der);
-  if(strcmp(raiz->info, "CUERPO") == 0 && flagElse == 1){
+  if(strcmp(raiz->info, "CUERPO") == 0){
     fprintf(fp, "EndIf%d:\n", ifCounter);
   }
   /*
@@ -139,7 +139,9 @@ void recorrerArbolParaAssembler(FILE *fp, tNodoArbol *raiz) {
     raiz->izq = NULL;
     raiz->der = NULL;
   }
-
+  if(strcmp(raiz->info, "if") == 0 ){
+    ifCounter--;
+  }
 }
 
 int esComparacion(tNodoArbol* raiz){
