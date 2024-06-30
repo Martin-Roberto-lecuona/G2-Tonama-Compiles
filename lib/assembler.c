@@ -19,9 +19,28 @@ void operacion(FILE * fp, tNodoArbol* raiz){
 
   printf("info arbol: %s\n",raiz->info);
   if(strcmp(raiz->info, "=")==0){
-   /// falta saber como asignar strings
-    fprintf(fp, "fld %s\n", raiz->der->info);
-    fprintf(fp, "fstp %s\n", raiz->izq->info);
+
+    if ( strcmp( raiz->izq->tipoDato, STR) == 0){
+      // saca parentesis
+        raiz->der->info++;
+        raiz->der->info[strlen(raiz->der->info)-1]=0;
+      //
+      fprintf(fp,"; Limpiar antes de copiar\n");
+      fprintf(fp,"LEA DI, %s\n",raiz->izq->info);
+      fprintf(fp,"MOV CX, 100\n");
+      fprintf(fp,"XOR AL, AL\n");
+      fprintf(fp,"REP STOSB\n");
+      fprintf(fp,";Copiar\n");
+      fprintf(fp,"LEA SI, str_%s\n",raiz->der->info);
+      fprintf(fp,"LEA DI, %s\n",raiz->izq->info);
+      fprintf(fp,"MOV CX, %d\n",strlen(raiz->der->info)+1);
+      fprintf(fp,"REP MOVSB\n");
+      // hacer que funcione esto de asignar str
+    }else{
+      fprintf(fp, "fld %s\n", raiz->der->info);
+      fprintf(fp, "fistp %s\n", raiz->izq->info);
+    }
+
   } else{
     fprintf(fp, "fld %s\n", raiz->izq->info);
     fprintf(fp, "fld %s\n", raiz->der->info);
@@ -89,6 +108,7 @@ void recorrerArbolParaAssembler(FILE *fp, tNodoArbol *raiz) {
   }
   ///RECORRO DERECHA
   recorrerArbolParaAssembler(fp, raiz->der);
+  
   if(strcmp(raiz->info, "CUERPO") == 0){
     fprintf(fp, "EndIf%d:\n", listCond.tope);
   }
@@ -97,12 +117,16 @@ void recorrerArbolParaAssembler(FILE *fp, tNodoArbol *raiz) {
     if (esAritmetica(raiz->info)) {
       operacion(fp, raiz);
     } else if (strcmp(raiz->info, PUT_STR) == 0) {
-      char info[strlen(raiz->der->info) + 1];
-      strcpy(info, raiz->der->info);
-      info[0] = ' ';
-      info[strlen(raiz->der->info) - 1] = 0;
-      fprintf(fp, "mov dx,OFFSET str_%s\n", info + 1);
-      fprintf(fp, "mov ah,9\nint 21h\nnewLine 1\n");
+      fprintf(fp,"xor dx, dx   ; Limpiar DX \nxor ax, ax  ; Limpiar AX\n");
+      if(raiz->der->info[0] == '('){
+        raiz->der->info++;
+        raiz->der->info[strlen(raiz->der->info)-1]=0;
+        fprintf(fp, "displayString str_%s\n", raiz->der->info);
+      }
+      else{
+        fprintf(fp, "displayString %s\n", raiz->der->info);
+      }
+      fprintf(fp, "newLine 1\n");
     } else if (esComparacion(raiz)) {
       generarComparacion(fp, raiz);
     }
@@ -267,10 +291,13 @@ void recorrerTablaSimbolos(FILE *file){
   while (fgets(line, sizeof(line), fileSimbol)) {
     getFila(line,&fila);
     if(strcmp(fila.valor, "_") != 0 && strcmp(fila.tipoDato, STR) == 0){
-        fprintf(file,"\tstr%s db \"%s\",\"$\", %d dup(?) \n", fila.nombre,fila.valor,strlen(fila.valor) );
+      fprintf(file,"\tstr%s db \"%s\",\"$\", %d dup(?) \n", fila.nombre,fila.valor,strlen(fila.valor) );
     }
     else if(strcmp(fila.valor, "_") != 0){
-       fprintf(file,"\t%s dd %s\n", fila.nombre,fila.valor);
+      fprintf(file,"\t%s dd %s\n", fila.nombre,fila.valor);
+    }
+    else if (strcmp(fila.tipoDato, STR) == 0){
+      fprintf(file,"\t%s db 100 dup(?) \n", fila.nombre );
     }
     else {
         fprintf(file,"\t%s dd ?\n", fila.nombre);
