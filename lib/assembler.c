@@ -19,25 +19,33 @@ void operacion(FILE * fp, tNodoArbol* raiz){
 
   printf("info arbol: %s\n",raiz->info);
   if(strcmp(raiz->info, "=")==0){
-/*
-    if(strcmp(raiz->tipo, "Cte_String")==0){
-      asignacionString = 1;
-      fprintf(fp, "MOV si, OFFSET   %s\n", raiz->hijoDer);
-      fprintf(fp, "MOV di, OFFSET  %s\n", raiz->hijoIzq);
-      fprintf(fp, "CALL asignString\n");
-    }else{
 
-      fprintf(fp, "f%sld %s\n", cargaEntero(raiz->hijoDer), raiz->hijoDer->dato);
-      fprintf(fp, "f%sstp %s\n", cargaEntero(raiz->hijoIzq), raiz->hijoIzq->dato);
-    }*/
-   /// falta saber como asignar strings
-    fprintf(fp, "fld %s\n", raiz->der->info);
-    fprintf(fp, "fistp %s\n", raiz->izq->info);
+    if ( strcmp( raiz->izq->tipoDato, STR) == 0){
+      // saca parentesis
+        raiz->der->info++;
+        raiz->der->info[strlen(raiz->der->info)-1]=0;
+      //
+      fprintf(fp,"; Limpiar antes de copiar\n");
+      fprintf(fp,"LEA DI, %s\n",raiz->izq->info);
+      fprintf(fp,"MOV CX, 100\n");
+      fprintf(fp,"XOR AL, AL\n");
+      fprintf(fp,"REP STOSB\n");
+      fprintf(fp,";Copiar\n");
+      fprintf(fp,"LEA SI, str_%s\n",raiz->der->info);
+      fprintf(fp,"LEA DI, %s\n",raiz->izq->info);
+      fprintf(fp,"MOV CX, %d\n",strlen(raiz->der->info)+1);
+      fprintf(fp,"REP MOVSB\n");
+      // hacer que funcione esto de asignar str
+    }else{
+      fprintf(fp, "fld %s\n", raiz->der->info);
+      fprintf(fp, "fistp %s\n", raiz->izq->info);
+    }
+
   } else{
     fprintf(fp, "fld %s\n", raiz->izq->info);
     fprintf(fp, "fld %s\n", raiz->der->info);
     fprintf(fp, "%s\n", obtenerInstruccionAritmetica(raiz->info));
-    fprintf(fp, "fstp @aux%d\n", pedirAux(raiz->info));
+    fprintf(fp, "fstp @aux%d\n", pedirAux());
 
     // Guardo en el arbol el dato del resultado, si uso un aux
     sprintf(raiz->info, "@aux%d", cantAux);
@@ -52,13 +60,8 @@ int esHoja(tNodoArbol* raiz) {
   return raiz->izq == NULL && raiz->der == NULL;
 }
 
-int pedirAux(char* tipo) {
+int pedirAux() {
   cantAux++;
-  /*
-  char aux[15];
-  sprintf(aux, "@aux%d", cantAux);
-  armarTS(tipo, aux);
-  */
   return cantAux;
 }
 
@@ -82,31 +85,136 @@ char* obtenerInstruccionAritmetica(const char *operador) {
     return "fdiv";
 }
 
-void  recorrerArbolParaAssembler(FILE * fp, tNodoArbol* raiz){
-  if(raiz == NULL)
+void recorrerArbolParaAssembler(FILE *fp, tNodoArbol *raiz) {
+  if (raiz == NULL)
     return;
-  recorrerArbolParaAssembler(fp, raiz->izq);
-  recorrerArbolParaAssembler(fp, raiz->der);
 
-  if(esHoja(raiz->izq) && esHoja(raiz->der)){
-    if(esAritmetica(raiz->info)){
-      operacion(fp, raiz);
+  if (strcmp(raiz->info, "if") == 0) {
+    listCond.tope++;
+    if(raiz->der->der != NULL){
+      listCond.list[listCond.tope].flagElse = 1;
     }
-    else if (strcmp(raiz->info, PUT_STR) == 0)
-    {
-      char info[strlen(raiz->der->info)+1];
-      strcpy(info, raiz->der->info);
-      info[0]=' ';
-      info[strlen(raiz->der->info)-1] = 0;
-      fprintf(fp, "mov dx,OFFSET str_%s\n",info+1 );
-      fprintf(fp, "mov ah,9\nint 21h\nnewLine 1\n");
-    }
-      free(raiz->izq);
-      free(raiz->der);
-      raiz->izq = NULL;
-      raiz->der = NULL;
+  } else if (strcmp(raiz->info, "OR") == 0) {
+    listCond.list[listCond.tope].flagOr = 1;
+  }
+  ///RECORRO IZQUIERDA
+  recorrerArbolParaAssembler(fp, raiz->izq);
+
+  if (strcmp(raiz->info, "if") == 0) {
+    fprintf(fp, "BeginIf%d:\n", listCond.tope);
+  }else if(strcmp(raiz->info, "CUERPO") == 0 && listCond.list[listCond.tope].flagElse == 1){
+    fprintf(fp, "JMP EndIf%d\n", listCond.tope);
+    fprintf(fp, "BeginElse%d:\n", listCond.tope);
+  }
+  ///RECORRO DERECHA
+  recorrerArbolParaAssembler(fp, raiz->der);
+  
+  if(strcmp(raiz->info, "CUERPO") == 0){
+    fprintf(fp, "EndIf%d:\n", listCond.tope);
   }
 
+  if (esHoja(raiz->izq) && esHoja(raiz->der)) {
+    if (esAritmetica(raiz->info)) {
+      operacion(fp, raiz);
+    } else if (strcmp(raiz->info, PUT_STR) == 0) {
+      fprintf(fp,"xor dx, dx   ; Limpiar DX \nxor ax, ax  ; Limpiar AX\n");
+      if(raiz->der->info[0] == '('){
+        raiz->der->info++;
+        raiz->der->info[strlen(raiz->der->info)-1]=0;
+        fprintf(fp, "displayString str_%s\n", raiz->der->info);
+      }
+      else{
+        fprintf(fp, "displayString %s\n", raiz->der->info);
+      }
+      fprintf(fp, "newLine 1\n");
+    } else if (esComparacion(raiz)) {
+      generarComparacion(fp, raiz);
+    }
+    free(raiz->izq);
+    free(raiz->der);
+    raiz->izq = NULL;
+    raiz->der = NULL;
+  }
+  if(strcmp(raiz->info, "if") == 0 ){
+    listCond.list[listCond.tope].flagElse = 0;
+    listCond.list[listCond.tope].flagOr = 1;
+    listCond.tope--;
+  }
+}
+
+int esComparacion(tNodoArbol* raiz){
+  return strcmp(raiz->info, ">") == 0 ||
+      strcmp(raiz->info, ">=") == 0 ||
+      strcmp(raiz->info, "<") == 0 ||
+      strcmp(raiz->info, "<=") == 0 ||
+      strcmp(raiz->info, "==") == 0 ||
+      strcmp(raiz->info, "<>") == 0;
+}
+
+void generarComparacion(FILE * fp, tNodoArbol* raiz){
+  fprintf(fp, "; Comparacion\n");
+  //fprintf(fp, "MOV AH, 0\n");
+  //fprintf(fp, "sahf\n");
+  fprintf(fp, "fld %s\n", raiz->der->info);
+  fprintf(fp, "fld %s\n", raiz->izq->info);
+  fprintf(fp, "fcom\n");
+  fprintf(fp, "fstsw ax\n");
+  fprintf(fp, "sahf\n");
+  // fprintf(fp, "and ah, 45h  ; Mantener solo los bits relevantes\n");
+  fprintf(fp, "; fin Comparacion\n");
+
+  generarSalto(fp, raiz->info);
+
+}
+
+void generarSalto(FILE *fp, char *comparador) {
+  char *salto = obtenerInstruccionComparacion(comparador);
+  char destinoSalto[50];
+  if (listCond.list[listCond.tope].flagOr == 1) {
+    strcpy(destinoSalto,"BeginIf");
+    listCond.list[listCond.tope].flagOr = 0;
+  } else
+  {
+    if(listCond.list[listCond.tope].flagElse == 1) {
+      strcpy(destinoSalto,"BeginElse");
+    }else {
+      strcpy(destinoSalto,"EndIf");
+    }
+  }
+  fprintf(fp, "; Salto\n");
+  fprintf(fp, "%s %s%d\n", salto, destinoSalto, listCond.tope);
+}
+
+
+char* obtenerInstruccionComparacion(const char *comparador) {
+
+  if(flagOR) {
+    if (strcmp(comparador, ">") == 0)
+      return "JNBE";
+    if (strcmp(comparador, ">=") == 0)
+      return "JNB";
+    if (strcmp(comparador, "<") == 0)
+      return "JNAE";
+    if (strcmp(comparador, "<=") == 0)
+      return "JNA";
+    if (strcmp(comparador, "==") == 0)
+      return "JE";
+    if (strcmp(comparador, "<>") == 0)
+      return "JNE";
+  } else {
+    if (strcmp(comparador, ">") == 0)
+      return "JNA";
+    if (strcmp(comparador, ">=") == 0)
+      return "JNAE";
+    if (strcmp(comparador, "<") == 0)
+      return "JNB";
+    if (strcmp(comparador, "<=") == 0)
+      return "JNBE";
+    if (strcmp(comparador, "==") == 0)
+      return "JNE";
+    if (strcmp(comparador, "<>") == 0)
+      return "JE";
+  }
 }
 
 int generarInstruccionesAssembler(tNodoArbol* raiz){
@@ -138,7 +246,7 @@ void generarAssembler(tNodoArbol* raiz){
 
   escribirInstruccionesEnASM(fp, ASM_FILE_CODE);
 
-  char finCode[]="END_PROG:\n\tmov ax, 4C00h\n\tint 21h\nEND START";
+  char finCode[]="END_PROG:\n\tffree; Liberar registros de la FPU\n\tmov ax, 4C00h\n\tint 21h\nEND START";
   fprintf(fp,finCode);
   // fprintf(fp, "\n\nffree\n");
 }
@@ -163,7 +271,7 @@ void getFila(char line[256], t_fila *fila){
 
   fila->nombre[strcspn(fila->nombre, " ")] = '\0';
   fila->tipoDato[strcspn(fila->tipoDato, " ")] = '\0';
-  fila->valor[strcspn(fila->valor, " ")] = '\0';
+  fila->valor[strcspn(fila->nombre, " ")] = '\0';
   fila->longitud[strcspn(fila->longitud, " ")] = '\0';
 }
 
@@ -183,10 +291,16 @@ void recorrerTablaSimbolos(FILE *file){
   while (fgets(line, sizeof(line), fileSimbol)) {
     getFila(line,&fila);
     if(strcmp(fila.valor, "_") != 0 && strcmp(fila.tipoDato, STR) == 0){
-        fprintf(file,"\tstr_%s db \"%s\",\"$\", %d dup(?) \n", fila.valor,fila.valor,strlen(fila.valor) );
+      fprintf(file,"\tstr%s db \"%s\",\"$\", %d dup(?) \n", fila.nombre,fila.valor,strlen(fila.valor) );
+    }
+    else if(strcmp(fila.valor, "_") != 0){
+      fprintf(file,"\t%s dd %s\n", fila.nombre,fila.valor);
+    }
+    else if (strcmp(fila.tipoDato, STR) == 0){
+      fprintf(file,"\t%s db 100 dup(?) \n", fila.nombre );
     }
     else {
-       fprintf(file,"\t%s dd ?\n", fila.nombre);
+        fprintf(file,"\t%s dd ?\n", fila.nombre);
     }
     
   }

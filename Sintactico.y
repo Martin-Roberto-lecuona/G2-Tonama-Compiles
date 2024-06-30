@@ -28,9 +28,11 @@ char auxCadVal[MAX_CAD];
 void clearString(char* cad, int tam);
 char* addParentesis(char* cad);
 void agregarGuionBajo(char* cad,char* res);
+void borrarEspacios(char symbol[]);
 
 int tamListaDesc = 0;
-int banderaAsignacionInt = 0;
+char tipoDatoAsig[15];
+char tipoDatoExpr[15];
 
 char BusyRem_bus[MAX_CAD];
 char BusyRem_cad[MAX_CAD];
@@ -115,9 +117,9 @@ sentencia:
 					}
 	| seleccionSi seleccionSino { printf("\tsentencia -> seleccionSino\n");
 	   					uniqueIdMain++;
-					   condicionPtr = desapilarDinamica(&pilaCondicion);
-					   sinoPtr = crearNodo("else", &arbol, desapilarDinamica(&pilaBloqueInterno), NULL);
-					   sentenciaPtr = crearNodo("if",&arbol, condicionPtr, crearNodo("CUERPO", &arbol, desapilarDinamica(&pilaBloqueInterno), sinoPtr));
+						condicionPtr = desapilarDinamica(&pilaCondicion);
+						sinoPtr = crearNodo("else", &arbol, NULL, desapilarDinamica(&pilaBloqueInterno));
+						sentenciaPtr = crearNodo("if",&arbol, condicionPtr, crearNodo("CUERPO", &arbol, desapilarDinamica(&pilaBloqueInterno), sinoPtr));
 	   }
 	| ESCRIBIR PARENTE_I CADENA
 								{
@@ -128,12 +130,14 @@ sentencia:
 									if (pos==-1) {
 										saveSymbolCadena(yytext);
 									}
+									borrarEspacios(yytext);
 									strcpy(auxCadVal,yytext);
 								} 
 	PARENTE_D {
 		printf("\tsentencia -> escribir ( cadena )\n");
 		uniqueIdMain++;
-	    sentenciaPtr = crearNodo("PUT", &arbol,crearHoja("STDOUT"),crearHoja(addParentesis(auxCadVal)));
+		printf("\tauxCadVal = |%s|\n",addParentesis(auxCadVal));
+	    sentenciaPtr = crearNodo("PUT", &arbol,crearHoja("STDOUT","NULL"),crearHoja(addParentesis(auxCadVal),"NULL"));
 		}
 	| ESCRIBIR PARENTE_I ID {
 								pos = findSymbol(yytext);
@@ -146,7 +150,7 @@ sentencia:
 	PARENTE_D{
 		printf("\tsentencia -> escribir ( ID )\n");
 		uniqueIdMain++;
-	    sentenciaPtr = crearNodo("PUT", &arbol,crearHoja("STDOUT"),crearHoja(auxCadVal));
+	    sentenciaPtr = crearNodo("PUT", &arbol,crearHoja("STDOUT","NULL"),crearHoja(auxCadVal,"NULL"));
 	}
 	| LEER PARENTE_I ID {
 							pos = findSymbol(yytext);
@@ -158,7 +162,7 @@ sentencia:
 						} PARENTE_D {
 							printf("\tsentencia -> leer ( ID )\n");
 							uniqueIdMain++;
-							sentenciaPtr = crearNodo("GET", &arbol,crearHoja("STDIN"),crearHoja(auxCadVal)); 
+							sentenciaPtr = crearNodo("GET", &arbol,crearHoja("STDIN","NULL"),crearHoja(auxCadVal,"NULL")); 
 						} 
 	| buscarYreemplazar {sentenciaPtr = buscarYreemplazarPtr;}
 	| aplicarDescuento {sentenciaPtr = crearNodo("AplicarDescuento", &arbol,descuentoPtr,NULL);}
@@ -172,21 +176,21 @@ sentencia:
 
 aplicarDescuento:
 	APLIC_DESC {	uniqueIdMain++;
-					descuentoPtr=crearNodo("=", &arbol, crearHoja("@res"), crearHoja("0"));
+					descuentoPtr=crearNodo("=", &arbol, crearHoja("@res",INT), crearHoja("0",INT));
 					uniqueIdMain++;
 	} PARENTE_I factorFlotante {
 					if (atof(yytext)>100.0){
 						printf("Error: el monto en aplicarDescuento debe ser menor a 100.0");
 						exit (-1);
 					}
-					factorFlotantePtr=crearNodo("=", &arbol, crearHoja("@mon"), crearHoja(yytext));
+					factorFlotantePtr=crearNodo("=", &arbol, crearHoja("@mon",FLOAT), crearHoja(yytext,FLOAT));
 					uniqueIdMain++;
 	}COMA CORCH_I listaNum CORCH_D COMA factorCte {
 					if (atoi(yytext) > tamListaDesc){
 						printf("Error semantico: el indice debe ser menor o igual al tamaño de la lista. Indice %d TamLista %d",atoi(yytext),tamListaDesc);
 						exit (-1);
 					}
-					factorCtePtr=crearNodo("=", &arbol, crearHoja("@aux"), crearHoja(yytext));
+					factorCtePtr=crearNodo("=", &arbol, crearHoja("@aux",INT), crearHoja(yytext,INT));
 					uniqueIdMain++;
 					tamListaDesc = 0;
 	} PARENTE_D {
@@ -256,33 +260,40 @@ asignacion:
 			printf("Error: %s no declarado\n", yytext);
 			exit(-1);
 		}
-		if (strcmp(filas[pos].tipoDato, INT) == 0)
-			banderaAsignacionInt = 1;
-		else 
-			banderaAsignacionInt = 0;
+		strcpy(tipoDatoAsig,filas[pos].tipoDato);
 		
 		strcpy(auxIdName,yytext);
 	}
 	OP_ASIG asignable{
 					printf("\tasignacion -> ID = asignable\n");
 					uniqueIdMain++;
-					asignablePtr = crearNodo("=",&arbol, crearHoja(auxIdName), asignablePtr);
+					asignablePtr = crearNodo("=",&arbol, crearHoja(auxIdName,tipoDatoAsig), asignablePtr);
 					asignacionPtr = asignablePtr;
 					clearString(auxIdName, TAM_ID);
 					}
 	;
 
 asignable:
-	expresion {printf("\tASIGNABLE -> Expresion\n"); asignablePtr = expresionPtr;}
+	expresion {printf("\tASIGNABLE -> Expresion\n"); asignablePtr = expresionPtr; 
+				if (strcmp(tipoDatoAsig,tipoDatoExpr) != 0){
+					printf("Error: de asignacion de tipos\n");
+					exit(-1);
+				}
+				strcpy(tipoDatoExpr," ");}
 	| CADENA {
 		printf("\tASIGNABLE -> ID\n");
+		if (strcmp(tipoDatoAsig,STR) != 0){
+			printf("Error: de asignacion de tipos\n");
+			exit(-1);
+		}
 		*(yytext + strlen(yytext)-1) = 0;
   		yytext++;
 		pos = findSymbol(yytext);
 		if (pos==-1) {
 			saveSymbolCadena(yytext);
 		}
-		asignablePtr = crearHoja(addParentesis(yytext));
+		borrarEspacios(yytext);
+		asignablePtr = crearHoja(addParentesis(yytext),STR);
 		}
 	| buscarYreemplazar {
 		printf("\tASIGNABLE -> buscarYreemplazar\n");
@@ -311,15 +322,15 @@ iteracion:
 	    }
 	;
 compuertas:
-	AND {printf("\tcompuertas -> AND\n"); compuertasPtr = crearHoja("AND");}
-	|OR {printf("\tcompuertas -> OR\n"); compuertasPtr = crearHoja("OR");}
+	AND {printf("\tcompuertas -> AND\n"); compuertasPtr = crearHoja("AND","NULL");}
+	|OR {printf("\tcompuertas -> OR\n"); compuertasPtr = crearHoja("OR","NULL");}
 	;
 comparador:
-	OP_MAYOR { comparadorPtr = crearHoja(">");}
-	| OP_MENOR { comparadorPtr = crearHoja("<");}
-	| OP_MAYOR_IGUAL { comparadorPtr = crearHoja(">=");}
-	| OP_MENOR_IGUAL { comparadorPtr = crearHoja("<=");}
-	| OP_IGUAL { comparadorPtr = crearHoja("==");}
+	OP_MAYOR { comparadorPtr = crearHoja(">","NULL");}
+	| OP_MENOR { comparadorPtr = crearHoja("<","NULL");}
+	| OP_MAYOR_IGUAL { comparadorPtr = crearHoja(">=","NULL");}
+	| OP_MENOR_IGUAL { comparadorPtr = crearHoja("<=","NULL");}
+	| OP_IGUAL { comparadorPtr = crearHoja("==","NULL");}
 	;
 
 condicion:
@@ -363,53 +374,57 @@ termino:
 
 factor:
 	ID {printf("\tFactor -> ID\n");
-		factorPtr = crearHoja(yytext);
+		pos = findSymbol(yytext);
+		if (pos==-1) {
+			printf("Error: Variable %s no declarada\n", yytext);
+			exit(-1);
+		}
+		factorPtr = crearHoja(yytext,filas[pos].tipoDato);
 		apilarDinamica(&pila, factorPtr);
 		apilarDinamica(&pilaExpresion,factorPtr);
-		if (banderaAsignacionInt == 1 && strcmp(filas[findSymbol(yytext)].tipoDato, FLOAT) == 0 ){
-			printf("\tError: No se puede asignar un flotante a un entero\n");
-			exit(-1);
+		if ( strcmp(filas[pos].tipoDato, FLOAT) == 0 ){
+			strcpy(tipoDatoExpr,FLOAT);
 		}
 		}
 	| CTE {
 		printf("\tFactor -> CTE\n");
+		if( strcmp(tipoDatoExpr,FLOAT) != 0)
+			strcpy(tipoDatoExpr,INT);
 		char new_yytext[100];
 		agregarGuionBajo(yytext, new_yytext);
 		saveSymbolCte(new_yytext);
 		updateTipoDatoSymbol(pos,INT);
-		factorPtr = crearHoja(new_yytext);
+		factorPtr = crearHoja(new_yytext,INT);
 		apilarDinamica(&pila, factorPtr);
 		apilarDinamica(&pilaExpresion,factorPtr);
 		}
 	| OP_REST CTE {
 		printf("\tFactor -> -CTE\n");
+		if( strcmp(tipoDatoExpr,FLOAT) != 0)
+			strcpy(tipoDatoExpr,INT);
 		char symbol[12] = "-";
 		strcat(symbol, yytext);
 		saveSymbolCte(symbol);
 		updateTipoDatoSymbol(pos,INT);
-		factorPtr = crearHoja(symbol);
+		factorPtr = crearHoja(symbol, INT);
 		}
 	| FLOT {printf("\tFactor -> FLOT\n");
+		strcpy(tipoDatoExpr,FLOAT);
 		char *punto = strchr(yytext, '.');
 		if (punto != NULL) {
 			*punto = '@'; // Reemplazar el punto por '#'
 		}
-
 		char new_yytext[100];
 		agregarGuionBajo(yytext,new_yytext);
 		saveSymbolFloat(new_yytext);
 		updateTipoDatoSymbol(pos,FLOAT);
-		factorPtr = crearHoja(new_yytext);
-		if (banderaAsignacionInt == 1){
-			printf("\tError: No se puede asignar un flotante a un entero\n");
-			exit(-1);
-		}
+		factorPtr = crearHoja(new_yytext,FLOAT);
 		}
 	| PARENTE_I expresion PARENTE_D {	printf("\tFactor -> (exp_logica)\n");
 										desapilarDinamica(&pilaExpresion);
 										uniqueIdMain++;
 										factorPtr = expresionPtr;
-										terminoPtr = crearHoja((desapilarDinamica(&pilaExpresion))->info);
+										terminoPtr = crearHoja((desapilarDinamica(&pilaExpresion))->info, (desapilarDinamica(&pilaExpresion))->tipoDato);
 										}
 	;
 
@@ -427,10 +442,12 @@ declaraciones:
 variables:
 	ID {
 			pos = findSymbol(yytext);
-			if (pos==-1) {
-				saveSymbol(yytext,"","_","");
-				pos = filaActual-1;
+			if (pos!=-1) {
+				printf("\tError: %s ya fue declarada\n", yytext);
+				exit(-1);
 			}
+			saveSymbol(yytext,"","_","");
+			pos = filaActual-1;
 			allPosInit[posInit]=pos;
 			posInit++;
 			printf("\tvariable-> id \n");
@@ -438,10 +455,12 @@ variables:
 
 	| variables COMA ID {
 							pos = findSymbol(yytext);
-								if (pos==-1) {
-									saveSymbol(yytext,"","_","");
-									pos = filaActual-1;
-								}
+							if (pos!=-1) {
+								printf("\tError: %s ya fue declarada\n", yytext);
+								exit(-1);
+							}
+							saveSymbol(yytext,"","_","");
+							pos = filaActual-1;
 							allPosInit[posInit]=pos;
 							posInit++;
 							printf("\tvariable-> variable , id \n");
@@ -489,4 +508,12 @@ char* addParentesis(char* cad){
 void agregarGuionBajo(char* cad,char* res){
   	strcpy(res, "_");
   	strcat(res, cad);
+}
+void borrarEspacios(char symbol[]){
+	int i=0;
+	while (symbol[i]){
+		if (symbol[i]==' ') 
+			symbol[i]='_';
+		i++;
+	}
 }

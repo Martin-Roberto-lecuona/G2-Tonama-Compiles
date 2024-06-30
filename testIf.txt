@@ -1,0 +1,10 @@
+init{
+    a: Int
+    b: Int
+    c: Int
+}
+
+if (a > b OR c > b)
+{
+    a := 1
+}

@@ -1,10 +1,19 @@
 init{
     a: Int
-    b: Float
-    c: String
+    b: Int
+    c: Int
 }
 escribir("inicio")
-escribir("inicio")
-a := a + 1
-b := 4.12
+a := 3
+b := 4
+si (a < 6){
+    escribir("Entro if")
+    a := a + 2
+}else{
+  si (a < 7){
+    c := 10
+  }
+  c := 20
+}
+
 escribir("final")

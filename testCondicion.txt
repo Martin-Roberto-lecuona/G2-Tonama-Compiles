@@ -1,0 +1,16 @@
+init{
+    a,b: Int
+    c: String
+}
+escribir("INICIO")
+
+a := 1
+b := 4
+c := "HOLA"
+
+c := "CHAU"
+
+escribir("C tiene")
+escribir(c)
+
+escribir("FIN")
