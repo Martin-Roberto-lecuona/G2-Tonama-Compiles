@@ -10,7 +10,7 @@ si (a < 6){
     escribir("Entro if")
     a := a + 2
 }else{
-  si (a < 6){
+  si (a < 7){
     c := 10
   }
   c := 20
