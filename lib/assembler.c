@@ -32,7 +32,7 @@ void operacion(FILE * fp, tNodoArbol* raiz){
     }*/
    /// falta saber como asignar strings
     fprintf(fp, "fld %s\n", raiz->der->info);
-    fprintf(fp, "fistp %s\n", raiz->izq->info);
+    fprintf(fp, "fstp %s\n", raiz->izq->info);
   } else{
     fprintf(fp, "fld %s\n", raiz->izq->info);
     fprintf(fp, "fld %s\n", raiz->der->info);
@@ -82,30 +82,45 @@ void recorrerArbolParaAssembler(FILE *fp, tNodoArbol *raiz) {
     return;
 
   if (strcmp(raiz->info, "if") == 0) {
+    flagElse = 0;
     ifCounter++;
+    if(raiz->der->der != NULL){
+      flagElse = 1;
+    }
   } else if (strcmp(raiz->info, "OR") == 0) {
     flagOR = 1;
   }else if(strcmp(raiz->info, "else") == 0){
       elseCounter++;
   }
+  ///RECORRO IZQUIERDA
   recorrerArbolParaAssembler(fp, raiz->izq);
 
   if (strcmp(raiz->info, "if") == 0) {
     fprintf(fp, "BeginIf%d:\n", ifCounter);
-  }
-  else if (strcmp(raiz->info, "else") == 0) {
+
+  /*
+  }else if (strcmp(raiz->info, "else") == 0) {
     fprintf(fp, "JMP EndIf%d\n", ifCounter+1);
     fprintf(fp, "EndIf%d:\n", ifCounter);
     ifCounter++;
+    */
+  }else if(strcmp(raiz->info, "CUERPO") == 0 && flagElse == 1){
+    fprintf(fp, "JMP EndIf%d\n", ifCounter);
+    fprintf(fp, "BeginElse%d:\n", ifCounter);
   }
-
+  ///RECORRO DERECHA
   recorrerArbolParaAssembler(fp, raiz->der);
-
+  if(strcmp(raiz->info, "CUERPO") == 0 && flagElse == 1){
+    fprintf(fp, "EndIf%d:\n", ifCounter);
+  }
+  /*
    if (strcmp(raiz->info, "else") == 0) {
     fprintf(fp, "EndIf%d:\n", ifCounter);
     elseCounter++;
   }
+   */
   printf("elseCounter = %d\n",elseCounter);
+
   if (esHoja(raiz->izq) && esHoja(raiz->der)) {
     if (esAritmetica(raiz->info)) {
       operacion(fp, raiz);
@@ -138,11 +153,11 @@ int esComparacion(tNodoArbol* raiz){
 
 void generarComparacion(FILE * fp, tNodoArbol* raiz){
   fprintf(fp, "; Comparacion\n");
-  fprintf(fp, "MOV AH, 0\n");
-  fprintf(fp, "sahf\n");
-  fprintf(fp, "fld %s\n", raiz->izq->info);
+  //fprintf(fp, "MOV AH, 0\n");
+  //fprintf(fp, "sahf\n");
   fprintf(fp, "fld %s\n", raiz->der->info);
-  fprintf(fp, "fcomp\n");
+  fprintf(fp, "fld %s\n", raiz->izq->info);
+  fprintf(fp, "fcom\n");
   fprintf(fp, "fstsw ax\n");
   fprintf(fp, "sahf\n");
   // fprintf(fp, "and ah, 45h  ; Mantener solo los bits relevantes\n");
@@ -158,14 +173,14 @@ void generarSalto(FILE *fp, char *comparador) {
   if (flagOR) {
     strcpy(destinoSalto,"BeginIf");
     flagOR = 0;
-  } 
-  printf("elseCounter = %d",elseCounter);
-  if(elseCounter >= 1) {
-    elseCounter--;
-    strcpy(destinoSalto,"BeginElse");
-  }
-  else {
-    strcpy(destinoSalto,"EndIf");
+  } else
+  {
+    if(flagElse == 1) {
+      //elseCounter--;
+      strcpy(destinoSalto,"BeginElse");
+    }else {
+      strcpy(destinoSalto,"EndIf");
+    }
   }
   fprintf(fp, "; Salto\n");
   fprintf(fp, "%s %s%d\n", salto, destinoSalto, ifCounter);
