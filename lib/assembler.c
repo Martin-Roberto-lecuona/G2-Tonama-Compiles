@@ -82,44 +82,27 @@ void recorrerArbolParaAssembler(FILE *fp, tNodoArbol *raiz) {
     return;
 
   if (strcmp(raiz->info, "if") == 0) {
-    flagElse = 0;
-    ifCounter++;
+    listCond.tope++;
     if(raiz->der->der != NULL){
-      flagElse = 1;
+      listCond.list[listCond.tope].flagElse = 1;
     }
   } else if (strcmp(raiz->info, "OR") == 0) {
-    flagOR = 1;
-  }else if(strcmp(raiz->info, "else") == 0){
-      elseCounter++;
+    listCond.list[listCond.tope].flagOr = 1;
   }
   ///RECORRO IZQUIERDA
   recorrerArbolParaAssembler(fp, raiz->izq);
 
   if (strcmp(raiz->info, "if") == 0) {
-    fprintf(fp, "BeginIf%d:\n", ifCounter);
-
-  /*
-  }else if (strcmp(raiz->info, "else") == 0) {
-    fprintf(fp, "JMP EndIf%d\n", ifCounter+1);
-    fprintf(fp, "EndIf%d:\n", ifCounter);
-    ifCounter++;
-    */
-  }else if(strcmp(raiz->info, "CUERPO") == 0 && flagElse == 1){
-    fprintf(fp, "JMP EndIf%d\n", ifCounter);
-    fprintf(fp, "BeginElse%d:\n", ifCounter);
+    fprintf(fp, "BeginIf%d:\n", listCond.tope);
+  }else if(strcmp(raiz->info, "CUERPO") == 0 && listCond.list[listCond.tope].flagElse == 1){
+    fprintf(fp, "JMP EndIf%d\n", listCond.tope);
+    fprintf(fp, "BeginElse%d:\n", listCond.tope);
   }
   ///RECORRO DERECHA
   recorrerArbolParaAssembler(fp, raiz->der);
   if(strcmp(raiz->info, "CUERPO") == 0){
-    fprintf(fp, "EndIf%d:\n", ifCounter);
+    fprintf(fp, "EndIf%d:\n", listCond.tope);
   }
-  /*
-   if (strcmp(raiz->info, "else") == 0) {
-    fprintf(fp, "EndIf%d:\n", ifCounter);
-    elseCounter++;
-  }
-   */
-  printf("elseCounter = %d\n",elseCounter);
 
   if (esHoja(raiz->izq) && esHoja(raiz->der)) {
     if (esAritmetica(raiz->info)) {
@@ -140,7 +123,9 @@ void recorrerArbolParaAssembler(FILE *fp, tNodoArbol *raiz) {
     raiz->der = NULL;
   }
   if(strcmp(raiz->info, "if") == 0 ){
-    ifCounter--;
+    listCond.list[listCond.tope].flagElse = 0;
+    listCond.list[listCond.tope].flagOr = 1;
+    listCond.tope--;
   }
 }
 
@@ -172,20 +157,19 @@ void generarComparacion(FILE * fp, tNodoArbol* raiz){
 void generarSalto(FILE *fp, char *comparador) {
   char *salto = obtenerInstruccionComparacion(comparador);
   char destinoSalto[50];
-  if (flagOR) {
+  if (listCond.list[listCond.tope].flagOr == 1) {
     strcpy(destinoSalto,"BeginIf");
-    flagOR = 0;
+    listCond.list[listCond.tope].flagOr = 0;
   } else
   {
-    if(flagElse == 1) {
-      //elseCounter--;
+    if(listCond.list[listCond.tope].flagElse == 1) {
       strcpy(destinoSalto,"BeginElse");
     }else {
       strcpy(destinoSalto,"EndIf");
     }
   }
   fprintf(fp, "; Salto\n");
-  fprintf(fp, "%s %s%d\n", salto, destinoSalto, ifCounter);
+  fprintf(fp, "%s %s%d\n", salto, destinoSalto, listCond.tope);
 }
 
 
