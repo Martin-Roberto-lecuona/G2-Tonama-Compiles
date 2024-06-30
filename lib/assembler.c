@@ -220,16 +220,6 @@ void generarSalto(FILE *fp, char *comparador) {
   fprintf(fp, "%s %s%d\n", salto, destinoSalto, (listCond.tope != -1) ? listCond.tope : listIter.tope);
 }
 
-
-char* obtenerInstruccionComparacion(const char *comparador) {
-  for (int i = 0; i < sizeof(compYSalto) / sizeof(compYSalto[0]); i++) {
-        if (strcmp(compYSalto[i].comparador, comparador) == 0) {
-            return listCond.list[listCond.tope].flagOr ? compYSalto[i].operacion : compYSalto[i].invertido;
-        }
-    }
-  return "JMP";
-}
-
 int evaluarOr(){
   if(listCond.tope != -1){
     return listCond.list[listCond.tope].flagOr;
@@ -237,6 +227,15 @@ int evaluarOr(){
     return listIter.list[listIter.tope].flagOr;
   }
   return 0;
+}
+
+char* obtenerInstruccionComparacion(const char *comparador) {
+  for (int i = 0; i < sizeof(compYSalto) / sizeof(compYSalto[0]); i++) {
+        if (strcmp(compYSalto[i].comparador, comparador) == 0) {
+            return evaluarOr() ? compYSalto[i].operacion : compYSalto[i].invertido;
+        }
+    }
+  return "JMP";
 }
 
 int generarInstruccionesAssembler(tNodoArbol* raiz){
