@@ -1,39 +1,40 @@
-mov dx,OFFSET str_inicio
-mov ah,9
-int 21h
+xor dx, dx   ; Limpiar DX 
+xor ax, ax  ; Limpiar AX
+displayString str_INICIO
 newLine 1
 fld _1
 fistp a
 fld _4
 fistp b
-fld (hola)
-fistp c
-; Comparacion
-MOV AH, 0
-sahf
-fld a
-fld b
-fcomp
-fstsw ax
-sahf
-; fin Comparacion
-; Salto
-JNA EndIf1
-BeginIf1:
-mov dx,OFFSET str_a_MAY_b
-mov ah,9
-int 21h
+; Limpiar antes de copiar
+LEA DI, c
+MOV CX, 100
+XOR AL, AL
+REP STOSB
+;Copiar
+LEA SI, str_HOLA
+LEA DI, c
+MOV CX, 5
+REP MOVSB
+; Limpiar antes de copiar
+LEA DI, c
+MOV CX, 100
+XOR AL, AL
+REP STOSB
+;Copiar
+LEA SI, str_CHAU
+LEA DI, c
+MOV CX, 5
+REP MOVSB
+xor dx, dx   ; Limpiar DX 
+xor ax, ax  ; Limpiar AX
+displayString str_C_tiene
 newLine 1
-JMP EndIf2
-EndIf1:
-mov dx,OFFSET str_a_MEN_b
-mov ah,9
-int 21h
+xor dx, dx   ; Limpiar DX 
+xor ax, ax  ; Limpiar AX
+displayString c
 newLine 1
-fld _80
-fistp a
-EndIf2:
-mov dx,OFFSET str_final
-mov ah,9
-int 21h
+xor dx, dx   ; Limpiar DX 
+xor ax, ax  ; Limpiar AX
+displayString str_FIN
 newLine 1

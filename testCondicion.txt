@@ -2,17 +2,15 @@ init{
     a,b: Int
     c: String
 }
-escribir("inicio")
+escribir("INICIO")
 
 a := 1
 b := 4
-c := "hola"
+c := "HOLA"
 
-si (a > b){
-    escribir("a MAY b")
-}
-sino {
-   escribir("a MEN b")
-   a := 80
-}
-escribir("final")
+c := "CHAU"
+
+escribir("C tiene")
+escribir(c)
+
+escribir("FIN")

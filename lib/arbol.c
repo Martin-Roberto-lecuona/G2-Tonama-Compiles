@@ -48,6 +48,7 @@ tNodoArbol *crearHoja(char *terminal,char* tipoDato) {
   nuevo->der = NULL;
   nuevo->izq = NULL;
   nuevo->uniqueId = uniqueIdMain;
+  nuevo->tipoDato = malloc(strlen(tipoDato) + 1);
   memcpy(nuevo->tipoDato, tipoDato, strlen(tipoDato) + 1); 
   /* printf("FIN crearHoja\n"); */
   return nuevo;

@@ -136,7 +136,8 @@ sentencia:
 	PARENTE_D {
 		printf("\tsentencia -> escribir ( cadena )\n");
 		uniqueIdMain++;
-	    sentenciaPtr = crearNodo("PUT", &arbol,crearHoja("STDOUT",NULL),crearHoja(addParentesis(auxCadVal),NULL));
+		printf("\tauxCadVal = |%s|\n",addParentesis(auxCadVal));
+	    sentenciaPtr = crearNodo("PUT", &arbol,crearHoja("STDOUT","NULL"),crearHoja(addParentesis(auxCadVal),"NULL"));
 		}
 	| ESCRIBIR PARENTE_I ID {
 								pos = findSymbol(yytext);
@@ -149,7 +150,7 @@ sentencia:
 	PARENTE_D{
 		printf("\tsentencia -> escribir ( ID )\n");
 		uniqueIdMain++;
-	    sentenciaPtr = crearNodo("PUT", &arbol,crearHoja("STDOUT",NULL),crearHoja(auxCadVal,NULL));
+	    sentenciaPtr = crearNodo("PUT", &arbol,crearHoja("STDOUT","NULL"),crearHoja(auxCadVal,"NULL"));
 	}
 	| LEER PARENTE_I ID {
 							pos = findSymbol(yytext);
@@ -161,7 +162,7 @@ sentencia:
 						} PARENTE_D {
 							printf("\tsentencia -> leer ( ID )\n");
 							uniqueIdMain++;
-							sentenciaPtr = crearNodo("GET", &arbol,crearHoja("STDIN",NULL),crearHoja(auxCadVal,NULL)); 
+							sentenciaPtr = crearNodo("GET", &arbol,crearHoja("STDIN","NULL"),crearHoja(auxCadVal,"NULL")); 
 						} 
 	| buscarYreemplazar {sentenciaPtr = buscarYreemplazarPtr;}
 	| aplicarDescuento {sentenciaPtr = crearNodo("AplicarDescuento", &arbol,descuentoPtr,NULL);}
@@ -266,7 +267,7 @@ asignacion:
 	OP_ASIG asignable{
 					printf("\tasignacion -> ID = asignable\n");
 					uniqueIdMain++;
-					asignablePtr = crearNodo("=",&arbol, crearHoja(auxIdName,filas[pos].tipoDato), asignablePtr);
+					asignablePtr = crearNodo("=",&arbol, crearHoja(auxIdName,tipoDatoAsig), asignablePtr);
 					asignacionPtr = asignablePtr;
 					clearString(auxIdName, TAM_ID);
 					}
@@ -291,6 +292,7 @@ asignable:
 		if (pos==-1) {
 			saveSymbolCadena(yytext);
 		}
+		borrarEspacios(yytext);
 		asignablePtr = crearHoja(addParentesis(yytext),STR);
 		}
 	| buscarYreemplazar {
@@ -320,15 +322,15 @@ iteracion:
 	    }
 	;
 compuertas:
-	AND {printf("\tcompuertas -> AND\n"); compuertasPtr = crearHoja("AND",NULL);}
-	|OR {printf("\tcompuertas -> OR\n"); compuertasPtr = crearHoja("OR",NULL);}
+	AND {printf("\tcompuertas -> AND\n"); compuertasPtr = crearHoja("AND","NULL");}
+	|OR {printf("\tcompuertas -> OR\n"); compuertasPtr = crearHoja("OR","NULL");}
 	;
 comparador:
-	OP_MAYOR { comparadorPtr = crearHoja(">",NULL);}
-	| OP_MENOR { comparadorPtr = crearHoja("<",NULL);}
-	| OP_MAYOR_IGUAL { comparadorPtr = crearHoja(">=",NULL);}
-	| OP_MENOR_IGUAL { comparadorPtr = crearHoja("<=",NULL);}
-	| OP_IGUAL { comparadorPtr = crearHoja("==",NULL);}
+	OP_MAYOR { comparadorPtr = crearHoja(">","NULL");}
+	| OP_MENOR { comparadorPtr = crearHoja("<","NULL");}
+	| OP_MAYOR_IGUAL { comparadorPtr = crearHoja(">=","NULL");}
+	| OP_MENOR_IGUAL { comparadorPtr = crearHoja("<=","NULL");}
+	| OP_IGUAL { comparadorPtr = crearHoja("==","NULL");}
 	;
 
 condicion:
