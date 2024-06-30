@@ -19,17 +19,6 @@ void operacion(FILE * fp, tNodoArbol* raiz){
 
   printf("info arbol: %s\n",raiz->info);
   if(strcmp(raiz->info, "=")==0){
-/*
-    if(strcmp(raiz->tipo, "Cte_String")==0){
-      asignacionString = 1;
-      fprintf(fp, "MOV si, OFFSET   %s\n", raiz->hijoDer);
-      fprintf(fp, "MOV di, OFFSET  %s\n", raiz->hijoIzq);
-      fprintf(fp, "CALL asignString\n");
-    }else{
-
-      fprintf(fp, "f%sld %s\n", cargaEntero(raiz->hijoDer), raiz->hijoDer->dato);
-      fprintf(fp, "f%sstp %s\n", cargaEntero(raiz->hijoIzq), raiz->hijoIzq->dato);
-    }*/
    /// falta saber como asignar strings
     fprintf(fp, "fld %s\n", raiz->der->info);
     fprintf(fp, "fstp %s\n", raiz->izq->info);
