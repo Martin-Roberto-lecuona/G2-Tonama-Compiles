@@ -27,4 +27,17 @@ int ifCounter = 0;
 int cantAux=0;
 int flagOR = 0;
 int elseCounter = 0;
+int flagElse = 0;
+
+typedef struct{
+  int flagOr;
+  int flagElse;
+}t_condition;
+
+typedef struct{
+  t_condition list[10];
+  int tope;
+}t_list_cond;
+
+t_list_cond listCond = {{{0, 0}}, -1};
 #endif
