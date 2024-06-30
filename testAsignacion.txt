@@ -5,6 +5,7 @@ init{
     lec: Float
 }
 escribir("inicio")
+escribir("inicio")
 escribir("escriba algo")
 leer(lec)
 a := 9

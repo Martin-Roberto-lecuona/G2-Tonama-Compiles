@@ -395,8 +395,11 @@ factor:
 			strcpy(tipoDatoExpr,INT);
 		char new_yytext[100];
 		agregarGuionBajo(yytext, new_yytext);
-		saveSymbolCte(new_yytext);
-		updateTipoDatoSymbol(pos,INT);
+		pos = findSymbol(new_yytext);
+		if (pos==-1) {
+			saveSymbolCte(new_yytext);
+			updateTipoDatoSymbol(pos,INT);
+		}
 		factorPtr = crearHoja(new_yytext,INT);
 		apilarDinamica(&pila, factorPtr);
 		apilarDinamica(&pilaExpresion,factorPtr);
