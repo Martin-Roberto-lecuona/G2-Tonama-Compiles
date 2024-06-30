@@ -25,7 +25,6 @@ void recorrerTablaSimbolos(FILE *file);
 
 int ifCounter = 0;
 int cantAux=0;
-int flagOR = 0;
 int elseCounter = 0;
 int flagElse = 0;
 
@@ -40,4 +39,20 @@ typedef struct{
 }t_list_cond;
 
 t_list_cond listCond = {{{0, 0}}, -1};
+
+typedef struct {
+    char *comparador;
+    char *operacion;
+    char *invertido;
+} t_salto;
+
+const t_salto compYSalto[] = {
+    {">", "JA", "JNA"},
+    {">=", "JAE", "JNAE"},
+    {"<", "JB", "JNB"},
+    {"<=", "JBE", "JNBE"},
+    {"==", "JE", "JNE"},
+    {"<>", "JNE", "JE"},
+};
+
 #endif
