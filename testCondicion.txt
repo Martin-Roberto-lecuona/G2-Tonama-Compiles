@@ -1,16 +1,34 @@
 init{
-    a,b: Int
-    c: String
+    a: Int
+    b: Int
+    c: Int
+    e: Int
 }
 escribir("INICIO")
 
-a := 1000
-b := 4
-c := "HOLA"
-
-escribir("a tiene")
-escribir(a)
-escribir("b tiene")
-escribir(b)
+a := 1
+b := 2
+c := 3
+si (b >= b OR a > c)
+{
+    escribir("ENTRA IF 1")
+}
+mientras (c > b)
+{
+   escribir("ENTRA WHILE 1 ")
+   escribir(c)
+   c := c - 1
+}
+e := 5
+c := 3
+si(e>c)
+{
+    mientras (e > 1)
+    {
+        escribir("ENTRA WHILE 2")
+        e := e - 1
+    }
+}
 
 escribir("FIN")
+

@@ -215,7 +215,7 @@ buscarYreemplazar:
 	BUSC_Y_REMP PARENTE_I factorString {strcpy(BusyRem_bus,yytext);} 
 					COMA factorString {strcpy(BusyRem_cad,yytext);} 
 					COMA factorString {strcpy(BusyRem_rem,yytext);} 
-				PARENTE_D {	buscarYreemplazarPtr = buscarYReemplazar(BusyRem_bus,BusyRem_cad,BusyRem_rem);
+				PARENTE_D {buscarYreemplazarPtr = buscarYReemplazar(BusyRem_bus,BusyRem_cad,BusyRem_rem);
 							clearString(BusyRem_bus,MAX_CAD);
 							clearString(BusyRem_cad,MAX_CAD);
 							clearString(BusyRem_rem,MAX_CAD);
@@ -320,7 +320,7 @@ iteracion:
 	MIENTRAS PARENTE_I condicion {apilarDinamica(&pilaCondicion, condicionPtr);} PARENTE_D LLAVE_I bloqueInterno LLAVE_D {
 	    printf("\titeracion -> mientras (condicion) {bloque}\n");
 	    uniqueIdMain++;
-		bloqueInternoPtr = crearNodo("CUERPO",&arbol,bloqueInternoPtr,NULL);
+		bloqueInternoPtr = crearNodo("CUERPOW",&arbol,bloqueInternoPtr,NULL);
 	    iteracionPtr = crearNodo("WHILE",&arbol,desapilarDinamica(&pilaCondicion),bloqueInternoPtr);
 	    }
 	;

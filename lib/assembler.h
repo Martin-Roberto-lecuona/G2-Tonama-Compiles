@@ -30,6 +30,7 @@ typedef struct {
   int flagOr;
   int flagNot;
   int flagElse;
+  int cantSaltos;
 } t_condition;
 
 typedef struct {

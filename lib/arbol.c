@@ -172,7 +172,7 @@ tNodoArbol *aplicarDescuentoItem(char *item){
 tNodoArbol *buscarYReemplazar(char *bus,char *cad,char *rem){
   tNodoArbol *aux;
 
-  tNodoArbol *inicial = crearHoja("S",NULL);
+  tNodoArbol *inicial = crearHoja("S","NULL");
 
   tNodoArbol *buscar =  crearNodo("=",&arbol,crearHoja("@bus",STR),crearHoja(bus,STR));
   uniqueIdMain++;
@@ -309,6 +309,5 @@ tNodoArbol *buscarYReemplazar(char *bus,char *cad,char *rem){
   tNodoArbol *funcion = crearNodo("S",&arbol, inicial, mientras);
   uniqueIdMain++;
   funcion = crearNodo("S",&arbol, funcion, final);
-
   return funcion;
 }
