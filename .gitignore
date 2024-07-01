@@ -77,6 +77,8 @@ lyc-compiler-3.0.0.exe
 tree.dot
 intermediate-code.dot
 instruccionesAssembler.txt
+intermediate-code.png
+
 #Clion
 CMakeLists.txt
 cmake-build-debug
