@@ -3,8 +3,26 @@ init{
     b: Int
     c: Int
 }
+escribir("INICIO")
 
-if (a > b OR c > b)
+a := 1
+b := 2
+c := 3
+si (b >= b OR a > c)
 {
-    a := 1
+    escribir("ENTRA")
 }
+*-
+si (c > b)
+{
+    si (c > a)
+    {
+        escribir("c es mas grande que a")
+    }
+    sino{
+        escribir("AAAAAAAAAAA")
+    }
+}
+-*
+
+escribir("FIN")

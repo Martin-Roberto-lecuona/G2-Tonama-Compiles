@@ -28,7 +28,9 @@ int cantAux = 0;
 
 typedef struct {
   int flagOr;
+  int flagNot;
   int flagElse;
+  int cantSaltos;
 } t_condition;
 
 typedef struct {
@@ -38,6 +40,7 @@ typedef struct {
 
 typedef struct {
   int flagOr;
+  int cantSaltos;
 } t_iteracion;
 
 typedef struct {
