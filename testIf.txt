@@ -3,8 +3,20 @@ init{
     b: Int
     c: Int
 }
-
-if (a > b OR c > b)
+a := 10
+b := 2
+c := 3
+si (a > b)
 {
-    a := 1
+    escribir("a es mas grande que b")
+}
+si (c > b)
+{
+    si (c > a)
+    {
+        escribir("c es mas grande que a")
+    }
+    sino{
+        escribir("AAAAAAAAAAA")
+    }
 }

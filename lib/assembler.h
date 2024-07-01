@@ -38,6 +38,7 @@ typedef struct {
 
 typedef struct {
   int flagOr;
+  int cantSaltos;
 } t_iteracion;
 
 typedef struct {

@@ -88,17 +88,18 @@ void recorrerArbolParaAssembler(FILE *fp, tNodoArbol *raiz) {
 
   if (strcmp(raiz->info, "if") == 0) {
     listCond.tope++;
+    listIter.list[listCond.tope].cantSaltos++;
     if (raiz->der->der != NULL) {
       listCond.list[listCond.tope].flagElse = 1;
     }
     if (strcmp(raiz->izq->info, "OR") == 0) {
       listCond.list[listCond.tope].flagOr = 1;
     }
-  } else if (strcmp(raiz->info, "NOT") == 0) {
-    listCond.list[listCond.tope].flagOr = 1; /// flagOr deberia ser flagInvertir
+  } else if (strcmp(raiz->info, "NOT") == 0) { // no funciona NOT
+    listCond.list[listCond.tope].flagOr = 1; /// flagOr deberia ser flagInvertir NO SE SI ANDA
   } else if (strcmp(raiz->info, "WHILE") == 0) {
     listIter.tope++;
-    fprintf(fp, "BeginWhile%d:\n", listIter.tope);
+    fprintf(fp, "BeginWhile%d_%d:\n", listIter.tope,listIter.list->cantSaltos);
     if (strcmp(raiz->izq->info, "OR") == 0) {
       listIter.list[listIter.tope].flagOr = 1;
     }
@@ -107,24 +108,24 @@ void recorrerArbolParaAssembler(FILE *fp, tNodoArbol *raiz) {
   recorrerArbolParaAssembler(fp, raiz->izq);
 
   if (strcmp(raiz->info, "if") == 0) {
-    fprintf(fp, "BeginIf%d:\n", listCond.tope);
+    fprintf(fp, "BeginIf%d_%d:\n", listCond.tope,listIter.list->cantSaltos);
   } else if (strcmp(raiz->info, "WHILE") == 0) {
-    fprintf(fp, "While%d:\n", listIter.tope);
+    fprintf(fp, "While%d_%d:\n", listIter.tope,listIter.list->cantSaltos);
   } else if (strcmp(raiz->info, "CUERPO") == 0 && listCond.tope != -1
       && listCond.list[listCond.tope].flagElse == 1) {
-    fprintf(fp, "JMP EndIf%d\n", listCond.tope);
-    fprintf(fp, "BeginElse%d:\n", listCond.tope);
+    fprintf(fp, "JMP EndIf%d_%d\n", listCond.tope,listIter.list->cantSaltos);
+    fprintf(fp, "BeginElse%d_%d:\n", listCond.tope,listIter.list->cantSaltos);
   }
   ///RECORRO DERECHA
   recorrerArbolParaAssembler(fp, raiz->der);
 
   if (strcmp(raiz->info, "CUERPO") == 0) {
     if (listCond.tope != -1) {
-      fprintf(fp, "EndIf%d:\n", listCond.tope);
+      fprintf(fp, "EndIf%d_%d:\n", listCond.tope,listIter.list->cantSaltos);
     }
     if (listIter.tope != -1) {
-      fprintf(fp, "JMP BeginWhile%d\n", listIter.tope);
-      fprintf(fp, "EndWhile%d:\n", listIter.tope);
+      fprintf(fp, "JMP BeginWhile%d_%d\n", listIter.tope,listIter.list->cantSaltos);
+      fprintf(fp, "EndWhile%d_%d:\n", listIter.tope,listIter.list->cantSaltos);
     }
   }
 
@@ -165,7 +166,7 @@ void recorrerArbolParaAssembler(FILE *fp, tNodoArbol *raiz) {
   }
   if (strcmp(raiz->info, "if") == 0) {
     listCond.list[listCond.tope].flagElse = 0;
-    listCond.list[listCond.tope].flagOr = 1;
+    // listCond.list[listCond.tope].flagOr = 1;
     listCond.tope--;
   }
   if (strcmp(raiz->info, "WHILE") == 0) {
@@ -213,10 +214,11 @@ void generarSalto(FILE *fp, char *comparador) {
   }
   fprintf(fp, "; Salto\n");
   fprintf(fp,
-          "%s %s%d\n",
+          "%s %s%d_%d\n",
           salto,
           destinoSalto,
-          (listCond.tope != -1) ? listCond.tope : listIter.tope);
+          (listCond.tope != -1) ? listCond.tope : listIter.tope,
+          listIter.list->cantSaltos);
 }
 
 int evaluarOr() {
