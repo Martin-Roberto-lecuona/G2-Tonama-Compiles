@@ -1,5 +1,5 @@
 init{
-    a,b,c: Int
+    a,b,c,e: Int
     base:Float
     g: Float
     h: String
@@ -12,7 +12,7 @@ init{
     lec: String
 }
 *- and.txt -*
-a := -1
+a := 1
 c := 2
 b := a*(c-21)/4
 
@@ -91,7 +91,7 @@ si (b >= b OR a > c)
 {
     escribir("ENTRA IF 1")
 }
-si (a > 3 and c > a)
+si (a > 3 AND c > a)
 {
     escribir("ENTRA IF 2")
 }
