@@ -1,46 +1,46 @@
 #include "assembler.h"
 
-int escribirInstruccionesEnASM(FILE* fpFinal, char * nameFile){
-  FILE * file = fopen( nameFile, "r");
+int escribirInstruccionesEnASM(FILE *fpFinal, char *nameFile) {
+  FILE *file = fopen(nameFile, "r");
   char buffer[100];
   if (file == NULL) {
     printf("Error al abrir el archivo %s", nameFile);
     return 1;
   }
 
-  while(fgets(buffer, sizeof(buffer), file)) {
+  while (fgets(buffer, sizeof(buffer), file)) {
     fprintf(fpFinal, "\t%s", buffer);
   }
 
   fclose(file);
 }
 
-void operacion(FILE * fp, tNodoArbol* raiz){
+void operacion(FILE *fp, tNodoArbol *raiz) {
 
-  printf("info arbol: %s\n",raiz->info);
-  if(strcmp(raiz->info, "=")==0){
+  printf("info arbol: %s\n", raiz->info);
+  if (strcmp(raiz->info, "=") == 0) {
 
-    if ( strcmp( raiz->izq->tipoDato, STR) == 0){
+    if (strcmp(raiz->izq->tipoDato, STR) == 0) {
       // saca parentesis
-        raiz->der->info++;
-        raiz->der->info[strlen(raiz->der->info)-1]=0;
+      raiz->der->info++;
+      raiz->der->info[strlen(raiz->der->info) - 1] = 0;
       //
-      fprintf(fp,"; Limpiar antes de copiar\n");
-      fprintf(fp,"LEA DI, %s\n",raiz->izq->info);
-      fprintf(fp,"MOV CX, 100\n");
-      fprintf(fp,"XOR AL, AL\n");
-      fprintf(fp,"REP STOSB\n");
-      fprintf(fp,";Copiar\n");
-      fprintf(fp,"LEA SI, str_%s\n",raiz->der->info);
-      fprintf(fp,"LEA DI, %s\n",raiz->izq->info);
-      fprintf(fp,"MOV CX, %d\n",strlen(raiz->der->info)+1);
-      fprintf(fp,"REP MOVSB\n");
-    }else{
+      fprintf(fp, "; Limpiar antes de copiar\n");
+      fprintf(fp, "LEA DI, %s\n", raiz->izq->info);
+      fprintf(fp, "MOV CX, 100\n");
+      fprintf(fp, "XOR AL, AL\n");
+      fprintf(fp, "REP STOSB\n");
+      fprintf(fp, ";Copiar\n");
+      fprintf(fp, "LEA SI, str_%s\n", raiz->der->info);
+      fprintf(fp, "LEA DI, %s\n", raiz->izq->info);
+      fprintf(fp, "MOV CX, %d\n", strlen(raiz->der->info) + 1);
+      fprintf(fp, "REP MOVSB\n");
+    } else {
       fprintf(fp, "fld %s\n", raiz->der->info);
       fprintf(fp, "fstp %s\n", raiz->izq->info);
     }
 
-  } else{
+  } else {
     fprintf(fp, "fld %s\n", raiz->izq->info);
     fprintf(fp, "fld %s\n", raiz->der->info);
     fprintf(fp, "%s\n", obtenerInstruccionAritmetica(raiz->info));
@@ -52,7 +52,7 @@ void operacion(FILE * fp, tNodoArbol* raiz){
   }
 }
 
-int esHoja(tNodoArbol* raiz) {
+int esHoja(tNodoArbol *raiz) {
   if (raiz == NULL) {
     return 0;
   }
@@ -66,14 +66,12 @@ int pedirAux() {
 
 int esAritmetica(const char *operador) {
 
-  return strcmp(operador, "+") == 0 ||
-      strcmp(operador, "-") == 0 ||
-      strcmp(operador, "*") == 0 ||
-      strcmp(operador, "/") == 0 ||
-      strcmp(operador, "=") == 0;
+  return strcmp(operador, "+") == 0 || strcmp(operador, "-") == 0
+      || strcmp(operador, "*") == 0 || strcmp(operador, "/") == 0
+      || strcmp(operador, "=") == 0;
 }
 
-char* obtenerInstruccionAritmetica(const char *operador) {
+char *obtenerInstruccionAritmetica(const char *operador) {
   if (strcmp(operador, "+") == 0)
     return "fadd";
   if (strcmp(operador, "-") == 0)
@@ -90,15 +88,15 @@ void recorrerArbolParaAssembler(FILE *fp, tNodoArbol *raiz) {
 
   if (strcmp(raiz->info, "if") == 0) {
     listCond.tope++;
-    if(raiz->der->der != NULL){
+    if (raiz->der->der != NULL) {
       listCond.list[listCond.tope].flagElse = 1;
     }
     if (strcmp(raiz->izq->info, "OR") == 0) {
       listCond.list[listCond.tope].flagOr = 1;
     }
-  }else if (strcmp(raiz->info, "NOT") == 0) {
+  } else if (strcmp(raiz->info, "NOT") == 0) {
     listCond.list[listCond.tope].flagOr = 1; /// flagOr deberia ser flagInvertir
-  }else if(strcmp(raiz->info, "WHILE") == 0){
+  } else if (strcmp(raiz->info, "WHILE") == 0) {
     listIter.tope++;
     fprintf(fp, "BeginWhile%d:\n", listIter.tope);
     if (strcmp(raiz->izq->info, "OR") == 0) {
@@ -110,20 +108,21 @@ void recorrerArbolParaAssembler(FILE *fp, tNodoArbol *raiz) {
 
   if (strcmp(raiz->info, "if") == 0) {
     fprintf(fp, "BeginIf%d:\n", listCond.tope);
-  }else if (strcmp(raiz->info, "WHILE") == 0){
+  } else if (strcmp(raiz->info, "WHILE") == 0) {
     fprintf(fp, "While%d:\n", listIter.tope);
-  }else if(strcmp(raiz->info, "CUERPO") == 0 && listCond.tope != -1 && listCond.list[listCond.tope].flagElse == 1){
+  } else if (strcmp(raiz->info, "CUERPO") == 0 && listCond.tope != -1
+      && listCond.list[listCond.tope].flagElse == 1) {
     fprintf(fp, "JMP EndIf%d\n", listCond.tope);
     fprintf(fp, "BeginElse%d:\n", listCond.tope);
   }
   ///RECORRO DERECHA
   recorrerArbolParaAssembler(fp, raiz->der);
-  
-  if(strcmp(raiz->info, "CUERPO") == 0){
-    if(listCond.tope != -1){
+
+  if (strcmp(raiz->info, "CUERPO") == 0) {
+    if (listCond.tope != -1) {
       fprintf(fp, "EndIf%d:\n", listCond.tope);
     }
-    if(listIter.tope != -1){
+    if (listIter.tope != -1) {
       fprintf(fp, "JMP BeginWhile%d\n", listIter.tope);
       fprintf(fp, "EndWhile%d:\n", listIter.tope);
     }
@@ -133,30 +132,29 @@ void recorrerArbolParaAssembler(FILE *fp, tNodoArbol *raiz) {
     if (esAritmetica(raiz->info)) {
       operacion(fp, raiz);
     } else if (strcmp(raiz->info, PUT_STR) == 0) {
-      fprintf(fp,"xor dx, dx   ; Limpiar DX \nxor ax, ax  ; Limpiar AX\n");
-      if(strcmp(raiz->der->tipoDato,STR) == 0){
-        if(raiz->der->info[0] == '('){
-        raiz->der->info++;
-        raiz->der->info[strlen(raiz->der->info)-1]=0;
-        fprintf(fp, "displayString str_%s\n", raiz->der->info);
-        }
-        else{
+      fprintf(fp, "xor dx, dx   ; Limpiar DX \nxor ax, ax  ; Limpiar AX\n");
+      if (strcmp(raiz->der->tipoDato, STR) == 0) {
+        if (raiz->der->info[0] == '(') {
+          raiz->der->info++;
+          raiz->der->info[strlen(raiz->der->info) - 1] = 0;
+          fprintf(fp, "displayString str_%s\n", raiz->der->info);
+        } else {
           fprintf(fp, "displayString %s\n", raiz->der->info);
         }
-      }else if (strcmp(raiz->der->tipoDato,INT) == 0){
-        fprintf(fp, "DisplayInteger %s\n", raiz->der->info); 
-      }else{
+      } else if (strcmp(raiz->der->tipoDato, INT) == 0) {
+        fprintf(fp, "DisplayInteger %s\n", raiz->der->info);
+      } else {
         fprintf(fp, "DisplayFloat %s,3\n", raiz->der->info);
       }
       fprintf(fp, "newLine 1\n");
     } else if (esComparacion(raiz)) {
       generarComparacion(fp, raiz);
-    } else if (strcmp(raiz->info, GET_STR) == 0){
-      if (strcmp(raiz->der->tipoDato,INT) == 0){
-        fprintf(fp, "GetInteger %s\n", raiz->der->info); 
-      }else if (strcmp(raiz->der->tipoDato,FLOAT) == 0){
+    } else if (strcmp(raiz->info, GET_STR) == 0) {
+      if (strcmp(raiz->der->tipoDato, INT) == 0) {
+        fprintf(fp, "GetInteger %s\n", raiz->der->info);
+      } else if (strcmp(raiz->der->tipoDato, FLOAT) == 0) {
         fprintf(fp, "GetFloat %s\n", raiz->der->info);
-      } else if (strcmp(raiz->der->tipoDato,STR) == 0){
+      } else if (strcmp(raiz->der->tipoDato, STR) == 0) {
         fprintf(fp, "getString  %s\n", raiz->der->info);
       }
     }
@@ -165,27 +163,24 @@ void recorrerArbolParaAssembler(FILE *fp, tNodoArbol *raiz) {
     raiz->izq = NULL;
     raiz->der = NULL;
   }
-  if(strcmp(raiz->info, "if") == 0 ){
+  if (strcmp(raiz->info, "if") == 0) {
     listCond.list[listCond.tope].flagElse = 0;
     listCond.list[listCond.tope].flagOr = 1;
     listCond.tope--;
   }
-  if(strcmp(raiz->info, "WHILE") == 0 ){
+  if (strcmp(raiz->info, "WHILE") == 0) {
     listIter.list[listIter.tope].flagOr = 0;
     listIter.tope--;
   }
 }
 
-int esComparacion(tNodoArbol* raiz){
-  return strcmp(raiz->info, ">") == 0 ||
-      strcmp(raiz->info, ">=") == 0 ||
-      strcmp(raiz->info, "<") == 0 ||
-      strcmp(raiz->info, "<=") == 0 ||
-      strcmp(raiz->info, "==") == 0 ||
-      strcmp(raiz->info, "<>") == 0;
+int esComparacion(tNodoArbol *raiz) {
+  return strcmp(raiz->info, ">") == 0 || strcmp(raiz->info, ">=") == 0
+      || strcmp(raiz->info, "<") == 0 || strcmp(raiz->info, "<=") == 0
+      || strcmp(raiz->info, "==") == 0 || strcmp(raiz->info, "!=") == 0;
 }
 
-void generarComparacion(FILE * fp, tNodoArbol* raiz){
+void generarComparacion(FILE *fp, tNodoArbol *raiz) {
   fprintf(fp, "; Comparacion\n");
   fprintf(fp, "fld %s\n", raiz->der->info);
   fprintf(fp, "fld %s\n", raiz->izq->info);
@@ -202,44 +197,48 @@ void generarSalto(FILE *fp, char *comparador) {
   char *salto = obtenerInstruccionComparacion(comparador);
   char destinoSalto[50];
   if (listCond.tope != -1 && listCond.list[listCond.tope].flagOr == 1) {
-    strcpy(destinoSalto,"BeginIf");
+    strcpy(destinoSalto, "BeginIf");
     listCond.list[listCond.tope].flagOr = 0;
   } else if (listIter.tope != -1 && listIter.list[listIter.tope].flagOr == 1) {
-    strcpy(destinoSalto,"BeginWhile");
+    strcpy(destinoSalto, "BeginWhile");
     listCond.list[listCond.tope].flagOr = 0;
-  }else {
-    if(listCond.tope != -1 && listCond.list[listCond.tope].flagElse == 1) {
-      strcpy(destinoSalto,"BeginElse");
-    }else if (listCond.tope != -1) {
-      strcpy(destinoSalto,"EndIf");
-    } else if(listIter.tope != -1) {
-      strcpy(destinoSalto,"EndWhile");
+  } else {
+    if (listCond.tope != -1 && listCond.list[listCond.tope].flagElse == 1) {
+      strcpy(destinoSalto, "BeginElse");
+    } else if (listCond.tope != -1) {
+      strcpy(destinoSalto, "EndIf");
+    } else if (listIter.tope != -1) {
+      strcpy(destinoSalto, "EndWhile");
     }
   }
   fprintf(fp, "; Salto\n");
-  fprintf(fp, "%s %s%d\n", salto, destinoSalto, (listCond.tope != -1) ? listCond.tope : listIter.tope);
+  fprintf(fp,
+          "%s %s%d\n",
+          salto,
+          destinoSalto,
+          (listCond.tope != -1) ? listCond.tope : listIter.tope);
 }
 
-int evaluarOr(){
-  if(listCond.tope != -1){
+int evaluarOr() {
+  if (listCond.tope != -1) {
     return listCond.list[listCond.tope].flagOr;
-  } else if(listIter.tope != -1 ){
+  } else if (listIter.tope != -1) {
     return listIter.list[listIter.tope].flagOr;
   }
   return 0;
 }
 
-char* obtenerInstruccionComparacion(const char *comparador) {
+char *obtenerInstruccionComparacion(const char *comparador) {
   for (int i = 0; i < sizeof(compYSalto) / sizeof(compYSalto[0]); i++) {
-        if (strcmp(compYSalto[i].comparador, comparador) == 0) {
-            return evaluarOr() ? compYSalto[i].operacion : compYSalto[i].invertido;
-        }
+    if (strcmp(compYSalto[i].comparador, comparador) == 0) {
+      return evaluarOr() ? compYSalto[i].operacion : compYSalto[i].invertido;
     }
+  }
   return "JMP";
 }
 
-int generarInstruccionesAssembler(tNodoArbol* raiz){
-  FILE * fp = fopen(ASM_FILE_CODE, "wt+");
+int generarInstruccionesAssembler(tNodoArbol *raiz) {
+  FILE *fp = fopen(ASM_FILE_CODE, "wt+");
   if (fp == NULL) {
     printf("Error al abrir el archivo instrucciones");
     return 1;
@@ -249,33 +248,35 @@ int generarInstruccionesAssembler(tNodoArbol* raiz){
   return 0;
 }
 
-void generarAssembler(tNodoArbol* raiz){
+void generarAssembler(tNodoArbol *raiz) {
   FILE *fp = fopen(ASM_FILE, "w");
-  if(!fp)
-  {
+  if (!fp) {
     printf("Error al guardar el archivo assembler.\n");
     exit(1);
   }
   generarInstruccionesAssembler(raiz);
-  char header[]="include macros2.asm\ninclude number.asm\n.MODEL LARGE\n.386\n.STACK 200h\n.DATA\n\n";
-  fprintf(fp,header);
+  char header[] =
+      "include macros2.asm\ninclude number.asm\n.MODEL LARGE\n.386\n.STACK 200h\n.DATA\n\n";
+  fprintf(fp, header);
 
   recorrerTablaSimbolos(fp);
-  char iniCode[]=".CODE\n\nSTART:\n\tMOV AX,@DATA\n\tMOV DS,AX\n\tMOV ES,AX\n\tFINIT\n";
+  char iniCode[] =
+      ".CODE\n\nSTART:\n\tMOV AX,@DATA\n\tMOV DS,AX\n\tMOV ES,AX\n\tFINIT\n";
   fprintf(fp, iniCode);
   // fprintf(fp, "FFREE\n\n");
 
   escribirInstruccionesEnASM(fp, ASM_FILE_CODE);
 
-  char finCode[]="END_PROG:\n\tffree; Liberar registros de la FPU\n\tmov ax, 4C00h\n\tint 21h\nEND START";
-  fprintf(fp,finCode);
+  char finCode[] =
+      "END_PROG:\n\tffree; Liberar registros de la FPU\n\tmov ax, 4C00h\n\tint 21h\nEND START";
+  fprintf(fp, finCode);
   // fprintf(fp, "\n\nffree\n");
 }
 
 
 //------------- Tabla simbolos ------------------------
 
-void getFila(char line[256], t_fila *fila){
+void getFila(char line[256], t_fila *fila) {
   line[strcspn(line, "\n")] = 0;
 
   char *token = strtok(line, "|");
@@ -296,7 +297,7 @@ void getFila(char line[256], t_fila *fila){
   fila->longitud[strcspn(fila->longitud, " ")] = '\0';
 }
 
-void recorrerTablaSimbolos(FILE *file){
+void recorrerTablaSimbolos(FILE *file) {
   FILE *fileSimbol = fopen(SIMBOL_FILE_NAME, "r");
   fseek(fileSimbol, 0, SEEK_SET);
   if (fileSimbol == NULL) {
@@ -310,23 +311,24 @@ void recorrerTablaSimbolos(FILE *file){
   fgets(line, sizeof(line), fileSimbol);
   fgets(line, sizeof(line), fileSimbol);
   while (fgets(line, sizeof(line), fileSimbol)) {
-    getFila(line,&fila);
-    if(fila.valor[0]!='_' && strcmp(fila.tipoDato, STR) == 0){
-      fprintf(file,"\tstr%s db \"%s\",\"$\", %d dup(?) \n", fila.nombre,fila.valor,strlen(fila.valor) );
+    getFila(line, &fila);
+    if (fila.valor[0] != '_' && strcmp(fila.tipoDato, STR) == 0) {
+      fprintf(file,
+              "\tstr%s db \"%s\",\"$\", %d dup(?) \n",
+              fila.nombre,
+              fila.valor,
+              strlen(fila.valor));
+    } else if (fila.valor[0] != '_') {
+      fprintf(file, "\t%s dd %s\n", fila.nombre, fila.valor);
+    } else if (fila.valor[0] == '_' && strcmp(fila.tipoDato, STR) == 0) {
+      fprintf(file, "\t%s db 100 dup(?) \n", fila.nombre);
+    } else {
+      fprintf(file, "\t%s dd ?\n", fila.nombre);
     }
-    else if(fila.valor[0]!='_'){
-      fprintf(file,"\t%s dd %s\n", fila.nombre,fila.valor);
-    }
-    else if (fila.valor[0]=='_' && strcmp(fila.tipoDato, STR) == 0){
-      fprintf(file,"\t%s db 100 dup(?) \n", fila.nombre );
-    }
-    else {
-      fprintf(file,"\t%s dd ?\n", fila.nombre);
-    }
-    
+
   }
-  for(int i=1; i <= cantAux; i++){
-    fprintf(file,"\t@aux%d dd %s\n", i, "0");
+  for (int i = 1; i <= cantAux; i++) {
+    fprintf(file, "\t@aux%d dd %s\n", i, "0");
   }
 
   fclose(fileSimbol);
