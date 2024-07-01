@@ -3,13 +3,16 @@ init{
     b: Int
     c: Int
 }
-a := 10
+escribir("INICIO")
+
+a := 1
 b := 2
 c := 3
-si (a > b)
+si (b >= b OR a > c)
 {
-    escribir("a es mas grande que b")
+    escribir("ENTRA")
 }
+*-
 si (c > b)
 {
     si (c > a)
@@ -20,3 +23,6 @@ si (c > b)
         escribir("AAAAAAAAAAA")
     }
 }
+-*
+
+escribir("FIN")

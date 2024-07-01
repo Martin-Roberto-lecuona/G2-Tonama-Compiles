@@ -28,6 +28,7 @@ int cantAux = 0;
 
 typedef struct {
   int flagOr;
+  int flagNot;
   int flagElse;
 } t_condition;
 

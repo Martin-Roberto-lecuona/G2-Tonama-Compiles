@@ -96,7 +96,7 @@ void recorrerArbolParaAssembler(FILE *fp, tNodoArbol *raiz) {
       listCond.list[listCond.tope].flagOr = 1;
     }
   } else if (strcmp(raiz->info, "NOT") == 0) { // no funciona NOT
-    listCond.list[listCond.tope].flagOr = 1; /// flagOr deberia ser flagInvertir NO SE SI ANDA
+    listCond.list[listCond.tope].flagNot = 1; /// flagOr deberia ser flagInvertir NO SE SI ANDA
   } else if (strcmp(raiz->info, "WHILE") == 0) {
     listIter.tope++;
     fprintf(fp, "BeginWhile%d_%d:\n", listIter.tope,listIter.list->cantSaltos);
@@ -223,10 +223,12 @@ void generarSalto(FILE *fp, char *comparador) {
 
 int evaluarOr() {
   if (listCond.tope != -1) {
+    if (listCond.list[listCond.tope].flagNot == 1)
+      return 1;
     return listCond.list[listCond.tope].flagOr;
   } else if (listIter.tope != -1) {
     return listIter.list[listIter.tope].flagOr;
-  }
+  } 
   return 0;
 }
 
