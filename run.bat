@@ -5,7 +5,7 @@ flex Lexico.l
 bison -dyv Sintactico.y
 
 gcc.exe lex.yy.c y.tab.c -o lyc-compiler-2.0.0.exe
-lyc-compiler-2.0.0.exe testCondicion.txt > resultado.txt
+lyc-compiler-2.0.0.exe testSinEspeciales.txt > resultado.txt
 
 @echo off
 del lyc-compiler-2.0.0.exe

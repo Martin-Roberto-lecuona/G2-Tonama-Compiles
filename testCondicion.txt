@@ -13,6 +13,10 @@ si (b >= b OR a > c)
 {
     escribir("ENTRA IF 1")
 }
+si (a > 3 and c > a)
+{
+    escribir("ENTRA IF 2")
+}
 mientras (c > b)
 {
    escribir("ENTRA WHILE 1 ")

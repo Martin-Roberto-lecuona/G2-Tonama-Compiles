@@ -125,12 +125,12 @@ sentencia:
 								{
 									*(yytext + strlen(yytext)-1) = 0;
   									yytext++;
+									borrarEspacios(yytext);
 									pos = findSymbol(yytext);
 									printf("%s xxPOSxx: %d",yytext,pos);
 									if (pos==-1) {
 										saveSymbolCadena(yytext);
 									}
-									borrarEspacios(yytext);
 									strcpy(auxCadVal,yytext);
 								} 
 	PARENTE_D {

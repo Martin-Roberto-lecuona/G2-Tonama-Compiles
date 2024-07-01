@@ -9,6 +9,7 @@ init{
     p1, p2, p3 : String
     buscar, en, reemplazo : String
     resultado : Int
+    lec: String
 }
 *- and.txt -*
 a := -1
@@ -83,28 +84,56 @@ escribir(var1)  *- var1 es una variable numérica definida previamente -*
 *- Condiciones -*
 
 *- Anidados -*
-si(a>b)
+a := 1
+b := 2
+c := 3
+si (b >= b OR a > c)
 {
-    mientras(a > b){
-        mientras (b>c){
-          b := b - 1
-        }
-        a := a - 1
-        escribir("cadena")
-    }
-    a := a + 1
+    escribir("ENTRA IF 1")
 }
-sino
+si (a > 3 and c > a)
 {
-    mientras(a > b){
-        mientras (b>c){
-          b := b - 1
-        }
-        a := a - 1
-        escribir("cadena else")
-    }
-    a := a + 1
+    escribir("ENTRA IF 2")
 }
+mientras (c > b)
+{
+   escribir("ENTRA WHILE 1 ")
+   escribir(c)
+   c := c - 1
+}
+e := 5
+c := 3
+si(e>c)
+{
+    mientras (e > 1)
+    {
+        escribir("ENTRA WHILE 2")
+        e := e - 1
+    }
+}
+
+escribir("inicio")
+escribir("escriba algo")
+leer(lec)
+a := 5
+si (NOT a < 6 ){
+    escribir("Entro if")
+    a := a + 2
+}else{
+  si (a < 7){
+    c := 10
+  }
+  else {
+    c := 20
+  }
+}
+
+escribir("c tiene")
+escribir(c)
+escribir("b tiene")
+escribir(b)
+escribir("lec tiene")
+escribir(lec)
 *- Comentario
     *-hijo
     2 * 3 - 1
