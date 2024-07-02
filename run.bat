@@ -13,3 +13,7 @@ del lex.yy.c
 del y.tab.c
 del y.tab.h
 del y.output
+
+:: tasm Final.asm
+:: tlink Final.obj numbers.obj
+:: Final.exe
