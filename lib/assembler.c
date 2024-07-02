@@ -17,7 +17,6 @@ int escribirInstruccionesEnASM(FILE *fpFinal, char *nameFile) {
 
 void operacion(FILE *fp, tNodoArbol *raiz) {
 
-  printf("info arbol: %s\n", raiz->info);
   if (strcmp(raiz->info, "=") == 0) {
 
     if (strcmp(raiz->izq->tipoDato, STR) == 0) {

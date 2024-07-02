@@ -1,5 +1,5 @@
 init{
-    a,b,c,e: Int
+    a,b,c,e,bax,bay,baz: Int
     base:Float
     g: Float
     h: String
@@ -54,17 +54,18 @@ if (NOT a > b)
 }
 
 *- or.txt -*
-a := 1
-b := 1
-c := 2
+bax := 2
+bay := 1
+baz := 2
 
-if (a > b OR c > b)
+if (bax > bay OR baz > bay)
 {
     escribir("a es mas grande que b o c es mas grande que b")
 }
 
 
 *- read.txt -*
+escribir("Escriba una palabra")
 leer(base) *- base es una variable -*
 
 *- while.txt -*
